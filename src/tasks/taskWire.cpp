@@ -1,13 +1,12 @@
 /**
  * This script is widely based on the following script:
  * https://github.com/Hackuarium/esp32-c3/blob/58935a0e08a7047737f2120dbdf74b15b08bec4d/lib/hack/taskWire.cpp
-*/
+ */
 
-#include "globalConfig.h"
-#ifdef WIRE_SCL
-#include <Wire.h>
 #include "./taskWire.h"
-#include "params.h"
+#include <Wire.h>
+#include "./utilities/params.h"
+#include "globalConfig.h"
 
 #define WIRE_MAX_DEVICES 8
 byte numberI2CDevices = 0;
@@ -19,7 +18,7 @@ void TaskWire(void* pvParameters) {
   vTaskDelay(100);
   (void)pvParameters;
 
-  Wire.begin(WIRE_SDA, WIRE_SCL);
+  Wire.begin(SDA, SCL);
 
   while (true) {
     wireUpdateList();
@@ -200,4 +199,3 @@ void processWireCommand(char command,
       printWireHelp(output);
   }
 }
-#endif

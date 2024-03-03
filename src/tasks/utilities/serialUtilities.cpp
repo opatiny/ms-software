@@ -1,5 +1,5 @@
-#include "FS.h"
 #include "../globalConfig.h"
+#include "FS.h"
 #include "params.h"
 
 void resetParameters();
@@ -79,9 +79,7 @@ void printUtilitiesHelp(Print* output) {
 void printHelp(Print* output) {
   output->println(F("(f)s"));
   output->println(F("(h)elp"));
-#ifdef THR_WIRE_MASTER
   output->println(F("(i)2c"));
-#endif
 #ifdef THR_EEPROM_LOGGER
   output->println(F("(l)og"));
 #endif

@@ -1,16 +1,15 @@
 /**
  * This script is widely based on the following script:
  * https://github.com/Hackuarium/esp32-c3/blob/8ada83e8a572f8f5f3fa828a6459efc6a0985f04/lib/hack/taskSerial.cpp
-*/
+ */
 
-
-#include "./utilities/serialUtilities.h"
-#include "./utilities/wifiUtilities.h"
 #include "./taskWire.h"
-#include "FS.h"
-#include "globalConfig.h"
 #include "./utilities/fileUtilities.h"
 #include "./utilities/params.h"
+#include "./utilities/serialUtilities.h"
+#include "./utilities/wifiUtilities.h"
+#include "FS.h"
+#include "globalConfig.h"
 
 #define SERIAL_BUFFER_LENGTH 256
 #define SERIAL_MAX_PARAM_VALUE_LENGTH 256
@@ -125,7 +124,7 @@ void printResult(char* data, Print* output) {
       if (paramCurrent > 0) {
         if (paramValuePosition > 0) {
           if (wireTargetAddress > 0) {
-#ifdef THR_WIRE_MASTER
+#ifdef THR_WIRE_MASTER  // write parameters to I2C follower we designed
             wireWriteIntRegister(wireTargetAddress, paramCurrent - 1,
                                  atoi(paramValue));
 #endif
@@ -164,25 +163,12 @@ void printResult(char* data, Print* output) {
     case 'f':
       processFSCommand(data[1], paramValue, output);
       break;
-
-#ifdef THR_WIRE_MASTER
     case 'i':
       processWireCommand(data[1], paramValue, output);
       break;
-#endif
 #ifdef THR_EEPROM_LOGGER
     case 'l':
       processLoggerCommand(data[1], paramValue, output);
-      break;
-#endif
-#ifdef THR_ONEWIRE
-    case 'o':
-      oneWireInfo(output);
-      break;
-#endif
-#ifdef THR_PIXELS
-    case 'p':
-      processPixelsCommand(data[1], paramValue, output);
       break;
 #endif
     case 's':
