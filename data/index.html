@@ -1,0 +1,26 @@
+Hello world
+
+<form>
+  <input type="text" class="border-2 border-black" name="command" />
+  <input
+    type="submit"
+    onclick="event.preventDefault(); sendCommand(this.form.command.value);"
+  />
+</form>
+
+<textarea
+  class="border-2 border-black"
+  id="result"
+  rows="10"
+  cols="40"
+></textarea>
+
+<script>
+  const localDevelopement = false;
+  const server = localDevelopement ? "http://192.168.1.193:" : "";
+  async function sendCommand(value) {
+    const response = await fetch(server + "/command?value=" + escape(value));
+    const result = await response.text();
+    document.getElementById("result").value = result;
+  }
+</script>

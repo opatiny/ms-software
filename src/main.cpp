@@ -4,13 +4,18 @@
 // functions prototypes
 void taskBlink();
 void taskSerial();
+void taskWifi();
+void taskWebserver();
 
-void setup(){
+void setup() {
+  setupParameters();
   taskSerial();
+  taskWifi();
+  taskWebserver();
   taskBlink();
 }
 
-void loop(){
+void loop() {
   vTaskDelay(1000);
 }
 
