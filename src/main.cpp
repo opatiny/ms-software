@@ -10,6 +10,7 @@ void taskWifi();
 void taskWebserver();
 void taskWire();
 void taskGY521();
+void taskEventSourceSender();
 
 void setup() {
   xSemaphoreGive(xSemaphoreWire);
@@ -20,6 +21,7 @@ void setup() {
   taskWebserver();
   taskWire();
   taskGY521();
+  taskEventSourceSender();
   taskBlink();
 }
 

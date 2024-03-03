@@ -24,7 +24,7 @@ void TaskGY521(void* pvParameters) {
 
   sensors_event_t a, g, temp;
   while (true) {
-    vTaskDelay(1000);
+    vTaskDelay(5);
     if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
       mpu.getEvent(&a, &g, &temp);
       xSemaphoreGive(xSemaphoreWire);

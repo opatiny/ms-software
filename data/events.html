@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <title>Events</title>
+  </head>
+  <body>
+    <h1>Events</h1>
+    <p>Open the console to see the events</p>
+
+    <div style="display: flex">
+      <div id="accelerometer" style="width: 200px"></div>
+      <div
+        id="maze"
+        style="background-color: pink; width: 200px; height: 200px"
+      ></div>
+    </div>
+  </body>
+
+  <script>
+    if (!!window.EventSource) {
+      const localDevelopement = false;
+      const server = localDevelopement ? "http://192.168.1.193" : "";
+      const source = new EventSource(server + "/events");
+
+      source.addEventListener(
+        "open",
+        function (e) {
+          console.log("Events Connected");
+        },
+        false
+      );
+
+      source.addEventListener(
+        "error",
+        function (e) {
+          if (e.target.readyState != EventSource.OPEN) {
+            console.log("Events Disconnected");
+          }
+        },
+        false
+      );
+
+      source.addEventListener(
+        "message",
+        function (e) {
+          console.log("message: ", e.data);
+        },
+        false
+      );
+
+      source.addEventListener(
+        "accelerometer",
+        function (e) {
+          const data = e.data.split(",");
+          const target = document.getElementById("accelerometer");
+          // display acceleration and rotation
+          target.innerHTML =
+            `x: ${data[0]} y: ${data[1]} z: ${data[2]}` +
+            "<br>" +
+            `alpha: ${data[3]} beta: ${data[4]} gamma: ${data[5]}`;
+        },
+        false
+      );
+    }
+  </script>
+</html>
