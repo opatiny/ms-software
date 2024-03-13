@@ -3,10 +3,11 @@
  * https://github.com/Hackuarium/esp32-c3/blob/58935a0e08a7047737f2120dbdf74b15b08bec4d/lib/hack/taskWire.cpp
  */
 
-#include "./taskWire.h"
 #include <Wire.h>
-#include "./utilities/params.h"
+
 #include "globalConfig.h"
+#include "taskWire.h"
+#include "utilities/params.h"
 
 #define WIRE_MAX_DEVICES 8
 byte numberI2CDevices = 0;

@@ -5,7 +5,7 @@
  * https://github.com/Hackuarium/esp32-c3/blob/7b421c03214e549868712c29feab7798132af6ba/lib/hack/taskWifi.cpp
  */
 #include <WiFi.h>
-#include "./utilities/params.h"
+#include "utilities/params.h"
 
 #include "esp_wpa2.h"
 

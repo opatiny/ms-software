@@ -5,13 +5,11 @@
  * https://github.com/Hackuarium/esp32-c3/blob/8ada83e8a572f8f5f3fa828a6459efc6a0985f04/lib/hack/taskGY521.cpp
  */
 
-#include "config.h"
-
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-#include "./utilities/params.h"
+#include "utilities/params.h"
 
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);

@@ -4,7 +4,7 @@
  */
 
 #include <WiFi.h>
-#include "./utilities/params.h"
+#include "utilities/params.h"
 
 #include "esp_wpa2.h"
 

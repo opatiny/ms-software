@@ -1,5 +1,5 @@
-#include "../globalConfig.h"
 #include "FS.h"
+#include "globalConfig.h"
 #include "params.h"
 
 void resetParameters();

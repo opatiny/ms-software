@@ -2,13 +2,11 @@
  * Thread to communicate with one of the distance sensor.
  */
 
-#include "config.h"
-
 #include <Adafruit_Sensor.h>
 #include <Adafruit_VL53L1X.h>
 #include <Wire.h>
 
-#include "./utilities/params.h"
+#include "utilities/params.h"
 
 void TaskVL53L1X(void* pvParameters) {
   vTaskDelay(1000);

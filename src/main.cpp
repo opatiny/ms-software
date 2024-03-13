@@ -1,5 +1,5 @@
-#include "./tasks/globalConfig.h"
-#include "./tasks/utilities/params.h"
+#include "globalConfig.h"
+#include "utilities/params.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 

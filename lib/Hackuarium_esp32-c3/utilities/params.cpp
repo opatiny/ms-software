@@ -1,8 +1,8 @@
 #include "params.h"
 #include <ArduinoNvs.h>
-#include "./serialUtilities.h"
-#include "./toHex.h"
-#include "../globalConfig.h"
+#include "globalConfig.h"
+#include "serialUtilities.h"
+#include "toHex.h"
 
 #define INT_MAX_VALUE 32767
 #define INT_MIN_VALUE -32768

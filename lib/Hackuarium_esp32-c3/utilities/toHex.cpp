@@ -3,7 +3,7 @@
  * https://github.com/Hackuarium/esp32-c3/blob/7b421c03214e549868712c29feab7798132af6ba/lib/hack/toHex.cpp
  */
 
-#include "../globalConfig.h"
+#include "globalConfig.h"
 /* Functions to convert a number to hexadecimal */
 
 const char hex[] = "0123456789ABCDEF";

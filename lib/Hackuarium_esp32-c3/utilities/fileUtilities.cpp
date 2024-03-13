@@ -1,6 +1,6 @@
 #include <SPIFFS.h>
-#include "../globalConfig.h"
 #include "esp_spiffs.h"
+#include "globalConfig.h"
 #include "params.h"
 
 void printFSHelp(Print* output) {
