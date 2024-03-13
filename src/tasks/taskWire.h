@@ -1,7 +1,10 @@
 /**
+ * Thread allowing I2C communication with the follower devices on the bus of the
+ * microcontroller.
+ *
  * This script is widely based on the following script:
  * https://github.com/Hackuarium/esp32-c3/blob/7b421c03214e549868712c29feab7798132af6ba/lib/hack/taskWire.h
-*/
+ */
 
 #include "Arduino.h"
 

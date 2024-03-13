@@ -50,7 +50,7 @@ WiFi task:
 
 - copy the `taskWifi` file
 - using the default serial parameters
-- you can set the wifi name with wstheWifiName (SSID) and the wptheWifiPassword
+- you can set the wifi name with ws+theWifiName (SSID) and the wp+theWifiPassword
 - if the device doesn't try to connect after that, check that the NVS parameters are loaded in your main script!
 - if it's not done, add the following line to the top of the `setup()` function: `setupParameters();`
 
@@ -61,7 +61,7 @@ There is another task called `taskWifiAP` which allows the esp to appear as an a
 - to access all executables that are installed by the platformio extension
 - add this line to .zshrc : `export PATH=$PATH:~/.platformio/penv/bin`
 
-With this, we can for instance dump a folder in the esp memory.
+With this, we can for instance dump a folder in the microcontroller memory memory. An example of this can be found in the next section.
 
 ## Setting up webserver task
 

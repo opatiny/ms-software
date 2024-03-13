@@ -1,3 +1,11 @@
+/**
+ * Thread allowing to open an HTTP connection and hence send data continuously.
+ * This data can then be processed and displayed in the web page.
+ *
+ * This script is widely based on the following script:
+ * https://github.com/Hackuarium/esp32-c3/blob/467abdbf719402becc9ab3451b904a775f63663e/src/taskEventSender.cpp
+ */
+
 #include <WiFi.h>
 #include "./globalConfig.h"
 #include "./utilities/params.h"

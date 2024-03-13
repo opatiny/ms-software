@@ -1,3 +1,9 @@
+/**
+ * Thread to enable the connection to the wifi network.
+ *
+ * This script is widely based on the following script:
+ * https://github.com/Hackuarium/esp32-c3/blob/7b421c03214e549868712c29feab7798132af6ba/lib/hack/taskWifi.cpp
+ */
 #include <WiFi.h>
 #include "./utilities/params.h"
 

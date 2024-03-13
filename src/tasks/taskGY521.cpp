@@ -1,3 +1,10 @@
+/**
+ * Thread to communicate with the accelerometer.
+ *
+ * This script is widely based on the following script:
+ * https://github.com/Hackuarium/esp32-c3/blob/8ada83e8a572f8f5f3fa828a6459efc6a0985f04/lib/hack/taskGY521.cpp
+ */
+
 #include "config.h"
 
 #include <Adafruit_MPU6050.h>
