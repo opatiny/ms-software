@@ -1,4 +1,4 @@
-# Setting up prog environment on esp32-c3 on mac
+# Setting up prog environment on esp32-s3 on mac
 
 ## Linting / auto-formatting
 
@@ -53,6 +53,7 @@ WiFi task:
 - you can set the wifi name with ws+theWifiName (SSID) and the wp+theWifiPassword
 - if the device doesn't try to connect after that, check that the NVS parameters are loaded in your main script!
 - if it's not done, add the following line to the top of the `setup()` function: `setupParameters();`
+- use `wi` to get wifi information
 
 There is another task called `taskWifiAP` which allows the esp to appear as an access point to which we can connect.
 
