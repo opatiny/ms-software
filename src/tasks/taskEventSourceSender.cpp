@@ -25,7 +25,7 @@ void TaskEventSourceSender(void* pvParameters) {
             getParameter(PARAM_ACCELERATION_Z), getParameter(PARAM_ROTATION_X),
             getParameter(PARAM_ROTATION_Y), getParameter(PARAM_ROTATION_Z));
     sendEventSource("accelerometer", tempString);
-    vTaskDelay(10);
+    vTaskDelay(50);
   }
 }
 

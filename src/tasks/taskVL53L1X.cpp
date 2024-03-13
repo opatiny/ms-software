@@ -58,6 +58,11 @@ void TaskVL53L1X(void* pvParameters) {
         return;
       }
       setParameter(PARAM_DISTANCE_FRONT, distance);
+      if (getParameter(PARAM_DEBUG) == 1) {
+        Serial.print(F("Distance: "));
+        Serial.print(distance);
+        Serial.println(" mm");
+      }
     }
   }
 }

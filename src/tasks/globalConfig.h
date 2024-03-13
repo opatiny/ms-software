@@ -8,7 +8,8 @@ extern SemaphoreHandle_t xSemaphoreWire;
 // distance sensors
 #define VL53_FRONT_ADRESS 0x29
 
-// serial parameters
+// SERIAL PARAMETERS
+
 #define MAX_PARAM 26
 extern int16_t parameters[MAX_PARAM];
 
@@ -23,8 +24,20 @@ extern int16_t parameters[MAX_PARAM];
 
 // distance sensors
 // distances are all in mm
-#define PARAM_DISTANCE_FRONT 6  // G
+#define PARAM_DISTANCE_LEFT 6         // G
+#define PARAM_DISTANCE_FRONT_LEFT 7   // H
+#define PARAM_DISTANCE_FRONT 8        // I
+#define PARAM_DISTANCE_FRONT_RIGHT 9  // J
+#define PARAM_DISTANCE_RIGHT 10       // K
 
+#define PARAM_OFFSET_FRONT 11        // L
+#define PARAM_OFFSET_FRONT_LEFT 12   // M
+#define PARAM_OFFSET_LEFT 13         // N
+#define PARAM_OFFSET_RIGHT 14        // O
+#define PARAM_OFFSET_FRONT_RIGHT 15  // P
+
+// other parameters
+#define PARAM_DEBUG 20      // U, 0 = no debug, 1 = debug
 #define PARAM_STATUS 21     // V
 #define PARAM_BATTERY 22    // W
 #define PARAM_CHARGING 23   // X

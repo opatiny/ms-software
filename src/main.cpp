@@ -18,7 +18,7 @@ void setup() {
   Serial.begin(115200);  // only for debug purpose
   setupParameters();
   taskSerial();
-  // taskWifi();
+  taskWifi();
   taskWebserver();
   taskWire();
   taskGY521();
