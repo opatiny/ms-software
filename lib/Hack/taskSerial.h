@@ -6,9 +6,10 @@
  */
 
 #include <Wire.h>
-#include "globalConfig.h"
-#include "taskWire.h"
-#include "utilities/params.h"
+
+#include "./globalConfig.h"
+#include "./taskWire.h"
+#include "./utilities/params.h"
 
 void printResult(char* data, Print* output);
 void processSpecificCommand(char* data, char* paramValue, Print* output);

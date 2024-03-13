@@ -4,8 +4,9 @@
  */
 
 #include <WiFi.h>
-#include "globalConfig.h"
-#include "params.h"
+
+#include "../globalConfig.h"
+#include "./params.h"
 
 char wifiTemp[40];
 

@@ -1,4 +1,5 @@
-#include "Arduino.h"
+#include <Arduino.h>
+
 void TaskBlink(void* pvParameters) {
   (void)pvParameters;
 
@@ -21,5 +22,5 @@ void taskBlink() {
                           NULL,
                           0,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
-                          NULL, 1); // 1 specifies the core
+                          NULL, 1);  // 1 specifies the core
 }

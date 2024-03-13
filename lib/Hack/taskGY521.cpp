@@ -9,7 +9,7 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-#include "utilities/params.h"
+#include "./utilities/params.h"
 
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);

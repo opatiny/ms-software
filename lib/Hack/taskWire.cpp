@@ -5,9 +5,9 @@
 
 #include <Wire.h>
 
-#include "globalConfig.h"
-#include "taskWire.h"
-#include "utilities/params.h"
+#include "./globalConfig.h"
+#include "./taskWire.h"
+#include "./utilities/params.h"
 
 #define WIRE_MAX_DEVICES 8
 byte numberI2CDevices = 0;

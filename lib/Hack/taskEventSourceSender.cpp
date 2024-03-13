@@ -7,8 +7,9 @@
  */
 
 #include <WiFi.h>
-#include "globalConfig.h"
-#include "utilities/params.h"
+
+#include "./globalConfig.h"
+#include "./utilities/params.h"
 
 void sendEventSource(char* event, char* data);
 

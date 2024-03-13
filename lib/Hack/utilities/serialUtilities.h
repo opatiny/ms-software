@@ -4,9 +4,8 @@
  */
 #pragma once
 
-#include "globalConfig.h"
-
-#include "wifiUtilities.h"
+#include "../globalConfig.h"
+#include "./wifiUtilities.h"
 
 void resetParameters();
 

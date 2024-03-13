@@ -7,9 +7,9 @@
 #include <SPIFFS.h>
 #include <StringStream.h>
 #include <WiFi.h>
-#include "config.h"
-#include "taskSerial.h"
-#include "utilities/serialUtilities.h"
+
+#include "./taskSerial.h"
+#include "./utilities/serialUtilities.h"
 
 AsyncWebServer server(80);
 AsyncEventSource events("/events");

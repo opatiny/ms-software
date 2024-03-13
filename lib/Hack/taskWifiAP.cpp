@@ -4,9 +4,9 @@
  */
 
 #include <WiFi.h>
-#include "utilities/params.h"
+#include <esp_wpa2.h>
 
-#include "esp_wpa2.h"
+#include "./utilities/params.h"
 
 char ssidAP[30];
 char passwordAP[30];

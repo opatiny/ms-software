@@ -1,6 +1,6 @@
 #pragma once
 
-#include "globalConfig.h"
+#include "../globalConfig.h"
 
 boolean setParameterBit(byte number, byte bitToSet);
 boolean clearParameterBit(byte number, byte bitToClear);

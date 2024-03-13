@@ -1,7 +1,9 @@
 #include <SPIFFS.h>
-#include "esp_spiffs.h"
-#include "globalConfig.h"
-#include "params.h"
+
+#include <esp_spiffs.h>
+
+#include "../globalConfig.h"
+#include "./params.h"
 
 void printFSHelp(Print* output) {
   output->println(F("(fd) Directory"));

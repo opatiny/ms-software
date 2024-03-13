@@ -6,7 +6,7 @@
  * https://github.com/Hackuarium/esp32-c3/blob/7b421c03214e549868712c29feab7798132af6ba/lib/hack/taskWire.h
  */
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 int wireReadInt(uint8_t address);
 
