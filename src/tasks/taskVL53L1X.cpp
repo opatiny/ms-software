@@ -1,5 +1,6 @@
 /**
- * Thread to handle the I2C communication with the five sensors.
+ * Thread to handle the I2C communication with the five VL53L1X distance
+ * sensors.
  */
 
 #include <Adafruit_Sensor.h>
@@ -8,58 +9,72 @@
 
 #include <utilities/params.h>
 
+#define TIMING_BUDGET 140  // ms
+
 void TaskVL53L1X(void* pvParameters) {
   vTaskDelay(1000);
+  int addresses[] = {VL53_LEFT_ADDRESS, VL53_FRONT_LEFT_ADDRESS,
+                     VL53_FRONT_ADDRESS, VL53_FRONT_RIGHT_ADDRESS,
+                     VL53_RIGHT_ADDRESS};
 
-#define IRQ_PIN 2
-#define XSHUT_PIN 3
-  Adafruit_VL53L1X vl53 = Adafruit_VL53L1X(XSHUT_PIN, IRQ_PIN);
+  int parameters[] = {PARAM_DISTANCE_LEFT, PARAM_DISTANCE_FRONT_LEFT,
+                      PARAM_DISTANCE_FRONT, PARAM_DISTANCE_FRONT_RIGHT,
+                      PARAM_DISTANCE_RIGHT};
 
+  Adafruit_VL53L1X sensors[5];
+
+  // Create a VL53L1X sensor object
   Wire.begin(SDA, SCL);
 
-  if (!vl53.begin(VL53_FRONT_ADRESS, &Wire)) {
-    Serial.print(F("Error on init of VL sensor: "));
-    Serial.println(vl53.vl_status);
-    while (1)
-      delay(10);
+  for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+    sensors[i] = Adafruit_VL53L1X();
   }
 
-  Serial.println(F("VL53L1X sensor OK!"));
-
-  Serial.print(F("Sensor ID: 0x"));
-  Serial.println(vl53.sensorID(), HEX);
-
-  if (!vl53.startRanging()) {
-    Serial.print(F("Couldn't start ranging: "));
-    Serial.println(vl53.vl_status);
-    while (1)
-      delay(10);
+  for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+    if (!sensors[i].begin(addresses[i], &Wire)) {
+      Serial.print("Error on init of distance sensor ");
+      Serial.print(i);
+      Serial.println(sensors[i].vl_status);
+      while (1)
+        delay(10);
+    }
+    if (PARAM_DEBUG) {
+      Serial.print("Distance sensor ");
+      Serial.print(i);
+      Serial.println(" OK!");
+    }
+    if (!sensors[i].startRanging()) {
+      Serial.print(F("Couldn't start ranging on sensor "));
+      Serial.println(i);
+      Serial.println(sensors[i].vl_status);
+      while (1)
+        delay(10);
+    }
+    sensors[i].setTimingBudget(TIMING_BUDGET);
   }
-
-  Serial.println(F("Ranging started"));
-
-  // Valid timing budgets: 15, 20, 33, 50, 100, 200 and 500ms!
-  vl53.setTimingBudget(50);
-  Serial.print(F("Timing budget (ms): "));
-  Serial.println(vl53.getTimingBudget());
 
   int16_t distance;
   while (true) {
     vTaskDelay(50);
-    if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
-      distance = vl53.distance();  // read distance in mm
-      xSemaphoreGive(xSemaphoreWire);
-      if (distance == -1) {
-        // something went wrong!
-        Serial.print(F("Couldn't get distance: "));
-        Serial.println(vl53.vl_status);
-        return;
-      }
-      setParameter(PARAM_DISTANCE_FRONT, distance);
-      if (getParameter(PARAM_DEBUG) == 1) {
-        Serial.print(F("Distance: "));
-        Serial.print(distance);
-        Serial.println(" mm");
+    for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+      if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
+        distance = sensors[i].distance();  // read distance in mm
+        xSemaphoreGive(xSemaphoreWire);
+        if (distance == -1) {
+          // something went wrong!
+          Serial.print(F("Couldn't get distance on sensor "));
+          Serial.print(i);
+          Serial.println(sensors[i].vl_status);
+          return;
+        }
+        setParameter(parameters[i], distance);
+        if (getParameter(PARAM_DEBUG) == 1) {
+          Serial.print(F("Distance"));
+          Serial.print(i);
+          Serial.print(F(": "));
+          Serial.print(distance);
+          Serial.println(" mm");
+        }
       }
     }
   }
