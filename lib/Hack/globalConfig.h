@@ -5,14 +5,6 @@
 // I2C
 extern SemaphoreHandle_t xSemaphoreWire;
 #define IMU_ADDRESS 0x68
-// distance sensors
-#define NB_DISTANCE_SENSORS 2
-
-#define VL53_LEFT_ADDRESS 0x29
-#define VL53_FRONT_LEFT_ADDRESS 0x30
-#define VL53_FRONT_ADDRESS 0x31
-#define VL53_FRONT_RIGHT_ADDRESS 0x32
-#define VL53_RIGHT_ADDRESS 0x33
 
 // SERIAL PARAMETERS
 #define MAX_PARAM 26
@@ -50,3 +42,11 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_ERROR 25      // Z
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0
+
+// debug
+
+enum DebugMode {
+  NO_DEBUG = 0,
+  DEBUG_DISTANCE = 1,
+  DEBUG_IMU = 2,
+};

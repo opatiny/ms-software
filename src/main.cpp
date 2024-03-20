@@ -1,3 +1,5 @@
+#include <Wire.h>
+
 #include <globalConfig.h>
 #include <utilities/params.h>
 
@@ -16,12 +18,13 @@ void taskEventSourceSender();
 void setup() {
   xSemaphoreGive(xSemaphoreWire);
   Serial.begin(115200);  // only for debug purpose
+
   setupParameters();
   taskSerial();
   taskWifi();
   taskWebserver();
   taskWire();
-  taskGY521();
+  // taskGY521();
   taskVL53L1X();
   taskEventSourceSender();
   taskBlink();
