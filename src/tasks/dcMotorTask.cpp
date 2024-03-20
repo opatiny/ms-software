@@ -12,15 +12,19 @@ void TaskDcMotor(void* pvParameters) {
   pinMode(MOTOR_LEFT_PIN1, OUTPUT);
   pinMode(MOTOR_LEFT_PIN2, OUTPUT);
 
+  // initally stop the motor
+  analogWrite(MOTOR_LEFT_PIN1, 0);
+  analogWrite(MOTOR_LEFT_PIN2, 0);
+
   while (true) {
-    analogWrite(MOTOR_LEFT_PIN1, 0);
-    analogWrite(MOTOR_LEFT_PIN2, 0);
-    Serial.println("Motor left: OFF");
-    vTaskDelay(1000);
-    analogWrite(MOTOR_LEFT_PIN1, 255);
-    analogWrite(MOTOR_LEFT_PIN2, 0);
-    Serial.println("Motor left: ON");
-    vTaskDelay(1000);
+    for (int i = 0; i < 255; i++) {
+      analogWrite(MOTOR_LEFT_PIN1, i);
+      vTaskDelay(10);
+    }
+    for (int i = 255; i > 0; i--) {
+      analogWrite(MOTOR_LEFT_PIN1, i);
+      vTaskDelay(10);
+    }
   }
 }
 
