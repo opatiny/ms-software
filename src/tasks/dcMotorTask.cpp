@@ -25,6 +25,14 @@ void TaskDcMotor(void* pvParameters) {
       analogWrite(MOTOR_LEFT_PIN1, i);
       vTaskDelay(10);
     }
+    for (int i = 0; i < 255; i++) {
+      analogWrite(MOTOR_LEFT_PIN2, i);
+      vTaskDelay(10);
+    }
+    for (int i = 255; i > 0; i--) {
+      analogWrite(MOTOR_LEFT_PIN2, i);
+      vTaskDelay(10);
+    }
   }
 }
 

@@ -26,8 +26,8 @@ void setup() {
   taskWebserver();
   taskWire();
   // taskGY521();
-  // taskVL53L1X();
-  taskDcMotor();
+  taskVL53L1X();
+  // taskDcMotor();
   taskEventSourceSender();
   taskBlink();
 }

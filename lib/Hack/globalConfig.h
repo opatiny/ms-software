@@ -19,8 +19,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_ROTATION_Y 4      // E
 #define PARAM_ROTATION_Z 5      // F
 
-// distance sensors
-// distances are all in mm
+// distance sensors parameters (distances are all in mm)
 #define PARAM_DISTANCE_LEFT 6         // G
 #define PARAM_DISTANCE_FRONT_LEFT 7   // H
 #define PARAM_DISTANCE_FRONT 8        // I
@@ -32,6 +31,10 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_OFFSET_LEFT 13         // N
 #define PARAM_OFFSET_RIGHT 14        // O
 #define PARAM_OFFSET_FRONT_RIGHT 15  // P
+
+// motors parameters
+#define PARAM_MOTOR_LEFT_SPEED 16   // Q
+#define PARAM_MOTOR_RIGHT_SPEED 17  // R
 
 // other parameters
 #define PARAM_DEBUG 20      // U, 0 = no debug, 1 = debug
