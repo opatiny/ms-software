@@ -7,7 +7,7 @@ Pwm buzzer = Pwm();  // constructor
 void TaskBuzzer(void* pvParameters) {
   buzzer.attach(BUZZER_PIN);
 
-  setParameter(PARAM_BUZZER, BUZZER_SINGLE_NOTE);
+  setParameter(PARAM_BUZZER, BUZZER_BOOT);
 
   int repetitionsAlarm = 0;
   while (true) {
@@ -43,7 +43,7 @@ void TaskBuzzer(void* pvParameters) {
         break;
       case BUZZER_BOOT:
         for (int i = 0; i < nbNotesBoot; i++) {
-          buzzer.note(BUZZER_PIN, bootNotes[i], bootOctaves[i], 10, 0);
+          buzzer.note(BUZZER_PIN, bootNotes[i], 5, bootNotesLengths[i], 0);
           vTaskDelay(100);
         }
         setParameter(PARAM_BUZZER, BUZZER_OFF);
@@ -51,7 +51,6 @@ void TaskBuzzer(void* pvParameters) {
       default:
         Serial.println("Unknown buzzer mode");
         setParameter(PARAM_BUZZER, BUZZER_OFF);
-        vTaskDelay(10);
         break;
     }
   }
