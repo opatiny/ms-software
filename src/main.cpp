@@ -15,6 +15,7 @@ void taskGY521();
 void taskVL53L1X();
 void taskEventSourceSender();
 void taskDcMotor();
+void taskBuzzer();
 
 void setup() {
   xSemaphoreGive(xSemaphoreWire);
@@ -26,8 +27,9 @@ void setup() {
   taskWebserver();
   taskWire();
   // taskGY521();
-  taskVL53L1X();
+  // taskVL53L1X();
   // taskDcMotor();
+  taskBuzzer();
   taskEventSourceSender();
   taskBlink();
 }

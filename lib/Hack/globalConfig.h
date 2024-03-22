@@ -36,8 +36,12 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_MOTOR_LEFT_SPEED 16   // Q
 #define PARAM_MOTOR_RIGHT_SPEED 17  // R
 
+// debug
+#define PARAM_BATTERY_VOLTAGE 18  // S
+#define PARAM_BUZZER 19           // T
+#define PARAM_DEBUG 20      // U, 0 = no debug, 1 = debug (serial)
+
 // other parameters
-#define PARAM_DEBUG 20      // U, 0 = no debug, 1 = debug
 #define PARAM_STATUS 21     // V
 #define PARAM_BATTERY 22    // W
 #define PARAM_CHARGING 23   // X
