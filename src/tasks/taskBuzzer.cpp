@@ -4,20 +4,35 @@
 
 Pwm buzzer = Pwm();  // constructor
 
+#define NB_REPETITIONS_ALARM 3
+
 void TaskBuzzer(void* pvParameters) {
   buzzer.attach(BUZZER_PIN);
 
   setParameter(PARAM_BUZZER, 1);
+  int repetitions = 0;
 
   while (true) {
-    if (getParameter(PARAM_BUZZER)) {
-      buzzer.note(BUZZER_PIN, NOTE_C, 4, 10, 0);
-      vTaskDelay(100);
-      buzzer.note(BUZZER_PIN, NOTE_D, 4, 10, 0);
-      vTaskDelay(100);
+    switch (getParameter(PARAM_BUZZER)) {
+      case BUZZER_ALARM:
+        buzzer.note(BUZZER_PIN, NOTE_C, 4, 10, 0);
+        vTaskDelay(100);
+        buzzer.note(BUZZER_PIN, NOTE_D, 4, 10, 0);
+        vTaskDelay(100);
+        repetitions++;
 
-    } else {
-      buzzer.note(BUZZER_PIN, NOTE_E, 4, 0, 0);
+        Serial.println(repetitions);
+        if (repetitions == NB_REPETITIONS_ALARM) {
+          setParameter(PARAM_BUZZER, BUZZER_OFF);
+          repetitions = 0;
+        }
+
+        break;
+      case BUZZER_OFF:
+      default:
+        buzzer.note(BUZZER_PIN, NOTE_E, 4, 0, 0);
+        vTaskDelay(100);
+        break;
     }
   }
 }
@@ -36,6 +51,8 @@ void taskBuzzer() {
 void buzzerModes(Pwm buzzer) {
   switch (getParameter(PARAM_BUZZER)) {
     case BUZZER_OFF:
+      buzzer.note(BUZZER_PIN, NOTE_E, 4, 0, 0);
+      vTaskDelay(100);
       break;
     case BUZZER_SINGLE_NOTE:
       Serial.println("Buzzer single note");
