@@ -7,9 +7,8 @@ Pwm buzzer = Pwm();  // constructor
 void TaskBuzzer(void* pvParameters) {
   buzzer.attach(BUZZER_PIN);
 
-  setParameter(PARAM_BUZZER, BUZZER_BOOT);
-
   int repetitionsAlarm = 0;
+  Serial.print(getParameter(PARAM_BUZZER));
   while (true) {
     switch (getParameter(PARAM_BUZZER)) {
       case BUZZER_OFF:
@@ -62,7 +61,7 @@ void taskBuzzer() {
                           4096,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
-                          2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
+                          1,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 1);
 }

@@ -6,12 +6,14 @@
 
 #define NB_REPETITIONS_ALARM 4
 
+#define BUZZER_DEFAULT_MODE BUZZER_OFF
+
 enum BuzzerModes {
-  BUZZER_OFF = 0,
-  BUZZER_SINGLE_NOTE = 1,
-  BUZZER_ALARM = 2,
-  BUZZER_SCALE = 3,
-  BUZZER_BOOT = 4
+  BUZZER_OFF,          // 0
+  BUZZER_SINGLE_NOTE,  // 1
+  BUZZER_ALARM,        // 2
+  BUZZER_SCALE,        // 3
+  BUZZER_BOOT          // 4
 };
 
 const int nbNotesScale = 8;

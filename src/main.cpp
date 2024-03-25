@@ -3,6 +3,8 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
+#include "./tasks/taskBuzzer.h"
+
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 
 // functions prototypes
@@ -18,11 +20,17 @@ void taskDcMotor();
 void taskBuzzer();
 
 void setup() {
-  xSemaphoreGive(xSemaphoreWire);
+  // start serial communication
   Serial.begin(SERIAL_SPEED);  // only for debug purpose
 
+  // start I2C communication
+  xSemaphoreGive(xSemaphoreWire);
   Wire.begin(SDA, SCL);
   Wire.setClock(I2C_SPEED);
+
+  // set default serial parameters values
+  setParameter(PARAM_DEBUG, DEBUG_DEFAULT_MODE);
+  setParameter(PARAM_BUZZER, BUZZER_DEFAULT_MODE);
 
   setupParameters();
   taskSerial();
@@ -32,7 +40,7 @@ void setup() {
   // taskGY521();
   taskVL53L1X();
   // taskDcMotor();
-  // taskBuzzer();
+  taskBuzzer();
   taskEventSourceSender();
   taskBlink();
 }

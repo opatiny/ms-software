@@ -13,6 +13,10 @@ enum DebugMode {
   DEBUG_IMU = 2,
 };
 
+#define DEBUG_DEFAULT_MODE NO_DEBUG
+
+// default parameters values
+
 // SERIAL PARAMETERS
 #define SERIAL_SPEED 115200
 

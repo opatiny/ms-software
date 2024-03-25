@@ -29,7 +29,6 @@ int xshutPins[] = {XSHUT_PIN_LEFT, XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT,
 VL53L1X sensors[NB_DISTANCE_SENSORS];
 
 void TaskVL53L1X(void* pvParameters) {
-  setParameter(PARAM_DEBUG, DEBUG_DISTANCE);
   Serial.print("Debug value: ");
   Serial.println(getParameter(PARAM_DEBUG));
 
