@@ -19,7 +19,10 @@ void taskBuzzer();
 
 void setup() {
   xSemaphoreGive(xSemaphoreWire);
-  Serial.begin(115200);  // only for debug purpose
+  Serial.begin(SERIAL_SPEED);  // only for debug purpose
+
+  Wire.begin(SDA, SCL);
+  Wire.setClock(I2C_SPEED);
 
   setupParameters();
   taskSerial();
@@ -27,9 +30,9 @@ void setup() {
   taskWebserver();
   taskWire();
   // taskGY521();
-  // taskVL53L1X();
+  taskVL53L1X();
   // taskDcMotor();
-  taskBuzzer();
+  // taskBuzzer();
   taskEventSourceSender();
   taskBlink();
 }

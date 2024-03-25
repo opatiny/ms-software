@@ -34,7 +34,6 @@ void TaskVL53L1X(void* pvParameters) {
   Serial.println(getParameter(PARAM_DEBUG));
 
   vTaskDelay(1000);
-  Wire.begin(SDA, SCL);
 
   initialiseVL53L1X(sensors, xshutPins, addresses);
 
@@ -90,6 +89,7 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
   for (uint8_t i = 0; i < NB_DISTANCE_SENSORS; i++) {
     pinMode(xshutPins[i], INPUT);
     vTaskDelay(10);
+    Serial.print("Initial address: ");
     Serial.println(sensors[i].getAddress());
 
     sensors[i].setTimeout(500);
@@ -98,12 +98,15 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
       Serial.println(i);
     }
 
-    Serial.print("New address: ");
+    Serial.print("Desired new address: ");
     Serial.println(addresses[i]);
 
     if (sensors[i].getAddress() != addresses[i]) {
       sensors[i].setAddress(addresses[i]);
     }
+
+    Serial.print("Actual new address: ");
+    Serial.println(sensors[i].getAddress());
 
     // start ranging and wait for TIMING_BUDGET ms between measurements.
     sensors[i].startContinuous(TIMING_BUDGET);

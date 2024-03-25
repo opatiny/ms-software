@@ -4,9 +4,18 @@
 
 // I2C
 extern SemaphoreHandle_t xSemaphoreWire;
-#define IMU_ADDRESS 0x68
+#define I2C_SPEED 400000
+
+// debug
+enum DebugMode {
+  NO_DEBUG = 0,
+  DEBUG_DISTANCE = 1,
+  DEBUG_IMU = 2,
+};
 
 // SERIAL PARAMETERS
+#define SERIAL_SPEED 115200
+
 #define MAX_PARAM 26
 extern int16_t parameters[MAX_PARAM];
 
@@ -39,7 +48,7 @@ extern int16_t parameters[MAX_PARAM];
 // debug
 #define PARAM_BATTERY_VOLTAGE 18  // S
 #define PARAM_BUZZER 19           // T
-#define PARAM_DEBUG 20      // U, 0 = no debug, 1 = debug (serial)
+#define PARAM_DEBUG 20            // U, 0 = no debug, 1 = debug (serial)
 
 // other parameters
 #define PARAM_STATUS 21     // V
@@ -49,11 +58,3 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_ERROR 25      // Z
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0
-
-// debug
-
-enum DebugMode {
-  NO_DEBUG = 0,
-  DEBUG_DISTANCE = 1,
-  DEBUG_IMU = 2,
-};

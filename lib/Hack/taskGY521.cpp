@@ -11,6 +11,8 @@
 
 #include "./utilities/params.h"
 
+#define IMU_ADDRESS 0x68
+
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);
   Wire.begin(SDA, SCL);
