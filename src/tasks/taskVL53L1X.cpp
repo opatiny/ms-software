@@ -19,9 +19,9 @@ int addresses[] = {VL53_LEFT_ADDRESS, VL53_FRONT_LEFT_ADDRESS,
                    VL53_FRONT_ADDRESS, VL53_FRONT_RIGHT_ADDRESS,
                    VL53_RIGHT_ADDRESS};
 
-int distances[] = {PARAM_DISTANCE_LEFT, PARAM_DISTANCE_FRONT_LEFT,
-                   PARAM_DISTANCE_FRONT, PARAM_DISTANCE_FRONT_RIGHT,
-                   PARAM_DISTANCE_RIGHT};
+int distancesParameters[] = {PARAM_DISTANCE_LEFT, PARAM_DISTANCE_FRONT_LEFT,
+                             PARAM_DISTANCE_FRONT, PARAM_DISTANCE_FRONT_RIGHT,
+                             PARAM_DISTANCE_RIGHT};
 
 int xshutPins[] = {XSHUT_PIN_LEFT, XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT,
                    XSHUT_PIN_FRONT_RIGHT, XSHUT_PIN_RIGHT};
@@ -41,29 +41,27 @@ void TaskVL53L1X(void* pvParameters) {
     Serial.println(F("VL53L1X sensors initialized"));
   }
 
+  int16_t distance;
   while (true) {
-    vTaskDelay(1000);
-  }
+    vTaskDelay(50);
+    for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+      if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
+        distance = sensors[i].read();  // read distance in mm
+        xSemaphoreGive(xSemaphoreWire);
 
-  /*   int16_t distance;
-    while (true) {
-      vTaskDelay(50);
-      for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-        if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
-          distance = sensors[i].read();  // read distance in mm
-          xSemaphoreGive(xSemaphoreWire);
-
-          setParameter(distances[i], distance);
-          if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
-            Serial.print(F("Distance"));
-            Serial.print(i);
-            Serial.print(F(": "));
-            Serial.print(distance);
-            Serial.println(" mm");
-          }
-        }
+        setParameter(distancesParameters[i], distance);
       }
-    } */
+    }
+    if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
+      for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+        Serial.print(i);
+        Serial.print(F(": "));
+        Serial.print(getParameter(distancesParameters[i]));
+        Serial.print(F("\t"));
+      }
+      Serial.println();
+    }
+  }
 }
 
 void taskVL53L1X() {
@@ -76,6 +74,10 @@ void taskVL53L1X() {
                           NULL, 1);
 }
 
+/**
+ * Initialize all VL53L1X sensors by changing their I2C addresses.
+
+*/
 void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
                        int addresses[]) {
@@ -89,8 +91,6 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
   for (uint8_t i = 0; i < NB_DISTANCE_SENSORS; i++) {
     pinMode(xshutPins[i], INPUT);
     vTaskDelay(10);
-    Serial.print("Initial address: ");
-    Serial.println(sensors[i].getAddress());
 
     sensors[i].setTimeout(500);
     if (!sensors[i].init()) {
@@ -98,16 +98,18 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
       Serial.println(i);
     }
 
-    Serial.print("Desired new address: ");
-    Serial.println(addresses[i]);
-
-    if (sensors[i].getAddress() != addresses[i]) {
-      sensors[i].setAddress(addresses[i]);
+    if (addresses[i] == VL53_DEFAULT_ADDRESS) {
+      Serial.println("New adresses should be different from the default one");
     }
 
-    Serial.print("Actual new address: ");
-    Serial.println(sensors[i].getAddress());
+    sensors[i].setAddress(addresses[i]);
 
+    if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
+      Serial.print("New distance sensor ");
+      Serial.print(i);
+      Serial.print(" address: ");
+      Serial.println(sensors[i].getAddress());
+    }
     // start ranging and wait for TIMING_BUDGET ms between measurements.
     sensors[i].startContinuous(TIMING_BUDGET);
   }

@@ -17,6 +17,7 @@
 #define XSHUT_PIN_RIGHT 0
 
 #define TIMING_BUDGET 140  // ms
+#define VL53_DEFAULT_ADDRESS 0x29
 
 // prototypes
 void taskVL53L1X();
