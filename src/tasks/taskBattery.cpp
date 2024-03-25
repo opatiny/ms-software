@@ -5,13 +5,16 @@
 #include "./taskBattery.h"
 
 void TaskBattery(void* pvParameters) {
-  (void)pvParameters;
-
   pinMode(BATTERY_PIN, INPUT);
 
   while (true) {
-    int measurementVoltage = analogReadMilliVolts(BATTERY_PIN);
-    int batteryLevel = VBAT(measurementVoltage);
+    int measuredVoltage = analogReadMilliVolts(BATTERY_PIN);
+    int batteryLevel = measuredVoltage * (BATTERY_R1 + BATTERY_R2) / BATTERY_R2;
+    if (PARAM_DEBUG == DEBUG_BATTERY) {
+      Serial.print("Battery level: ");
+      Serial.print(batteryLevel);
+      Serial.println(" mV");
+    }
     setParameter(PARAM_BATTERY, batteryLevel);
     vTaskDelay(1000);
   }

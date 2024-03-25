@@ -15,7 +15,6 @@
 
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);
-  Wire.begin(SDA, SCL);
 
   Adafruit_MPU6050 mpu;
 

@@ -26,8 +26,8 @@ void setup() {
 
   // start I2C communication
   xSemaphoreGive(xSemaphoreWire);
-  Wire.begin(SDA, SCL);
-  Wire.setClock(I2C_SPEED);
+  // Wire.begin(SDA, SCL);
+  // Wire.setClock(I2C_SPEED);
 
   // set default serial parameters values
   setParameter(PARAM_DEBUG, DEBUG_DEFAULT_MODE);
@@ -41,7 +41,7 @@ void setup() {
   // taskGY521();
   // taskVL53L1X();
   // taskDcMotor();
-  taskBuzzer();
+  // taskBuzzer();
   taskBattery();
   taskEventSourceSender();
   taskBlink();
