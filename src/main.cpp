@@ -3,6 +3,7 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
+#include "./tasks/taskBattery.h"
 #include "./tasks/taskBuzzer.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
@@ -38,9 +39,10 @@ void setup() {
   taskWebserver();
   taskWire();
   // taskGY521();
-  taskVL53L1X();
+  // taskVL53L1X();
   // taskDcMotor();
   taskBuzzer();
+  taskBattery();
   taskEventSourceSender();
   taskBlink();
 }
