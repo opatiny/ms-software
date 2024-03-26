@@ -9,7 +9,7 @@ extern SemaphoreHandle_t xSemaphoreWire;
 // debug
 enum DebugMode { NO_DEBUG, DEBUG_DISTANCE, DEBUG_IMU, DEBUG_BATTERY };
 
-#define DEBUG_DEFAULT_MODE DEBUG_BATTERY
+#define DEBUG_BOOT_MODE DEBUG_BATTERY
 
 // default parameters values
 

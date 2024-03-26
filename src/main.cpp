@@ -30,8 +30,8 @@ void setup() {
   // Wire.setClock(I2C_SPEED);
 
   // set default serial parameters values
-  setParameter(PARAM_DEBUG, DEBUG_DEFAULT_MODE);
-  setParameter(PARAM_BUZZER, BUZZER_DEFAULT_MODE);
+  setParameter(PARAM_DEBUG, DEBUG_BOOT_MODE);
+  setParameter(PARAM_BUZZER, BUZZER_BOOT_MODE);
 
   setupParameters();
   taskSerial();
