@@ -40,7 +40,7 @@ void setup() {
   taskWire();
   // taskGY521();
   // taskVL53L1X();
-  // taskDcMotor();
+  taskDcMotor();
   // taskBuzzer();
   taskBattery();
   taskEventSourceSender();

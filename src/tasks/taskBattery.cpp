@@ -10,8 +10,8 @@ void TaskBattery(void* pvParameters) {
     int measuredVoltage = analogRead(BATTERY_PIN);
     int batteryLevel = measuredVoltage * (BATTERY_R1 + BATTERY_R2) / BATTERY_R2;
     if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY) {
-      Serial.print("Battery level: ");
-      Serial.print(batteryLevel);
+      Serial.print("Battery voltage: ");
+      Serial.print(batteryLevel / 1000.0, 2);
       Serial.println(" V");
     }
     setParameter(PARAM_BATTERY, batteryLevel);
