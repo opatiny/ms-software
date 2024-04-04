@@ -7,9 +7,13 @@ extern SemaphoreHandle_t xSemaphoreWire;
 #define I2C_SPEED 400000
 
 // debug
-enum DebugMode { NO_DEBUG, DEBUG_DISTANCE, DEBUG_IMU, DEBUG_BATTERY };
-
-#define DEBUG_BOOT_MODE DEBUG_BATTERY
+enum DebugMode {
+  NO_DEBUG,
+  DEBUG_DISTANCE,
+  DEBUG_IMU,
+  DEBUG_BATTERY,
+  DEBUG_ENCODERS
+};
 
 // default parameters values
 

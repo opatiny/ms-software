@@ -5,6 +5,7 @@
 
 #include "./tasks/taskBattery.h"
 #include "./tasks/taskBuzzer.h"
+#include "./tasks/taskEncoders.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 
@@ -29,8 +30,9 @@ void setup() {
   // Wire.begin(SDA, SCL);
   // Wire.setClock(I2C_SPEED);
 
-  // set default serial parameters values
-  setParameter(PARAM_DEBUG, DEBUG_BOOT_MODE);
+  // set default serial parameters values in case of reboot
+  // todo: this doesn't work -> setAndSave?
+  setParameter(PARAM_DEBUG, DEBUG_ENCODERS);
   setParameter(PARAM_BUZZER, BUZZER_BOOT_MODE);
 
   setupParameters();
@@ -40,8 +42,9 @@ void setup() {
   taskWire();
   // taskGY521();
   // taskVL53L1X();
-  taskDcMotor();
+  // taskDcMotor();
   // taskBuzzer();
+  taskEncoders();
   taskBattery();
   taskEventSourceSender();
   taskBlink();
