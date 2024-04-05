@@ -90,3 +90,10 @@ There is a way to update files and code over the air with the OTA (over the air 
 - It is a task that allows to open an HTTP connection to the device and hence regularly update some data without closing the connection every time (the device can upload variables every x seconds).
 - copy the `taskEventSource` file
 - we added the `events.html` page that currently shows the accelerometer data
+
+## Battery votage task
+
+- we want to read an analog voltage on a pin
+- we create voltage divider on the battery in order to have voltage that won't exceed max acceptable voltage (around 1.1 V)  
+   https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32s3/api-reference/peripherals/adc.html
+  use analogReadMilis

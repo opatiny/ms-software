@@ -5,6 +5,7 @@
 
 #include "./tasks/taskBattery.h"
 #include "./tasks/taskBuzzer.h"
+#include "./tasks/taskDcMotor.h"
 #include "./tasks/taskEncoders.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
@@ -18,8 +19,6 @@ void taskWire();
 void taskGY521();
 void taskVL53L1X();
 void taskEventSourceSender();
-void taskDcMotor();
-void taskBuzzer();
 
 void setup() {
   // start serial communication
@@ -42,9 +41,9 @@ void setup() {
   taskWire();
   // taskGY521();
   // taskVL53L1X();
-  // taskDcMotor();
+  taskDcMotor();
   // taskBuzzer();
-  taskEncoders();
+  // taskEncoders();
   taskBattery();
   taskEventSourceSender();
   taskBlink();

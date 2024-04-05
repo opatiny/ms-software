@@ -25,4 +25,4 @@ const int nbNotesBoot = 3;
 const note_t bootNotes[nbNotesBoot] = {NOTE_C, NOTE_E, NOTE_G};
 const int bootNotesLengths[nbNotesBoot] = {50, 50, 100};
 
-void TaskBuzzer();
+void taskBuzzer();

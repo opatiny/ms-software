@@ -8,11 +8,12 @@ extern SemaphoreHandle_t xSemaphoreWire;
 
 // debug
 enum DebugMode {
-  NO_DEBUG,
-  DEBUG_DISTANCE,
-  DEBUG_IMU,
-  DEBUG_BATTERY,
-  DEBUG_ENCODERS
+  NO_DEBUG,                // 0
+  DEBUG_DISTANCE,          // 1
+  DEBUG_IMU,               // 2
+  DEBUG_BATTERY,           // 3
+  DEBUG_BATTERY_LOG_DATA,  // 4
+  DEBUG_ENCODERS           // 5
 };
 
 // default parameters values
@@ -20,7 +21,7 @@ enum DebugMode {
 // SERIAL PARAMETERS
 #define SERIAL_SPEED 115200
 
-#define MAX_PARAM 26
+#define MAX_PARAM 52
 extern int16_t parameters[MAX_PARAM];
 
 // IMU parameteers
@@ -45,10 +46,6 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_OFFSET_RIGHT 14        // O
 #define PARAM_OFFSET_FRONT_RIGHT 15  // P
 
-// motors parameters
-#define PARAM_MOTOR_LEFT_SPEED 16   // Q
-#define PARAM_MOTOR_RIGHT_SPEED 17  // R
-
 // debug
 #define PARAM_BATTERY_VOLTAGE 18  // S
 #define PARAM_BUZZER 19           // T
@@ -60,5 +57,11 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_CHARGING 23   // X
 #define PARAM_WIFI_RSSI 24  // Y
 #define PARAM_ERROR 25      // Z
+
+// motors parameters
+#define PARAM_MOTOR_LEFT_SPEED 26   // AA
+#define PARAM_MOTOR_RIGHT_SPEED 27  // AB
+#define PARAM_MOTOR_LEFT_MODE 28    // AC
+#define PARAM_MOTOR_RIGHT_MODE 29   // AD
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0
