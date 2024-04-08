@@ -7,16 +7,17 @@
 
 #include "./taskEncoders.h"
 
-void counterRoutine(int parameterPin, int directionPin);
-
-void leftCounter();
-void rightCounter();
+void counterRoutine(int parameterPin, int interruptPin, int directionPin);
+void leftCounterPin1();
+void leftCounterPin2();
 
 void TaskEncoders(void* pvParameters) {
-  pinMode(LEFT_ENCODER_COUNTER_PIN, INPUT_PULLUP);
-  pinMode(LEFT_ENCODER_DIRECTION_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_COUNTER_PIN), leftCounter,
-                  RISING);
+  pinMode(LEFT_ENCODER_PIN2, INPUT);
+  pinMode(LEFT_ENCODER_PIN1, INPUT);
+  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
+                  CHANGE);
+  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN1), leftCounterPin1,
+                  CHANGE);
 
   while (true) {
     vTaskDelay(200);
@@ -35,21 +36,39 @@ void taskEncoders() {
                           NULL, 1);
 }
 
-void leftCounter() {
-  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_DIRECTION_PIN);
+void leftCounterPin1() {
+  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2);
 }
 
-void rightCounter() {
-  counterRoutine(PARAM_ENCODER_RIGHT, RIGHT_ENCODER_DIRECTION_PIN);
+void leftCounterPin2() {
+  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1);
 }
 
-void counterRoutine(int parameterPin, int directionPin) {
+/**
+ * Interrupt routine to count the encoder pulses.
+ * X4 encoding: we read changes on both pins (two interrupts).
+ */
+void counterRoutine(int parameterPin, int interruptPin, int directionPin) {
+  int interruptValue = digitalRead(interruptPin);
+  int directionValue = digitalRead(directionPin);
+
+  Serial.print("interruptValue: ");
+  Serial.println(interruptValue);
+  Serial.print("directionValue: ");
+  Serial.println(directionValue);
+
   int newValue = getParameter(parameterPin);
-
-  if (digitalRead(directionPin) == HIGH) {
-    newValue--;
+  if (interruptValue == HIGH) {
+    if (directionValue == HIGH) {
+      newValue++;
+    } else {
+      newValue--;
+    }
   } else {
-    newValue++;
+    if (directionValue == HIGH) {
+      newValue--;
+    } else {
+      newValue++;
+    }
   }
-  setParameter(parameterPin, newValue);
 }

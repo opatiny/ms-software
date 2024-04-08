@@ -62,21 +62,17 @@ void taskDcMotor() {
 }
 
 void rampUpDown(int pin1, int pin2, int speed) {
-  for (int i = 0; i < 255; i++) {
+  for (int i = 0; i < speed; i++) {
     analogWrite(pin1, i);
-    vTaskDelay(10);
   }
-  for (int i = 255; i > 0; i--) {
+  for (int i = speed; i > 0; i--) {
     analogWrite(pin1, i);
-    vTaskDelay(10);
   }
-  for (int i = 0; i < 255; i++) {
+  for (int i = 0; i < speed; i++) {
     analogWrite(pin2, i);
-    vTaskDelay(10);
   }
-  for (int i = 255; i > 0; i--) {
+  for (int i = speed; i > 0; i--) {
     analogWrite(pin2, i);
-    vTaskDelay(10);
   }
 }
 

@@ -43,7 +43,7 @@ void setup() {
   // taskVL53L1X();
   taskDcMotor();
   // taskBuzzer();
-  // taskEncoders();
+  taskEncoders();
   taskBattery();
   taskEventSourceSender();
   taskBlink();

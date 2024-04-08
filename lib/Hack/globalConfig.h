@@ -63,5 +63,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_MOTOR_RIGHT_SPEED 27  // AB
 #define PARAM_MOTOR_LEFT_MODE 28    // AC
 #define PARAM_MOTOR_RIGHT_MODE 29   // AD
+#define PARAM_ENCODER_LEFT 30       // AE
+#define PARAM_ENCODER_RIGHT 31      // AF
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0
