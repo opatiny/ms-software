@@ -16,7 +16,7 @@ void TaskEncoders(void* pvParameters) {
   pinMode(LEFT_ENCODER_COUNTER_PIN, INPUT_PULLUP);
   pinMode(LEFT_ENCODER_DIRECTION_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_COUNTER_PIN), leftCounter,
-                  FALLING);
+                  RISING);
 
   while (true) {
     vTaskDelay(1000);
