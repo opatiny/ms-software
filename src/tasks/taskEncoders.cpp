@@ -7,22 +7,21 @@
 
 #include "./taskEncoders.h"
 
-void counterRoutine();
+void counterRoutine(int parameterPin, int directionPin);
 
-int counterLeftPin1 = 0;
-int counterLeftPin2 = 0;
+void leftCounter();
+void rightCounter();
 
-int counter = 0;
 void TaskEncoders(void* pvParameters) {
-  pinMode(LEFT_ENCODER_PIN1, INPUT_PULLUP);
-  pinMode(LEFT_ENCODER_PIN2, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN1), counterRoutine,
-                  CHANGE);
+  pinMode(LEFT_ENCODER_COUNTER_PIN, INPUT_PULLUP);
+  pinMode(LEFT_ENCODER_DIRECTION_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_COUNTER_PIN), leftCounter,
+                  FALLING);
 
   while (true) {
     vTaskDelay(1000);
     if (parameters[PARAM_DEBUG] == DEBUG_ENCODERS)
-      Serial.println(counter);
+      Serial.println(getParameter(PARAM_ENCODER_LEFT));
   }
 }
 
@@ -36,6 +35,24 @@ void taskEncoders() {
                           NULL, 1);
 }
 
-void counterRoutine() {
-  counter++;
+void leftCounter() {
+  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_DIRECTION_PIN);
+}
+
+void rightCounter() {
+  counterRoutine(PARAM_ENCODER_RIGHT, RIGHT_ENCODER_DIRECTION_PIN);
+}
+
+void counterRoutine(int parameterPin, int directionPin) {
+  int newValue = getParameter(parameterPin);
+
+  Serial.print("Direction pin: ");
+  Serial.println(digitalRead(directionPin));
+
+  if (digitalRead(directionPin) == HIGH) {
+    newValue--;
+  } else {
+    newValue++;
+  }
+  setParameter(parameterPin, newValue);
 }
