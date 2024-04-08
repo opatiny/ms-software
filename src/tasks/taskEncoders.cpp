@@ -19,7 +19,7 @@ void TaskEncoders(void* pvParameters) {
                   RISING);
 
   while (true) {
-    vTaskDelay(1000);
+    vTaskDelay(200);
     if (parameters[PARAM_DEBUG] == DEBUG_ENCODERS)
       Serial.println(getParameter(PARAM_ENCODER_LEFT));
   }
@@ -45,9 +45,6 @@ void rightCounter() {
 
 void counterRoutine(int parameterPin, int directionPin) {
   int newValue = getParameter(parameterPin);
-
-  Serial.print("Direction pin: ");
-  Serial.println(digitalRead(directionPin));
 
   if (digitalRead(directionPin) == HIGH) {
     newValue--;
