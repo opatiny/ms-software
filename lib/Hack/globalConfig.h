@@ -16,8 +16,6 @@ enum DebugMode {
   DEBUG_ENCODERS           // 5
 };
 
-// default parameters values
-
 // SERIAL PARAMETERS
 #define SERIAL_SPEED 115200
 
@@ -65,5 +63,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_MOTOR_RIGHT_MODE 29   // AD
 #define PARAM_ENCODER_LEFT 30       // AE
 #define PARAM_ENCODER_RIGHT 31      // AF
+
+#define PARAM_BUTTON 32  // AG
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0

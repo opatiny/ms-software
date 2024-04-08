@@ -4,6 +4,7 @@
 #include <utilities/params.h>
 
 #include "./tasks/taskBattery.h"
+#include "./tasks/taskButton.h"
 #include "./tasks/taskBuzzer.h"
 #include "./tasks/taskDcMotor.h"
 #include "./tasks/taskEncoders.h"
@@ -41,10 +42,11 @@ void setup() {
   taskWire();
   // taskGY521();
   // taskVL53L1X();
-  taskDcMotor();
-  // taskBuzzer();
-  taskEncoders();
-  taskBattery();
+  // taskDcMotor();
+  taskBuzzer();
+  // taskEncoders();
+  // taskBattery();
+  taskButton();
   taskEventSourceSender();
   taskBlink();
 }
