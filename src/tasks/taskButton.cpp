@@ -44,14 +44,18 @@ void taskButton() {
 uint32_t previousTime = millis();
 
 void buttonRoutine() {
-  Serial.println("Button routine");
-
   uint32_t currentTime = millis();
   if (currentTime - previousTime > DEBOUNCE_TIME) {
     previousTime = currentTime;
     if (getParameter(PARAM_BUTTON) == BUTTON_PRESSED) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_BUTTON) {
+        Serial.println("Button released");
+      }
       setParameter(PARAM_BUTTON, BUTTON_RELEASED);
     } else if (getParameter(PARAM_BUTTON) == BUTTON_RELEASED) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_BUTTON) {
+        Serial.println("Button pressed");
+      }
       setParameter(PARAM_BUTTON, BUTTON_PRESSED);
     }
   }

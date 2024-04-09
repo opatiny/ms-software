@@ -31,9 +31,8 @@ void setup() {
   // Wire.setClock(I2C_SPEED);
 
   // set default serial parameters values in case of reboot
-  // todo: this doesn't work -> setAndSave?
-  setParameter(PARAM_DEBUG, DEBUG_ENCODERS);
-  setParameter(PARAM_BUZZER, BUZZER_BOOT_MODE);
+  // todo: this doesn't work -> setAndSave? doesn't work either
+  setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
 
   setupParameters();
   taskSerial();

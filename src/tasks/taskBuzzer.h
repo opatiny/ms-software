@@ -6,8 +6,6 @@
 
 #define NB_REPETITIONS_ALARM 4
 
-#define BUZZER_BOOT_MODE BUZZER_OFF
-
 enum BuzzerModes {
   BUZZER_OFF,          // 0
   BUZZER_SINGLE_NOTE,  // 1

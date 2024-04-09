@@ -8,7 +8,8 @@ void TaskBuzzer(void* pvParameters) {
   buzzer.attach(BUZZER_PIN);
 
   int repetitionsAlarm = 0;
-  Serial.print(getParameter(PARAM_BUZZER));
+  setAndSaveParameter(PARAM_BUZZER, BUZZER_OFF);
+
   while (true) {
     switch (getParameter(PARAM_BUZZER)) {
       case BUZZER_OFF:
