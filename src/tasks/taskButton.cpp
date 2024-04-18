@@ -45,6 +45,9 @@ void taskButton() {
 
 uint32_t previousTime = millis();
 
+/**
+ * Routine to check if the button has been pressed or released, with debouncing.
+ */
 void buttonRoutine() {
   uint32_t currentTime = millis();
   if (currentTime - previousTime > DEBOUNCE_TIME) {
@@ -64,6 +67,10 @@ void buttonRoutine() {
   }
 }
 
+/**
+ * Set flags that the button has been pressed so the information can be used in
+ * other tasks.
+ */
 void setButtonFlags() {
   distance_calibration_button_pressed = true;
 }
