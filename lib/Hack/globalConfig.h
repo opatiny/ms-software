@@ -65,6 +65,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_ENCODER_LEFT 30       // AE
 #define PARAM_ENCODER_RIGHT 31      // AF
 
-#define PARAM_BUTTON 32  // AG
+#define PARAM_BUTTON 32               // AG
+#define PARAM_DISTANCE_DEBUG_MODE 33  // AH
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0

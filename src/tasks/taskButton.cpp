@@ -4,10 +4,12 @@
 #include <utilities/params.h>
 
 #include "./taskButton.h"
+#include "./taskVl53L1X.h"
 
 #define LED_PIN D3
 
 void buttonRoutine();
+void setButtonFlags();
 
 void TaskButton(void* pvParameters) {
   pinMode(BUTTON_PIN, INPUT);
@@ -57,6 +59,11 @@ void buttonRoutine() {
         Serial.println("Button pressed");
       }
       setParameter(PARAM_BUTTON, BUTTON_PRESSED);
+      setButtonFlags();
     }
   }
+}
+
+void setButtonFlags() {
+  distance_calibration_button_pressed = true;
 }

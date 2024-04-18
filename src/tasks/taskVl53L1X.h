@@ -2,6 +2,8 @@
 
 #define NB_DISTANCE_SENSORS 2
 
+enum DistanceDebugMode { RANGING, CONSTANT, CALIBRATION };
+
 // I2C addresses
 #define VL53_LEFT_ADDRESS 0x2A
 #define VL53_FRONT_LEFT_ADDRESS 0x2B
@@ -18,6 +20,9 @@
 
 #define TIMING_BUDGET 140  // ms
 #define VL53_DEFAULT_ADDRESS 0x29
+
+// global variables
+extern bool distance_calibration_button_pressed;
 
 // prototypes
 void taskVL53L1X();

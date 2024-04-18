@@ -40,9 +40,9 @@ void setup() {
   taskWebserver();
   taskWire();
   // taskGY521();
-  // taskVL53L1X();
+  taskVL53L1X();
   // taskDcMotor();
-  taskBuzzer();
+  // taskBuzzer();
   // taskEncoders();
   // taskBattery();
   taskButton();

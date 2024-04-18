@@ -11,6 +11,10 @@
 
 #include "./taskVl53L1X.h"
 
+#define DISTANCE_TASK_DELAY 50
+
+bool distance_calibration_button_pressed = false;
+
 void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
                        int addresses[]);
@@ -41,8 +45,10 @@ void TaskVL53L1X(void* pvParameters) {
   }
 
   int16_t distance;
+  int debugCounter = 0;
+  int time = 0;
   while (true) {
-    vTaskDelay(50);
+    vTaskDelay(DISTANCE_TASK_DELAY);
     for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
       if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
         distance = sensors[i].read();  // read distance in mm
@@ -51,14 +57,39 @@ void TaskVL53L1X(void* pvParameters) {
         setParameter(distancesParameters[i], distance);
       }
     }
+
     if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
-      for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-        Serial.print(i);
-        Serial.print(F(": "));
-        Serial.print(getParameter(distancesParameters[i]));
-        Serial.print(F("\t"));
+      switch (getParameter(PARAM_DISTANCE_DEBUG_MODE)) {
+        case CONSTANT:
+          time += DISTANCE_TASK_DELAY / 1000;
+          Serial.print(time);
+          for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+            Serial.print(F(",\t"));
+            Serial.print(getParameter(distancesParameters[i]));
+          }
+          Serial.println();
+          break;
+        case CALIBRATION:
+          if (distance_calibration_button_pressed) {
+            for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+              Serial.print(getParameter(distancesParameters[i]));
+              Serial.print(F(",\t"));
+            }
+            Serial.println();
+            distance_calibration_button_pressed = false;
+          }
+          break;
+        case RANGING:
+        default:
+          for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+            Serial.print(i);
+            Serial.print(F(": "));
+            Serial.print(getParameter(distancesParameters[i]));
+            Serial.print(F("\t"));
+          }
+          Serial.println();
+          break;
       }
-      Serial.println();
     }
   }
 }
