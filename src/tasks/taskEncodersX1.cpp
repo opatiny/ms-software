@@ -44,13 +44,13 @@ void rightCounter() {
   counterRoutine(PARAM_ENCODER_RIGHT, LEFT_ENCODER_PIN1);
 }
 
-void counterRoutine(int parameterPin, int directionPin) {
-  int newValue = getParameter(parameterPin);
+void counterRoutine(int parameter, int directionPin) {
+  int newValue = getParameter(parameter);
 
   if (digitalRead(directionPin) == HIGH) {
     newValue--;
   } else {
     newValue++;
   }
-  setParameter(parameterPin, newValue);
+  setParameter(parameter, newValue);
 }

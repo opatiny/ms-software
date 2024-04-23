@@ -14,15 +14,16 @@ void leftCounterPin1();
 void leftCounterPin2();
 
 void TaskEncodersX4(void* pvParameters) {
-  pinMode(LEFT_ENCODER_PIN2, INPUT);
-  pinMode(LEFT_ENCODER_PIN1, INPUT);
-  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
-                  CHANGE);
+  pinMode(LEFT_ENCODER_PIN1, INPUT_PULLUP);
+  pinMode(LEFT_ENCODER_PIN2, INPUT_PULLUP);
+
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN1), leftCounterPin1,
+                  CHANGE);
+  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
                   CHANGE);
 
   while (true) {
-    vTaskDelay(200);
+    vTaskDelay(1000);
     if (parameters[PARAM_DEBUG] == DEBUG_ENCODERS) {
       Serial.println(getParameter(PARAM_ENCODER_LEFT));
     }
@@ -38,6 +39,7 @@ void taskEncodersX4() {
                               // being the highest, and 0 being the lowest.
                           NULL, 1);
 }
+uint32_t timeLeft = 0;
 
 void leftCounterPin1() {
   counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2);
@@ -80,4 +82,5 @@ void counterRoutine(int parameter, int interruptPin, int directionPin) {
       newValue++;
     }
   }
+  setParameter(parameter, newValue);
 }
