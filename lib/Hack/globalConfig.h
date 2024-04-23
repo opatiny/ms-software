@@ -6,7 +6,7 @@
 extern SemaphoreHandle_t xSemaphoreWire;
 #define I2C_SPEED 400000
 
-// debug
+// debug (U)
 enum DebugMode {
   NO_DEBUG,                // 0
   DEBUG_DISTANCE,          // 1

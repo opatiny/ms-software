@@ -62,6 +62,7 @@ void taskDcMotor() {
 }
 
 void rampUpDown(int pin1, int pin2, int speed) {
+  Serial.println("Ramp up");
   for (int i = 0; i < speed; i++) {
     analogWrite(pin1, i);
   }

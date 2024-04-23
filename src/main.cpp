@@ -20,6 +20,7 @@ void taskWire();
 void taskGY521();
 void taskVL53L1X();
 void taskEventSourceSender();
+void taskDcMotorTest();
 
 void setup() {
   // start serial communication
@@ -40,12 +41,13 @@ void setup() {
   taskWebserver();
   taskWire();
   // taskGY521();
-  taskVL53L1X();
-  // taskDcMotor();
+  // taskVL53L1X();
+  // taskDcMotorTest();
   // taskBuzzer();
-  // taskEncoders();
+  // taskEncodersX4();
+  taskEncodersX4();
   // taskBattery();
-  taskButton();
+  // taskButton();
   taskEventSourceSender();
   taskBlink();
 }

@@ -2,6 +2,15 @@
 
 #define NB_DISTANCE_SENSORS 2
 
+/**
+ * Specify the information you want to print to serial.
+ * - RANGING: Normal mode, display distance of all sensors every time a
+ * measurement is done.
+ * - CONSTANT: Log the time and each distances every time a measurement is done
+ * as csv data.
+ * - CALIBRATION: Only print the distances when push button is pressed, csv
+ * format as well.
+ */
 enum DistanceDebugMode { RANGING, CONSTANT, CALIBRATION };
 
 // I2C addresses
@@ -18,6 +27,10 @@ enum DistanceDebugMode { RANGING, CONSTANT, CALIBRATION };
 #define XSHUT_PIN_FRONT_RIGHT 0
 #define XSHUT_PIN_RIGHT 0
 
+/**
+ * Time to perform a measurement. 140 ms is the min time for max range of 4
+ * meters.
+ */
 #define TIMING_BUDGET 140  // ms
 #define VL53_DEFAULT_ADDRESS 0x29
 

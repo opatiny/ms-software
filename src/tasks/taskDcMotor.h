@@ -6,10 +6,10 @@
 #define MOTOR_LEFT_PIN2 D10
 
 enum MotorMode {
-  MOTOR_STOP,
-  MOTOR_FORWARD,
-  MOTOR_BACKWARD,
-  MOTOR_RAMP,
-  MOTOR_SHORT
+  MOTOR_STOP,      // 0
+  MOTOR_FORWARD,   // 1
+  MOTOR_BACKWARD,  // 2
+  MOTOR_RAMP,      // 3
+  MOTOR_SHORT      // 4
 };
 void taskDcMotor();

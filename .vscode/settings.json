@@ -8,6 +8,14 @@
     "vector": "cpp",
     "string_view": "cpp",
     "initializer_list": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "freertos.h": "c",
+    "task.h": "c",
+    "esp_attr.h": "c",
+    "mcpwm.h": "c",
+    "mcpwm_periph.h": "c",
+    "pcnt.h": "c",
+    "mcpwm_brushed_dc_control_example.h": "c",
+    "motor_ctrl_timer.h": "c"
   }
 }

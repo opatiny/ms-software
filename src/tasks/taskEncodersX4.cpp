@@ -2,6 +2,7 @@
  * Thread to handle the control of the encoders of the motors.
  * This thread uses X4 encoding.
  * This should give us 360 counts per revlution of the wheel.
+ * Debug: U5
  */
 
 #include <globalConfig.h>
@@ -9,7 +10,10 @@
 
 #include "./taskEncoders.h"
 
-void counterRoutine(int parameterPin, int interruptPin, int directionPin);
+void counterRoutine(int parameterPin,
+                    int interruptPin,
+                    int directionPin,
+                    int increment);
 void leftCounterPin1();
 void leftCounterPin2();
 
@@ -23,7 +27,7 @@ void TaskEncodersX4(void* pvParameters) {
                   CHANGE);
 
   while (true) {
-    vTaskDelay(1000);
+    vTaskDelay(200);
     if (parameters[PARAM_DEBUG] == DEBUG_ENCODERS) {
       Serial.println(getParameter(PARAM_ENCODER_LEFT));
     }
@@ -42,11 +46,11 @@ void taskEncodersX4() {
 uint32_t timeLeft = 0;
 
 void leftCounterPin1() {
-  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2);
+  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2, 1);
 }
 
 void leftCounterPin2() {
-  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1);
+  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1, -1);
 }
 
 /**
@@ -59,27 +63,25 @@ void leftCounterPin2() {
  *  @param directionPin - The pin used to determine the direction of the
  * rotation.
  */
-void counterRoutine(int parameter, int interruptPin, int directionPin) {
+void counterRoutine(int parameter,
+                    int interruptPin,
+                    int directionPin,
+                    int increment) {
   int interruptValue = digitalRead(interruptPin);
   int directionValue = digitalRead(directionPin);
-
-  Serial.print("interruptValue: ");
-  Serial.println(interruptValue);
-  Serial.print("directionValue: ");
-  Serial.println(directionValue);
 
   int newValue = getParameter(parameter);
   if (interruptValue == HIGH) {
     if (directionValue == HIGH) {
-      newValue++;
+      newValue = newValue + increment;
     } else {
-      newValue--;
+      newValue = newValue - increment;
     }
   } else {
     if (directionValue == HIGH) {
-      newValue--;
+      newValue = newValue - increment;
     } else {
-      newValue++;
+      newValue = newValue + increment;
     }
   }
   setParameter(parameter, newValue);
