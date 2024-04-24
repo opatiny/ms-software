@@ -14,7 +14,8 @@ enum DebugMode {
   DEBUG_BATTERY,           // 3
   DEBUG_BATTERY_LOG_DATA,  // 4
   DEBUG_ENCODERS,          // 5
-  DEBUG_BUTTON             // 6
+  DEBUG_BUTTON,            // 6
+  DEBUG_MOTORS             // 7
 };
 
 // SERIAL PARAMETERS
