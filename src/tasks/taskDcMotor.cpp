@@ -8,11 +8,19 @@
 #include "./motorCommands.h"
 #include "./taskDcMotor.h"
 
+#define DEFAULT_RAMP_DELAY 1
+
 enum Direction { FORWARD, BACKWARD };
 
 void stopMotor(Motor* motor);
-void rampDown(Motor* motor, Direction direction, int finalSpeed, int rampDelay);
-void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay);
+void rampDown(Motor* motor,
+              Direction direction,
+              int finalSpeed,
+              int rampDelay = DEFAULT_RAMP_DELAY);
+void rampUp(Motor* motor,
+            Direction direction,
+            int finalSpeed,
+            int rampDelay = DEFAULT);
 void speedRamp(Motor* motor, int finalSpeed, int rampDelay);
 
 void TaskDcMotor(void* pvParameters) {
@@ -26,13 +34,22 @@ void TaskDcMotor(void* pvParameters) {
   while (true) {
     int currentSpeed = getParameter(PARAM_MOTOR_LEFT_SPEED);
 
+    Serial.print("Motor left current speed: ");
+    Serial.println(leftMotor.speed);
+    Serial.print("Motor left goal speed: ");
+    Serial.println(currentSpeed);
+    Serial.print("Motor left mode: ");
+    Serial.println(getParameter(PARAM_MOTOR_LEFT_MODE));
+
+    // change motor mode with commands AC (left) and AD (right)
     switch (getParameter(PARAM_MOTOR_LEFT_MODE)) {
       case MOTOR_STOP:
         stopMotor(&leftMotor);
         break;
       case MOTOR_CONSTANT_SPEED:
+        Serial.println("Motor constant speed");
         if (currentSpeed != leftMotor.speed) {
-          speedRamp(&leftMotor, currentSpeed, 1);
+          speedRamp(&leftMotor, currentSpeed);
         }
         break;
       case MOTOR_MOVE_DEGREES:
@@ -43,7 +60,7 @@ void TaskDcMotor(void* pvParameters) {
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
         break;
     }
-    vTaskDelay(1);
+    vTaskDelay(1000);
   }
 }
 
@@ -59,16 +76,20 @@ void taskDcMotor() {
 
 void stopMotor(Motor* motor) {
   if (motor->speed > 0) {
-    rampDown(motor, FORWARD, 0, 1);
+    rampDown(motor, FORWARD, 0);
   } else if (motor->speed < 0) {
-    rampDown(motor, BACKWARD, 0, 1);
+    rampDown(motor, BACKWARD, 0);
   }
   motor->speed = 0;
+  setParameter(motor->speedParameter, 0);
 }
 
-void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
+void speedRamp(Motor* motor,
+               int finalSpeed,
+               int rampDelay = DEFAULT_RAMP_DELAY) {
   int initialSpeed = motor->speed;
   if (initialSpeed > finalSpeed) {
+    Serial.println("i > f");
     if (initialSpeed > 0) {
       if (finalSpeed > 0) {
         rampDown(motor, FORWARD, finalSpeed, rampDelay);
@@ -77,9 +98,11 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
         rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
       }
     } else {
+      Serial.println("negative or zero speed");
       rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
     }
   } else {
+    Serial.println("i < f");
     if (initialSpeed > 0) {
       if (finalSpeed > 0) {
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
@@ -88,13 +111,20 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       }
     } else {
+      Serial.println("negative or zero speed");
+      Serial.println("initialSpeed: ");
+      Serial.println(initialSpeed);
       rampDown(motor, BACKWARD, -finalSpeed, rampDelay);
     }
   }
   motor->speed = finalSpeed;
+  setParameter(motor->speedParameter, finalSpeed);
 }
 
-void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay) {
+void rampUp(Motor* motor,
+            Direction direction,
+            int finalSpeed,
+            int rampDelay = DEFAULT_RAMP_DELAY) {
   int initialSpeed = motor->speed;
   if (initialSpeed < 0) {
     initialSpeed = -initialSpeed;
@@ -120,7 +150,7 @@ void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay) {
 void rampDown(Motor* motor,
               Direction direction,
               int finalSpeed,
-              int rampDelay) {
+              int rampDelay = DEFAULT_RAMP_DELAY) {
   int initialSpeed = motor->speed;
   if (initialSpeed < 0) {
     initialSpeed = -initialSpeed;
