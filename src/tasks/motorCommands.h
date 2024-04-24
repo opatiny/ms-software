@@ -9,10 +9,11 @@
 // motors and wheels properties
 #define GEAR_RATIO 30
 #define COUNTS_PER_REV 12
-#define WHEEL_DIAMETER 32  // in mm
-#define WHEEL_BASE 100     // in mm, distance between centers of wheels
+#define WHEEL_DIAMETER 32     // in mm
+#define WHEEL_BASE 100        // in mm, distance between centers of wheels
+#define DEFAULT_RAMP_DELAY 1  // delay between each speed increment for ramps
 
-// motors parameters
+// motors structures with all data
 struct Motor {
   int speedParameter;
   int modeParameter;
@@ -24,5 +25,23 @@ struct Motor {
 
 extern Motor leftMotor;
 extern Motor rightMotor;
+
+enum Direction { FORWARD, BACKWARD };
+
+void stopMotor(Motor* motor);
+void rampDown(Motor* motor,
+              Direction direction,
+              int finalSpeed,
+              int rampDelay = DEFAULT_RAMP_DELAY);
+void rampUp(Motor* motor,
+            Direction direction,
+            int finalSpeed,
+            int rampDelay = DEFAULT_RAMP_DELAY);
+void speedRamp(Motor* motor,
+               int finalSpeed,
+               int rampDelay = DEFAULT_RAMP_DELAY);
+void shortFullSpeed(Motor* motor, int speed);
+
+void moveSeconds(Motor motor, int seconds, int speed);
 
 void moveDegrees(Motor motor, int degrees, int speed);

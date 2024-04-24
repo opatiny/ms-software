@@ -59,6 +59,10 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_ERROR 25      // Z
 
 // motors parameters
+/**
+ * Desired speed for when the motors are moving. This is not the current speed
+ * of the motors.
+ */
 #define PARAM_MOTOR_LEFT_SPEED 26   // AA
 #define PARAM_MOTOR_RIGHT_SPEED 27  // AB
 #define PARAM_MOTOR_LEFT_MODE 28    // AC
