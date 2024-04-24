@@ -2,14 +2,9 @@
 
 #include <pwmWrite.h>
 
-#define MOTOR_LEFT_PIN1 D9
-#define MOTOR_LEFT_PIN2 D10
-
 enum MotorMode {
-  MOTOR_STOP,      // 0
-  MOTOR_FORWARD,   // 1
-  MOTOR_BACKWARD,  // 2
-  MOTOR_RAMP,      // 3
-  MOTOR_SHORT      // 4
+  MOTOR_STOP,            // 0
+  MOTOR_CONSTANT_SPEED,  // 1
+  MOTOR_MOVE_DEGREES,    // 2
 };
 void taskDcMotor();

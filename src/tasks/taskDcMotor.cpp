@@ -5,10 +5,15 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
+#include "./motorCommands.h"
 #include "./taskDcMotor.h"
 
-void rampUpDown(int pin1, int pin2, int speed);
-void shortFullSpeed(int pin1, int pin2, int speed);
+enum Direction { FORWARD, BACKWARD };
+
+void stopMotor(Motor* motor);
+void rampDown(Motor* motor, Direction direction, int finalSpeed, int rampDelay);
+void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay);
+void speedRamp(Motor* motor, int finalSpeed, int rampDelay);
 
 void TaskDcMotor(void* pvParameters) {
   pinMode(MOTOR_LEFT_PIN1, OUTPUT);
@@ -19,27 +24,18 @@ void TaskDcMotor(void* pvParameters) {
   analogWrite(MOTOR_LEFT_PIN2, 0);
 
   while (true) {
-    int leftSpeed = getParameter(PARAM_MOTOR_LEFT_SPEED);
+    int currentSpeed = getParameter(PARAM_MOTOR_LEFT_SPEED);
 
     switch (getParameter(PARAM_MOTOR_LEFT_MODE)) {
       case MOTOR_STOP:
-        analogWrite(MOTOR_LEFT_PIN1, 0);
-        analogWrite(MOTOR_LEFT_PIN2, 0);
+        stopMotor(&leftMotor);
         break;
-      case MOTOR_FORWARD:
-        analogWrite(MOTOR_LEFT_PIN1, leftSpeed);
-        analogWrite(MOTOR_LEFT_PIN2, 0);
+      case MOTOR_CONSTANT_SPEED:
+        if (currentSpeed != leftMotor.speed) {
+          speedRamp(&leftMotor, currentSpeed, 1);
+        }
         break;
-      case MOTOR_BACKWARD:
-        analogWrite(MOTOR_LEFT_PIN1, 0);
-        analogWrite(MOTOR_LEFT_PIN2, leftSpeed);
-        break;
-      case MOTOR_RAMP:
-        rampUpDown(MOTOR_LEFT_PIN1, MOTOR_LEFT_PIN2, leftSpeed);
-        break;
-      case MOTOR_SHORT:
-        shortFullSpeed(MOTOR_LEFT_PIN1, MOTOR_LEFT_PIN2, leftSpeed);
-        setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
+      case MOTOR_MOVE_DEGREES:
         break;
 
       default:
@@ -47,7 +43,7 @@ void TaskDcMotor(void* pvParameters) {
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
         break;
     }
-    vTaskDelay(10);
+    vTaskDelay(1);
   }
 }
 
@@ -61,24 +57,88 @@ void taskDcMotor() {
                           NULL, 1);
 }
 
-void rampUpDown(int pin1, int pin2, int speed) {
-  Serial.println("Ramp up");
-  for (int i = 0; i < speed; i++) {
-    analogWrite(pin1, i);
+void stopMotor(Motor* motor) {
+  if (motor->speed > 0) {
+    rampDown(motor, FORWARD, 0, 1);
+  } else if (motor->speed < 0) {
+    rampDown(motor, BACKWARD, 0, 1);
   }
-  for (int i = speed; i > 0; i--) {
-    analogWrite(pin1, i);
+  motor->speed = 0;
+}
+
+void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
+  int initialSpeed = motor->speed;
+  if (initialSpeed > finalSpeed) {
+    if (initialSpeed > 0) {
+      if (finalSpeed > 0) {
+        rampDown(motor, FORWARD, finalSpeed, rampDelay);
+      } else {
+        rampDown(motor, FORWARD, 0, rampDelay);
+        rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
+      }
+    } else {
+      rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
+    }
+  } else {
+    if (initialSpeed > 0) {
+      if (finalSpeed > 0) {
+        rampUp(motor, FORWARD, finalSpeed, rampDelay);
+      } else {
+        rampDown(motor, BACKWARD, 0, rampDelay);
+        rampUp(motor, FORWARD, finalSpeed, rampDelay);
+      }
+    } else {
+      rampDown(motor, BACKWARD, -finalSpeed, rampDelay);
+    }
   }
-  for (int i = 0; i < speed; i++) {
-    analogWrite(pin2, i);
+  motor->speed = finalSpeed;
+}
+
+void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay) {
+  int initialSpeed = motor->speed;
+  if (initialSpeed < 0) {
+    initialSpeed = -initialSpeed;
   }
-  for (int i = speed; i > 0; i--) {
-    analogWrite(pin2, i);
+  switch (direction) {
+    case FORWARD:
+      for (int speed = initialSpeed; speed < finalSpeed; speed++) {
+        analogWrite(motor->pin1, speed);
+        analogWrite(motor->pin2, 0);
+        vTaskDelay(rampDelay);
+      }
+      break;
+    case BACKWARD:
+      for (int speed = initialSpeed; speed < finalSpeed; speed++) {
+        analogWrite(motor->pin1, 0);
+        analogWrite(motor->pin2, speed);
+        vTaskDelay(rampDelay);
+      }
+      break;
   }
 }
 
-void shortFullSpeed(int pin1, int pin2, int speed) {
-  analogWrite(pin1, speed);
-  analogWrite(pin2, 0);
-  vTaskDelay(1000);
+void rampDown(Motor* motor,
+              Direction direction,
+              int finalSpeed,
+              int rampDelay) {
+  int initialSpeed = motor->speed;
+  if (initialSpeed < 0) {
+    initialSpeed = -initialSpeed;
+  }
+  switch (direction) {
+    case FORWARD:
+      for (int speed = initialSpeed; speed > finalSpeed; speed--) {
+        analogWrite(motor->pin1, speed);
+        analogWrite(motor->pin2, 0);
+        vTaskDelay(rampDelay);
+      }
+      break;
+    case BACKWARD:
+      for (int speed = initialSpeed; speed > finalSpeed; speed--) {
+        analogWrite(motor->pin1, 0);
+        analogWrite(motor->pin2, speed);
+        vTaskDelay(rampDelay);
+      }
+      break;
+  }
 }

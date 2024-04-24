@@ -1,12 +1,23 @@
-#include "tasks/taskDcMotor.h"
-#include "utilities/params.h"
+#include "./motorCommands.h"
+#include <utilities/params.h>
 
-#define GEAR_RATIO 30
-#define COUNTS_PER_REV 12
-#define WHEEL_DIAMETER 32  // in mm
-#define WHEEL_BASE 100     // in mm, distance between centers of wheels
+Motor leftMotor = {
+  speedParameter : PARAM_MOTOR_LEFT_SPEED,
+  modeParameter : PARAM_MOTOR_LEFT_MODE,
+  encoderParameter : PARAM_ENCODER_LEFT,
+  speed : 0,
+  pin1 : MOTOR_LEFT_PIN1,
+  pin2 : MOTOR_LEFT_PIN2
+};
 
-enum Motor { LEFT, RIGHT };
+Motor rightMotor = {
+  speedParameter : PARAM_MOTOR_RIGHT_SPEED,
+  modeParameter : PARAM_MOTOR_RIGHT_MODE,
+  encoderParameter : PARAM_ENCODER_RIGHT,
+  speed : 0,
+  pin1 : MOTOR_RIGHT_PIN1,
+  pin2 : MOTOR_RIGHT_PIN2
+};
 
 /**
  * @brief Convert nb of encoder counts to an angle in degrees.
@@ -29,14 +40,8 @@ int angleToCounts(int angle) {
  * @param degrees Number of degrees to rotate.
  * @param speed Speed of the motor (0 to 255)
  */
-void rotateMotor(Motor motor, int degrees, int speed) {
+void moveDegrees(Motor motor, int degrees, int speed) {
   int counts = angleToCounts(degrees);
-  int startCounts = getParameter(PARAM_ENCODER_LEFT);
+  int startCounts = getParameter(motor.encoderParameter);
   int targetCounts = startCounts + counts;
-  setParameter(PARAM_MOTOR_LEFT_SPEED, speed);
-  setParameter(PARAM_MOTOR_LEFT_MODE,
-               speed > 0 ? MOTOR_FORWARD : MOTOR_BACKWARD);
-  if (getParameter(PARAM_ENCODER_LEFT) >= targetCounts) {
-    setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
-  }
 }
