@@ -52,10 +52,12 @@ void moveDegrees(Motor motor, int degrees, int speed) {
  * @param seconds - Number of seconds of the movement.
  * @param speed - Speed of the motor.
  */
-void moveSeconds(Motor motor, int seconds, int speed) {
-  speedRamp(&motor, speed);
+void moveSeconds(Motor* motor, int seconds, int speed, int rampDelay) {
+  Serial.print("MoveSeconds speed: ");
+  Serial.println(speed);
+  speedRamp(motor, speed, rampDelay);
   vTaskDelay(seconds * 1000);
-  stopMotor(&motor);
+  stopMotor(motor);
 }
 
 /**
@@ -82,9 +84,9 @@ void stopMotor(Motor* motor) {
 void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
   int initialSpeed = motor->speed;
   if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-    Serial.print("Initial speed: ");
-    Serial.println(initialSpeed);
-    Serial.print("Final speed: ");
+    Serial.print("speed ramp: ");
+    Serial.print(initialSpeed);
+    Serial.print(" -> ");
     Serial.println(finalSpeed);
   }
 

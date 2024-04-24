@@ -43,11 +43,22 @@ void TaskDcMotor(void* pvParameters) {
           speedRamp(&leftMotor, currentSpeed, 5);
         }
         break;
-      case MOTOR_MOVE_SECONDS:
-        Serial.println("Motor move seconds mode");
-        moveSeconds(leftMotor, 1, currentSpeed);
+      case MOTOR_MOVE_SECONDS: {
+        int delaySeconds = 5;
+        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+          Serial.println("Start motor move seconds mode");
+          Serial.print("Speed: ");
+          Serial.println(currentSpeed);
+          Serial.print("Seconds: ");
+          Serial.println(delaySeconds);
+        }
+        moveSeconds(&leftMotor, delaySeconds, currentSpeed, 1);
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
+        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+          Serial.println("End motor move seconds mode");
+        }
         break;
+      }
       case MOTOR_MOVE_DEGREES:
         Serial.println("Motor move degrees mode");
         break;

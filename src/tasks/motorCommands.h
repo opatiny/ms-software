@@ -42,6 +42,9 @@ void speedRamp(Motor* motor,
                int rampDelay = DEFAULT_RAMP_DELAY);
 void shortFullSpeed(Motor* motor, int speed);
 
-void moveSeconds(Motor motor, int seconds, int speed);
+void moveSeconds(Motor* motor,
+                 int seconds,
+                 int speed,
+                 int rampDelay = DEFAULT_RAMP_DELAY);
 
 void moveDegrees(Motor motor, int degrees, int speed);
