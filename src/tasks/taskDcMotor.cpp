@@ -32,6 +32,8 @@ void TaskDcMotor(void* pvParameters) {
   setParameter(PARAM_MOTOR_RIGHT_SPEED, 0);
   setParameter(PARAM_MOTOR_RIGHT_MODE, MOTOR_STOP);
 
+  setParameter(PARAM_MOTOR_DELAY, 10);  // ms
+
   int previousMode = MOTOR_STOP;
 
   while (true) {
@@ -47,22 +49,21 @@ void TaskDcMotor(void* pvParameters) {
           if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
             Serial.println("Motor constant speed mode");
           }
-          speedRamp(&leftMotor, currentSpeed, 5);
+          speedRamp(&leftMotor, currentSpeed, getParameter(PARAM_MOTOR_DELAY));
         }
         break;
       case MOTOR_MOVE_SECONDS: {
-        int delaySeconds = 5;
+        int delaySeconds = 1;
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("Start motor move seconds mode");
-          Serial.print("Speed: ");
+          Serial.print("Move for ");
+          Serial.print(delaySeconds);
+          Serial.print(" seconds at speed ");
           Serial.println(currentSpeed);
-          Serial.print("Seconds: ");
-          Serial.println(delaySeconds);
         }
-        moveSeconds(&leftMotor, delaySeconds, currentSpeed, 1);
+        moveSeconds(&leftMotor, delaySeconds, currentSpeed, 10);
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("End motor move seconds mode");
+          Serial.println("End of movement");
         }
         break;
       }
@@ -71,11 +72,14 @@ void TaskDcMotor(void* pvParameters) {
         break;
       case MOTOR_SHORT: {
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("Motor short pulse mode (only for debug)");
-          Serial.print("Speed: ");
+          int delay = 1;
+          Serial.println("Short pulse mode (only for debug)");
+          Serial.print("Motor will spin for ");
+          Serial.print(delay);
+          Serial.print(" seconds at speed ");
           Serial.println(currentSpeed);
         }
-        shortFullSpeed(&leftMotor, currentSpeed);
+        shortFullSpeed(&leftMotor, currentSpeed, 5);
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
         break;
       }

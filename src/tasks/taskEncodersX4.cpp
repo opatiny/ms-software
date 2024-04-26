@@ -1,14 +1,18 @@
 /**
  * Thread to handle the control of the encoders of the motors.
  * This thread uses X4 encoding.
- * This should give us 360 counts per revlution of the wheel.
+ * This should give us 360 counts per revolution of the wheel.
+ *
  * Debug: U5
+ * Log data for matlab: U8
  */
 
 #include <globalConfig.h>
 #include <utilities/params.h>
 
 #include "./taskEncoders.h"
+
+#define DELAY 5
 
 void counterRoutine(int parameterPin,
                     int interruptPin,
@@ -26,10 +30,24 @@ void TaskEncodersX4(void* pvParameters) {
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
                   CHANGE);
 
+  int encoderTime = 0;
   while (true) {
-    vTaskDelay(200);
-    if (parameters[PARAM_DEBUG] == DEBUG_ENCODERS) {
+    vTaskDelay(DELAY);
+    if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
       Serial.println(getParameter(PARAM_ENCODER_LEFT));
+    } else if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS_LOG_DATA) {
+      int leftEncoder = getParameter(PARAM_ENCODER_LEFT);
+      int rightEncoder = getParameter(PARAM_ENCODER_RIGHT);
+      Serial.print(encoderTime);
+      Serial.print(", \t");
+      encoderTime += DELAY;
+      Serial.print(leftEncoder);
+      Serial.print(", \t");
+      Serial.print(rightEncoder);
+      Serial.print(", \t");
+      Serial.print(getParameter(PARAM_MOTOR_LEFT_MODE));
+      Serial.print(", \t");
+      Serial.println(getParameter(PARAM_MOTOR_RIGHT_MODE));
     }
   }
 }

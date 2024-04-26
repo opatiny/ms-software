@@ -45,7 +45,7 @@ void rampUp(Motor* motor,
 void speedRamp(Motor* motor,
                int finalSpeed,
                int rampDelay = DEFAULT_RAMP_DELAY);
-void shortFullSpeed(Motor* motor, int speed);
+void shortFullSpeed(Motor* motor, int speed, int delaySec = 1);
 
 void moveSeconds(Motor* motor,
                  int seconds,

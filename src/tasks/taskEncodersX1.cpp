@@ -1,6 +1,6 @@
 /**
  * Measure motor rotation by using X1 encoding.
- * This gives us 90 counts per revlution of the wheel.
+ * This gives us 90 counts per revolution of the wheel.
  */
 
 #include <globalConfig.h>

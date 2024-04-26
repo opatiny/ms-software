@@ -15,7 +15,8 @@ enum DebugMode {
   DEBUG_BATTERY_LOG_DATA,  // 4
   DEBUG_ENCODERS,          // 5
   DEBUG_BUTTON,            // 6
-  DEBUG_MOTORS             // 7
+  DEBUG_MOTORS,            // 7
+  DEBUG_ENCODERS_LOG_DATA  // 8
 };
 
 // SERIAL PARAMETERS
@@ -72,5 +73,6 @@ extern int16_t parameters[MAX_PARAM];
 
 #define PARAM_BUTTON 32               // AG
 #define PARAM_DISTANCE_DEBUG_MODE 33  // AH
+#define PARAM_MOTOR_DELAY 34          // AI
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0

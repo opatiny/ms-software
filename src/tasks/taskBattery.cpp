@@ -4,7 +4,7 @@
 #include <utilities/params.h>
 #include "./taskBattery.h"
 
-#define DELAY 1000
+#define DELAY 5
 #define LOG_BATTERY_DATA 1
 
 uint32_t buzzerTime = 0;  // in ms
@@ -14,6 +14,7 @@ void TaskBattery(void* pvParameters) {
   while (true) {
     int measuredVoltage = analogReadMilliVolts(BATTERY_PIN);
     int batteryLevel = measuredVoltage * (BATTERY_R1 + BATTERY_R2) / BATTERY_R2;
+    // to access this debug mode: U4
     if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY_LOG_DATA) {
       Serial.print(buzzerTime);
       Serial.print(", \t");

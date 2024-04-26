@@ -7,7 +7,7 @@
  * - RANGING: Normal mode, display distance of all sensors every time a
  * measurement is done.
  * - CONSTANT: Log the time and each distances every time a measurement is done
- * as csv data.
+ * as csv data. Typically used to see variability when distance is constant.
  * - CALIBRATION: Only print the distances when push button is pressed, csv
  * format as well.
  */

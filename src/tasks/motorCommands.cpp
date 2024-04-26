@@ -1,7 +1,7 @@
 #include "./motorCommands.h"
 #include <utilities/params.h>
 
-#define RAMP_UP_DOWN_DEBUG 1
+#define RAMP_UP_DOWN_DEBUG 0
 
 Motor leftMotor = {
   speedParameter : PARAM_MOTOR_LEFT_SPEED,
@@ -55,8 +55,6 @@ void moveDegrees(Motor motor, int degrees, int speed) {
  * @param speed - Speed of the motor.
  */
 void moveSeconds(Motor* motor, int seconds, int speed, int rampDelay) {
-  Serial.print("MoveSeconds speed: ");
-  Serial.println(speed);
   speedRamp(motor, speed, rampDelay);
   vTaskDelay(seconds * 1000);
   stopMotor(motor);
@@ -204,16 +202,16 @@ void rampDown(Motor* motor,
 
 /**
  * Function for testing voltage drop on battery when motor speed is varied
- * quickly. Turn the motor on at given speed for 1 second. No ramp is used in
- * this function!!
+ * quickly. Turn the motor on at given speed for `delaySec` seconds. No ramp is
+ * used in this function!!
  */
-void shortFullSpeed(Motor* motor, int speed) {
+void shortFullSpeed(Motor* motor, int speed, int delaySec) {
   if (speed < 0) {
     speed = -speed;
   }
   analogWrite(motor->pin1, speed);
   analogWrite(motor->pin2, 0);
-  vTaskDelay(1000);
+  vTaskDelay(delaySec * 1000);
   analogWrite(motor->pin1, 0);
   motor->speed = 0;
 }
