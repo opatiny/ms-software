@@ -10,11 +10,19 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
-#include "./taskEncoders.h"
+#include "motorCommands.h"
+#include "taskEncoders.h"
 
+// Pointers to the encoders counters of the motors.
+Encoder* leftEncoderPt = &(leftMotor.encoderCounts);
+Encoder* rightEncoderPt = &(rightMotor.encoderCounts);
+
+/**
+ * Delay between each encoder reading.
+ */
 #define DELAY 5
 
-void counterRoutine(int parameterPin,
+void counterRoutine(Encoder* encoderCounter,
                     int interruptPin,
                     int directionPin,
                     int increment);
@@ -34,16 +42,12 @@ void TaskEncodersX4(void* pvParameters) {
   while (true) {
     vTaskDelay(DELAY);
     if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
-      Serial.println(getParameter(PARAM_ENCODER_LEFT));
-    } else if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS_LOG_DATA) {
-      int leftEncoder = getParameter(PARAM_ENCODER_LEFT);
-      int rightEncoder = getParameter(PARAM_ENCODER_RIGHT);
       Serial.print(encoderTime);
       Serial.print(", \t");
       encoderTime += DELAY;
-      Serial.print(leftEncoder);
+      Serial.print(*leftEncoderPt);
       Serial.print(", \t");
-      Serial.print(rightEncoder);
+      Serial.print(*rightEncoderPt);
       Serial.print(", \t");
       Serial.print(getParameter(PARAM_MOTOR_LEFT_MODE));
       Serial.print(", \t");
@@ -64,11 +68,11 @@ void taskEncodersX4() {
 uint32_t timeLeft = 0;
 
 void leftCounterPin1() {
-  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2, 1);
+  counterRoutine(leftEncoderPt, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2, 1);
 }
 
 void leftCounterPin2() {
-  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1, -1);
+  counterRoutine(rightEncoderPt, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1, -1);
 }
 
 /**
@@ -81,26 +85,26 @@ void leftCounterPin2() {
  *  @param directionPin - The pin used to determine the direction of the
  * rotation.
  */
-void counterRoutine(int parameter,
+void counterRoutine(Encoder* encoderCounter,
                     int interruptPin,
                     int directionPin,
                     int increment) {
   int interruptValue = digitalRead(interruptPin);
   int directionValue = digitalRead(directionPin);
 
-  int newValue = getParameter(parameter);
+  int newValue = *encoderCounter;
   if (interruptValue == HIGH) {
     if (directionValue == HIGH) {
-      newValue = newValue + increment;
-    } else {
       newValue = newValue - increment;
+    } else {
+      newValue = newValue + increment;
     }
   } else {
     if (directionValue == HIGH) {
-      newValue = newValue - increment;
-    } else {
       newValue = newValue + increment;
+    } else {
+      newValue = newValue - increment;
     }
   }
-  setParameter(parameter, newValue);
+  *encoderCounter = newValue;
 }

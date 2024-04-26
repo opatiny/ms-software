@@ -1,5 +1,7 @@
 #pragma once
 
+#include "taskEncoders.h"
+
 // motor pins
 #define MOTOR_LEFT_PIN1 D9
 #define MOTOR_LEFT_PIN2 D10
@@ -17,7 +19,7 @@
 struct Motor {
   int speedParameter;
   int modeParameter;
-  int encoderParameter;
+  Encoder encoderCounts;
   int speed;
   int pin1;
   int pin2;

@@ -4,13 +4,13 @@
  * Use the serial parameters to act on the motors.
  *
  *   - motor mode: commands AC (left) and AD (right)
- *   - motor speed: ommands AA (left) and AB (right)
+ *   - motor speed: commands AA (left) and AB (right)
  *     - speed is in range [-255,255]
  *     - 0 means stop
  *     - positive values means forward
  *     - negative values means backward
  *
- * Debug for this thread: U7
+ * Debug: U7
  */
 
 #include <globalConfig.h>
@@ -27,12 +27,15 @@ void TaskDcMotor(void* pvParameters) {
   // initally stop the motor
   analogWrite(MOTOR_LEFT_PIN1, 0);
   analogWrite(MOTOR_LEFT_PIN2, 0);
-  setParameter(PARAM_MOTOR_LEFT_SPEED_CMD, 100);
-  setParameter(PARAM_MOTOR_RIGHT_SPEED_CMD, 100);
   setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
   setParameter(PARAM_MOTOR_RIGHT_MODE, MOTOR_STOP);
 
-  setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
+  // initialise motor parameters
+  setParameter(PARAM_MOTOR_LEFT_SPEED_CMD, 100);
+  setParameter(PARAM_MOTOR_RIGHT_SPEED_CMD, 100);
+  setParameter(PARAM_MOTOR_LEFT_ANGLE_CMD, 90);   // degrees
+  setParameter(PARAM_MOTOR_RIGHT_ANGLE_CMD, 90);  // degrees
+  setParameter(PARAM_MOTOR_RAMP_STEP, 1);         // ms
 
   int previousMode = MOTOR_STOP;
 
@@ -78,7 +81,6 @@ void TaskDcMotor(void* pvParameters) {
         }
         moveDegrees(&leftMotor, degrees, currentSpeed);
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("End of movement");
         }
         break;
       }

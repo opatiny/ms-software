@@ -7,7 +7,7 @@
 Motor leftMotor = {
   speedParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
   modeParameter : PARAM_MOTOR_LEFT_MODE,
-  encoderParameter : PARAM_ENCODER_LEFT,
+  encoderCounts : 0,
   speed : 0,
   pin1 : MOTOR_LEFT_PIN1,
   pin2 : MOTOR_LEFT_PIN2
@@ -16,7 +16,7 @@ Motor leftMotor = {
 Motor rightMotor = {
   speedParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
   modeParameter : PARAM_MOTOR_RIGHT_MODE,
-  encoderParameter : PARAM_ENCODER_RIGHT,
+  encoderCounts : 0,
   speed : 0,
   pin1 : MOTOR_RIGHT_PIN1,
   pin2 : MOTOR_RIGHT_PIN2
@@ -40,23 +40,42 @@ int angleToCounts(int angle) {
 /**
  * @brief Rotate the specified motor of a given number of degrees.
  * @param motor Motor to rotate.
- * @param degrees Number of degrees to rotate.
- * @param speed Speed of the motor (0 to 255)
+ * @param degrees Number of degrees to rotate. Can only be a positive integer.
+ * @param speed Speed of the motor (-255 to 255). It is the sign of the speed
+ * that defines the direction of the rotation!!
  */
 void moveDegrees(Motor* motor, int degrees, int speed) {
   int counts = angleToCounts(degrees);
-  int startCounts = getParameter(motor->encoderParameter);
+  int startCounts = motor->encoderCounts;
   int targetCounts = startCounts + counts;
+
+  if (targetCounts > 2 ^ 15 - 1) {
+    targetCounts = -2 ^ 15 - 1;
+  } else if (targetCounts < -2 ^ 15) {
+    targetCounts = -2 ^ 15;
+  }
   speedRamp(motor, speed);
   if (speed > 0) {
-    while (getParameter(motor->encoderParameter) < targetCounts) {
+    while (motor->encoderCounts < targetCounts) {
       vTaskDelay(1);
     }
   } else {
-    while (getParameter(motor->encoderParameter) > targetCounts) {
+    while (motor->encoderCounts > targetCounts) {
       vTaskDelay(1);
     }
   }
+  if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+    Serial.print("true movement in encoder counts: ");
+
+    int trueNbCounts = 0;
+    if (speed > 0) {
+      trueNbCounts = motor->encoderCounts - startCounts;
+    } else {
+      trueNbCounts = startCounts - motor->encoderCounts;
+    }
+    Serial.println(motor->encoderCounts - startCounts);
+  }
+
   speedRamp(motor, 0);
   setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
 }

@@ -6,9 +6,14 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
-#include "./taskEncoders.h"
+#include "motorCommands.h"
+#include "taskEncoders.h"
 
-void counterRoutine(int parameterPin, int directionPin);
+// Pointers to the encoders counters of the motors.
+Encoder* leftEncoderPt = &(leftMotor.encoderCounts);
+Encoder* rightEncoderPt = &(rightMotor.encoderCounts);
+
+void counterRoutine(Encoder* encoderCounter, int directionPin);
 
 void leftCounter();
 void rightCounter();
@@ -22,7 +27,7 @@ void TaskEncodersX1(void* pvParameters) {
   while (true) {
     vTaskDelay(200);
     if (parameters[PARAM_DEBUG] == DEBUG_ENCODERS)
-      Serial.println(getParameter(PARAM_ENCODER_LEFT));
+      Serial.println(*leftEncoderPt);
   }
 }
 
@@ -37,20 +42,20 @@ void taskEncodersX1() {
 }
 
 void leftCounter() {
-  counterRoutine(PARAM_ENCODER_LEFT, LEFT_ENCODER_PIN1);
+  counterRoutine(leftEncoderPt, LEFT_ENCODER_PIN1);
 }
 
 void rightCounter() {
-  counterRoutine(PARAM_ENCODER_RIGHT, LEFT_ENCODER_PIN1);
+  counterRoutine(leftEncoderPt, LEFT_ENCODER_PIN1);
 }
 
-void counterRoutine(int parameter, int directionPin) {
-  int newValue = getParameter(parameter);
+void counterRoutine(Encoder* encoderCounter, int directionPin) {
+  int newValue = *encoderCounter;
 
   if (digitalRead(directionPin) == HIGH) {
     newValue--;
   } else {
     newValue++;
   }
-  setParameter(parameter, newValue);
+  *encoderCounter = newValue;
 }

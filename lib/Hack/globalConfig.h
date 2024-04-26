@@ -16,7 +16,6 @@ enum DebugMode {
   DEBUG_ENCODERS,          // 5
   DEBUG_BUTTON,            // 6
   DEBUG_MOTORS,            // 7
-  DEBUG_ENCODERS_LOG_DATA  // 8
 };
 
 // SERIAL PARAMETERS
@@ -68,12 +67,6 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_MOTOR_RIGHT_SPEED_CMD 27  // AB
 #define PARAM_MOTOR_LEFT_MODE 28        // AC
 #define PARAM_MOTOR_RIGHT_MODE 29       // AD
-/**
- * Encoder counts for the encoders of the left and right motors.
-
-*/
-#define PARAM_ENCODER_LEFT 30   // AE
-#define PARAM_ENCODER_RIGHT 31  // AF
 
 #define PARAM_BUTTON 32  // AG
 
