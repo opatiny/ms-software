@@ -64,15 +64,26 @@ extern int16_t parameters[MAX_PARAM];
  * Desired speed for when the motors are moving. This is not the current speed
  * of the motors.
  */
-#define PARAM_MOTOR_LEFT_SPEED 26   // AA
-#define PARAM_MOTOR_RIGHT_SPEED 27  // AB
-#define PARAM_MOTOR_LEFT_MODE 28    // AC
-#define PARAM_MOTOR_RIGHT_MODE 29   // AD
-#define PARAM_ENCODER_LEFT 30       // AE
-#define PARAM_ENCODER_RIGHT 31      // AF
+#define PARAM_MOTOR_LEFT_SPEED_CMD 26   // AA
+#define PARAM_MOTOR_RIGHT_SPEED_CMD 27  // AB
+#define PARAM_MOTOR_LEFT_MODE 28        // AC
+#define PARAM_MOTOR_RIGHT_MODE 29       // AD
+/**
+ * Encoder counts for the encoders of the left and right motors.
 
-#define PARAM_BUTTON 32               // AG
+*/
+#define PARAM_ENCODER_LEFT 30   // AE
+#define PARAM_ENCODER_RIGHT 31  // AF
+
+#define PARAM_BUTTON 32  // AG
+
+/**
+ * Angle in degrees the motors should move if MOVE_DEGREES mode is on.
+ */
 #define PARAM_DISTANCE_DEBUG_MODE 33  // AH
-#define PARAM_MOTOR_DELAY 34          // AI
+#define PARAM_MOTOR_RAMP_STEP 34      // AI
+
+#define PARAM_MOTOR_LEFT_ANGLE_CMD 35   // AJ
+#define PARAM_MOTOR_RIGHT_ANGLE_CMD 36  // AK
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0

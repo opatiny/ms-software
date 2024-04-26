@@ -4,7 +4,7 @@
 #include <utilities/params.h>
 #include "./taskBattery.h"
 
-#define DELAY 5
+#define DELAY 1000
 #define LOG_BATTERY_DATA 1
 
 uint32_t buzzerTime = 0;  // in ms
@@ -30,6 +30,9 @@ void TaskBattery(void* pvParameters) {
       Serial.print("Battery voltage: ");
       Serial.print(batteryLevel / 1000.0, 2);
       Serial.println(" V");
+    }
+    if (batteryLevel <= BATTERY_EMPTY) {
+      Serial.println("Warning: battery is empty!");
     }
     setParameter(PARAM_BATTERY, batteryLevel);
     vTaskDelay(DELAY);

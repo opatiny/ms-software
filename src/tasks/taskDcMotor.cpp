@@ -27,17 +27,17 @@ void TaskDcMotor(void* pvParameters) {
   // initally stop the motor
   analogWrite(MOTOR_LEFT_PIN1, 0);
   analogWrite(MOTOR_LEFT_PIN2, 0);
-  setParameter(PARAM_MOTOR_LEFT_SPEED, 0);
+  setParameter(PARAM_MOTOR_LEFT_SPEED_CMD, 100);
+  setParameter(PARAM_MOTOR_RIGHT_SPEED_CMD, 100);
   setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
-  setParameter(PARAM_MOTOR_RIGHT_SPEED, 0);
   setParameter(PARAM_MOTOR_RIGHT_MODE, MOTOR_STOP);
 
-  setParameter(PARAM_MOTOR_DELAY, 10);  // ms
+  setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   int previousMode = MOTOR_STOP;
 
   while (true) {
-    int currentSpeed = getParameter(PARAM_MOTOR_LEFT_SPEED);
+    int currentSpeed = getParameter(PARAM_MOTOR_LEFT_SPEED_CMD);
     int currentMode = getParameter(PARAM_MOTOR_LEFT_MODE);
 
     switch (currentMode) {
@@ -49,7 +49,8 @@ void TaskDcMotor(void* pvParameters) {
           if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
             Serial.println("Motor constant speed mode");
           }
-          speedRamp(&leftMotor, currentSpeed, getParameter(PARAM_MOTOR_DELAY));
+          speedRamp(&leftMotor, currentSpeed,
+                    getParameter(PARAM_MOTOR_RAMP_STEP));
         }
         break;
       case MOTOR_MOVE_SECONDS: {
@@ -60,16 +61,27 @@ void TaskDcMotor(void* pvParameters) {
           Serial.print(" seconds at speed ");
           Serial.println(currentSpeed);
         }
-        moveSeconds(&leftMotor, delaySeconds, currentSpeed, 10);
-        setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
+        moveSeconds(&leftMotor, delaySeconds, currentSpeed,
+                    getParameter(PARAM_MOTOR_RAMP_STEP));
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
           Serial.println("End of movement");
         }
         break;
       }
-      case MOTOR_MOVE_DEGREES:
-        Serial.println("Motor move degrees mode");
+      case MOTOR_MOVE_DEGREES: {
+        int degrees = getParameter(PARAM_MOTOR_LEFT_ANGLE_CMD);
+        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+          Serial.print("Move for ");
+          Serial.print(degrees);
+          Serial.print(" degrees at speed ");
+          Serial.println(currentSpeed);
+        }
+        moveDegrees(&leftMotor, degrees, currentSpeed);
+        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+          Serial.println("End of movement");
+        }
         break;
+      }
       case MOTOR_SHORT: {
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
           int delay = 1;
@@ -79,7 +91,7 @@ void TaskDcMotor(void* pvParameters) {
           Serial.print(" seconds at speed ");
           Serial.println(currentSpeed);
         }
-        shortFullSpeed(&leftMotor, currentSpeed, 5);
+        shortFullSpeed(&leftMotor, currentSpeed, 1);
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
         break;
       }

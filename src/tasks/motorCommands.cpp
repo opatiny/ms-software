@@ -1,10 +1,11 @@
 #include "./motorCommands.h"
 #include <utilities/params.h>
+#include "./taskDcMotor.h"
 
 #define RAMP_UP_DOWN_DEBUG 0
 
 Motor leftMotor = {
-  speedParameter : PARAM_MOTOR_LEFT_SPEED,
+  speedParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
   modeParameter : PARAM_MOTOR_LEFT_MODE,
   encoderParameter : PARAM_ENCODER_LEFT,
   speed : 0,
@@ -13,7 +14,7 @@ Motor leftMotor = {
 };
 
 Motor rightMotor = {
-  speedParameter : PARAM_MOTOR_RIGHT_SPEED,
+  speedParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
   modeParameter : PARAM_MOTOR_RIGHT_MODE,
   encoderParameter : PARAM_ENCODER_RIGHT,
   speed : 0,
@@ -42,10 +43,22 @@ int angleToCounts(int angle) {
  * @param degrees Number of degrees to rotate.
  * @param speed Speed of the motor (0 to 255)
  */
-void moveDegrees(Motor motor, int degrees, int speed) {
+void moveDegrees(Motor* motor, int degrees, int speed) {
   int counts = angleToCounts(degrees);
-  int startCounts = getParameter(motor.encoderParameter);
+  int startCounts = getParameter(motor->encoderParameter);
   int targetCounts = startCounts + counts;
+  speedRamp(motor, speed);
+  if (speed > 0) {
+    while (getParameter(motor->encoderParameter) < targetCounts) {
+      vTaskDelay(1);
+    }
+  } else {
+    while (getParameter(motor->encoderParameter) > targetCounts) {
+      vTaskDelay(1);
+    }
+  }
+  speedRamp(motor, 0);
+  setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
 }
 
 /**
@@ -57,7 +70,8 @@ void moveDegrees(Motor motor, int degrees, int speed) {
 void moveSeconds(Motor* motor, int seconds, int speed, int rampDelay) {
   speedRamp(motor, speed, rampDelay);
   vTaskDelay(seconds * 1000);
-  stopMotor(motor);
+  speedRamp(motor, 0, rampDelay);
+  setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
 }
 
 /**
@@ -87,7 +101,10 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
     Serial.print("speed ramp: ");
     Serial.print(initialSpeed);
     Serial.print(" -> ");
-    Serial.println(finalSpeed);
+    Serial.print(finalSpeed);
+    Serial.print(" with ");
+    Serial.print(rampDelay);
+    Serial.println(" ms steps");
   }
 
   if (initialSpeed > finalSpeed) {
@@ -116,7 +133,6 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
     }
   }
   motor->speed = finalSpeed;
-  setParameter(motor->speedParameter, finalSpeed);
 }
 
 /**

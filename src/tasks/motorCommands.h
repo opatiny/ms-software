@@ -28,10 +28,11 @@ extern Motor rightMotor;
 
 /**
  * Direction in which the motor spins.
- * - FORWARD: 0
- * - BACKWARD: 1
+ *
+ * - BACKWARD: 0
+ * - FORWARD: 1
  */
-enum Direction { FORWARD, BACKWARD };
+enum Direction { BACKWARD, FORWARD };
 
 void stopMotor(Motor* motor);
 void rampDown(Motor* motor,
@@ -52,4 +53,4 @@ void moveSeconds(Motor* motor,
                  int speed,
                  int rampDelay = DEFAULT_RAMP_DELAY);
 
-void moveDegrees(Motor motor, int degrees, int speed);
+void moveDegrees(Motor* motor, int degrees, int speed);
