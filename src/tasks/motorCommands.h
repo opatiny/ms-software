@@ -26,6 +26,11 @@ struct Motor {
 extern Motor leftMotor;
 extern Motor rightMotor;
 
+/**
+ * Direction in which the motor spins.
+ * - FORWARD: 0
+ * - BACKWARD: 1
+ */
 enum Direction { FORWARD, BACKWARD };
 
 void stopMotor(Motor* motor);

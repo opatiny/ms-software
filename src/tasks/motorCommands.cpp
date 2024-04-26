@@ -1,6 +1,8 @@
 #include "./motorCommands.h"
 #include <utilities/params.h>
 
+#define RAMP_UP_DOWN_DEBUG 1
+
 Motor leftMotor = {
   speedParameter : PARAM_MOTOR_LEFT_SPEED,
   modeParameter : PARAM_MOTOR_LEFT_MODE,
@@ -91,22 +93,24 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
   }
 
   if (initialSpeed > finalSpeed) {
-    if (initialSpeed > 0) {
-      if (finalSpeed > 0) {
+    if (initialSpeed >= 0) {
+      if (finalSpeed >= 0) {
         rampDown(motor, FORWARD, finalSpeed, rampDelay);
       } else {
         rampDown(motor, FORWARD, 0, rampDelay);
+        motor->speed = 0;
         rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
       }
     } else {
       rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
     }
   } else {
-    if (initialSpeed > 0) {
-      if (finalSpeed > 0) {
+    if (initialSpeed <= 0) {
+      if (finalSpeed <= 0) {
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       } else {
         rampDown(motor, BACKWARD, 0, rampDelay);
+        motor->speed = 0;
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       }
     } else {
@@ -129,6 +133,14 @@ void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay) {
   int initialSpeed = motor->speed;
   if (initialSpeed < 0) {
     initialSpeed = -initialSpeed;
+  }
+  if (RAMP_UP_DOWN_DEBUG) {
+    Serial.print("Ramp up: ");
+    Serial.print(initialSpeed);
+    Serial.print(" -> ");
+    Serial.print(finalSpeed);
+    Serial.print(", direction: ");
+    Serial.println(direction);
   }
   switch (direction) {
     case FORWARD:
@@ -163,6 +175,14 @@ void rampDown(Motor* motor,
   int initialSpeed = motor->speed;
   if (initialSpeed < 0) {
     initialSpeed = -initialSpeed;
+  }
+  if (RAMP_UP_DOWN_DEBUG) {
+    Serial.print("Ramp down: ");
+    Serial.print(initialSpeed);
+    Serial.print(" -> ");
+    Serial.print(finalSpeed);
+    Serial.print(", direction: ");
+    Serial.println(direction);
   }
   switch (direction) {
     case FORWARD:

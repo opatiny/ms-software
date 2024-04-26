@@ -4,7 +4,7 @@
 #include <utilities/params.h>
 #include "./taskBattery.h"
 
-#define DELAY 5
+#define DELAY 1000
 #define LOG_BATTERY_DATA 1
 
 uint32_t buzzerTime = 0;  // in ms

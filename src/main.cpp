@@ -46,7 +46,7 @@ void setup() {
   // taskBuzzer();
   // taskEncodersX4();
   // taskEncodersX4();
-  // taskBattery();
+  taskBattery();
   // taskButton();
   taskEventSourceSender();
   taskBlink();

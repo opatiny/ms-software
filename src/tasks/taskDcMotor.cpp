@@ -7,7 +7,7 @@
  *   - motor speed: ommands AA (left) and AB (right)
  *     - speed is in range [-255,255]
  *     - 0 means stop
- *     - positive values means forwardß
+ *     - positive values means forward
  *     - negative values means backward
  *
  * Debug for this thread: U7
@@ -27,16 +27,23 @@ void TaskDcMotor(void* pvParameters) {
   // initally stop the motor
   analogWrite(MOTOR_LEFT_PIN1, 0);
   analogWrite(MOTOR_LEFT_PIN2, 0);
+  setParameter(PARAM_MOTOR_LEFT_SPEED, 0);
+  setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
+  setParameter(PARAM_MOTOR_RIGHT_SPEED, 0);
+  setParameter(PARAM_MOTOR_RIGHT_MODE, MOTOR_STOP);
+
+  int previousMode = MOTOR_STOP;
 
   while (true) {
     int currentSpeed = getParameter(PARAM_MOTOR_LEFT_SPEED);
+    int currentMode = getParameter(PARAM_MOTOR_LEFT_MODE);
 
-    switch (getParameter(PARAM_MOTOR_LEFT_MODE)) {
+    switch (currentMode) {
       case MOTOR_STOP:
         stopMotor(&leftMotor);
         break;
       case MOTOR_CONSTANT_SPEED:
-        if (currentSpeed != leftMotor.speed) {
+        if (previousMode != currentMode || currentSpeed != leftMotor.speed) {
           if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
             Serial.println("Motor constant speed mode");
           }
@@ -77,6 +84,7 @@ void TaskDcMotor(void* pvParameters) {
         setParameter(PARAM_MOTOR_LEFT_MODE, MOTOR_STOP);
         break;
     }
+    previousMode = currentMode;
     vTaskDelay(1000);
   }
 }
