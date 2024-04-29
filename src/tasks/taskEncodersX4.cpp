@@ -9,6 +9,7 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
+#include "../pinMapping.h"
 
 #include "motorCommands.h"
 #include "taskEncoders.h"
@@ -44,7 +45,7 @@ void TaskEncodersX4(void* pvParameters) {
     if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
       Serial.print(encoderTime);
       Serial.print(", \t");
-      encoderTime += DELAY;
+      encoderTime = millis();
       Serial.print(*leftEncoderPt);
       Serial.print(", \t");
       Serial.print(*rightEncoderPt);

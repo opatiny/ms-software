@@ -2,8 +2,6 @@
 
 #include <pwmWrite.h>
 
-#define BUZZER_PIN D0
-
 #define NB_REPETITIONS_ALARM 4
 
 enum BuzzerModes {

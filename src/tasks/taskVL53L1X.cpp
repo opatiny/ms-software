@@ -8,6 +8,7 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
+#include "../pinMapping.h"
 
 #include "./taskVl53L1X.h"
 
@@ -45,8 +46,6 @@ void TaskVL53L1X(void* pvParameters) {
   }
 
   int16_t distance;
-  int debugCounter = 0;
-  int time = 0;
   while (true) {
     vTaskDelay(DISTANCE_TASK_DELAY);
     for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
@@ -61,8 +60,7 @@ void TaskVL53L1X(void* pvParameters) {
     if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
       switch (getParameter(PARAM_DISTANCE_DEBUG_MODE)) {
         case CONSTANT:
-          time += DISTANCE_TASK_DELAY / 1000;
-          Serial.print(time);
+          Serial.print(millis());
           for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
             Serial.print(F(",\t"));
             Serial.print(getParameter(distancesParameters[i]));

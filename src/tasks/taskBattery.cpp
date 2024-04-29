@@ -2,7 +2,9 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
+#include "../pinMapping.h"
 #include "./taskBattery.h"
+#include "./taskDcMotor.h"
 
 #define DELAY 1000
 #define LOG_BATTERY_DATA 1

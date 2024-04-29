@@ -1,5 +1,6 @@
 #include "./motorCommands.h"
 #include <utilities/params.h>
+#include "../pinMapping.h"
 #include "./taskDcMotor.h"
 
 #define RAMP_UP_DOWN_DEBUG 0

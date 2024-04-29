@@ -1,6 +1,7 @@
 #include "./taskBuzzer.h"
 #include <globalConfig.h>
 #include <utilities/params.h>
+#include "../pinMapping.h"
 
 Pwm buzzer = Pwm();  // constructor
 

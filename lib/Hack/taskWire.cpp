@@ -5,6 +5,7 @@
 
 #include <Wire.h>
 
+#include "../../src/pinMapping.h"
 #include "./globalConfig.h"
 #include "./taskWire.h"
 #include "./utilities/params.h"
@@ -19,7 +20,7 @@ void TaskWire(void* pvParameters) {
   vTaskDelay(100);
   (void)pvParameters;
 
-  Wire.begin(SDA, SCL);
+  Wire.begin(SDA_PIN, SCL_PIN);
 
   while (true) {
     wireUpdateList();

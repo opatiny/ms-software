@@ -2,11 +2,10 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
+#include "../pinMapping.h"
 
 #include "./taskButton.h"
 #include "./taskVl53L1X.h"
-
-#define LED_PIN D3
 
 void buttonRoutine();
 void setButtonFlags();

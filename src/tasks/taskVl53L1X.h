@@ -20,13 +20,6 @@ enum DistanceDebugMode { RANGING, CONSTANT, CALIBRATION };
 #define VL53_FRONT_RIGHT_ADDRESS 0x2D
 #define VL53_RIGHT_ADDRESS 0x2E
 
-// shutdown pins: device is off when pin is low
-#define XSHUT_PIN_LEFT D8
-#define XSHUT_PIN_FRONT_LEFT D7
-#define XSHUT_PIN_FRONT 0
-#define XSHUT_PIN_FRONT_RIGHT 0
-#define XSHUT_PIN_RIGHT 0
-
 /**
  * Time to perform a measurement. 140 ms is the min time for max range of 4
  * meters.

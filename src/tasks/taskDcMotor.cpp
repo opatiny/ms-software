@@ -15,6 +15,7 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
+#include "../pinMapping.h"
 
 #include "./motorCommands.h"
 #include "./taskDcMotor.h"
