@@ -9,6 +9,7 @@
 #include "./tasks/taskBuzzer.h"
 #include "./tasks/taskDcMotor.h"
 #include "./tasks/taskEncoders.h"
+#include "./tasks/taskRgbLed.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 
@@ -48,6 +49,7 @@ void setup() {
   // taskEncodersX4();
   // taskBattery();
   // taskButton();
+  taskRgbLed();
   // taskEventSourceSender();
   taskBlink();
 }

@@ -10,7 +10,7 @@
 #define BATTERY_PIN A0
 #define BUTTON_PIN D2
 #define BUZZER_PIN D0
-#define LED_PIN D3
+#define BLINK_LED_PIN D3
 
 // motor pins
 #define MOTOR_LEFT_PIN1 D9
@@ -40,7 +40,8 @@
 #define BATTERY_PIN A8
 #define BUTTON_PIN 47
 #define BUZZER_PIN 48
-#define LED_PIN 38
+#define BLINK_LED_PIN 2
+#define RGB_LED_PIN 38
 
 // motor pins
 #define MOTOR_LEFT_PIN1 36   // CANT BE USED -> MEMORY

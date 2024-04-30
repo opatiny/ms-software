@@ -16,6 +16,7 @@ enum DebugMode {
   DEBUG_ENCODERS,          // 5
   DEBUG_BUTTON,            // 6
   DEBUG_MOTORS,            // 7
+  DEBUG_RGB_LED,           // 8
 };
 
 // SERIAL PARAMETERS
@@ -69,13 +70,16 @@ extern int16_t parameters[MAX_PARAM];
 
 #define PARAM_BUTTON 32  // AG
 
-/**
- * Angle in degrees the motors should move if MOVE_DEGREES mode is on.
- */
 #define PARAM_DISTANCE_DEBUG_MODE 33  // AH
 #define PARAM_MOTOR_RAMP_STEP 34      // AI
 
+/**
+ * Angle in degrees the motors should move if MOVE_DEGREES mode is on.
+ */
 #define PARAM_MOTOR_LEFT_ANGLE_CMD 35   // AJ
 #define PARAM_MOTOR_RIGHT_ANGLE_CMD 36  // AK
+
+#define PARAM_RGB_LED_COLOR 37       // AL
+#define PARAM_RGB_LED_BRIGHTNESS 38  // AM
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0

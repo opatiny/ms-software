@@ -12,19 +12,19 @@ void setButtonFlags();
 
 void TaskButton(void* pvParameters) {
   pinMode(BUTTON_PIN, INPUT);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(BLINK_LED_PIN, OUTPUT);
 
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonRoutine, CHANGE);
 
   setParameter(PARAM_BUTTON, BUTTON_RELEASED);
 
-  digitalWrite(LED_PIN, LOW);
+  digitalWrite(BLINK_LED_PIN, LOW);
 
   while (true) {
     if (getParameter(PARAM_BUTTON) == BUTTON_PRESSED) {
-      digitalWrite(LED_PIN, HIGH);
+      digitalWrite(BLINK_LED_PIN, HIGH);
     } else {
-      digitalWrite(LED_PIN, LOW);
+      digitalWrite(BLINK_LED_PIN, LOW);
     }
     vTaskDelay(100);
   }
