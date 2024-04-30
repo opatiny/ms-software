@@ -31,9 +31,7 @@ void TaskRgbLed(void* pvParameters) {
     }
 
     pixels.setBrightness(brightness);
-    pixels.setPixelColor(
-        0, pixels.Color(colors[colorIndex].r, colors[colorIndex].g,
-                        colors[colorIndex].b));
+    pixels.setPixelColor(0, getColorFromIndex(colorIndex));
     pixels.show();  // todo: go check the doc, there's something about
                     // interrupts being disabled for a short time!!
     vTaskDelay(1000);
@@ -50,7 +48,13 @@ void taskRgbLed() {
                           NULL, 1);  // 1 specifies the core
 }
 
+/**
+ * @brief Convert the index to the corresponding RGB color.
+ */
 uint32_t getColorFromIndex(int colorIndex) {
+  if (colorIndex >= NB_RGB_COLORS) {
+    colorIndex = 0;
+  }
   return pixels.Color(colors[colorIndex].r, colors[colorIndex].g,
                       colors[colorIndex].b);
 }
