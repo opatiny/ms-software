@@ -19,7 +19,6 @@ enum DebugMode {
 };
 
 // SERIAL PARAMETERS
-#define SERIAL_SPEED 115200
 
 #define MAX_PARAM 52
 extern int16_t parameters[MAX_PARAM];

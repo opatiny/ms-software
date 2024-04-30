@@ -35,7 +35,7 @@ We base ourself on this repository: https://github.com/Hackuarium/esp32-c3
 ## Setup serial task and serial parameters
 
 - start by copying the `taskSerial` files and the related useful files / tasks
-- `globalConfig.h`: create a config file that will be called everywhere and that
+- `globalConfig.h`: create a config file that will be called everywhere and that contains the list of all the serial parameters
 
 ## Adding dependencies arduino (libraries) to PIO project
 

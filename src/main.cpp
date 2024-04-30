@@ -3,6 +3,7 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
+#include "./pinMapping.h"
 #include "./tasks/taskBattery.h"
 #include "./tasks/taskButton.h"
 #include "./tasks/taskBuzzer.h"
@@ -23,31 +24,31 @@ void taskEventSourceSender();
 void taskDcMotorTest();
 
 void setup() {
-  // start serial communication
-  Serial.begin(SERIAL_SPEED);  // only for debug purpose
+  // // start serial communication
+  // Serial.begin(SERIAL_SPEED);  // only for debug purpose
 
-  // start I2C communication
-  xSemaphoreGive(xSemaphoreWire);
-  // Wire.begin(SDA, SCL);
-  // Wire.setClock(I2C_SPEED);
+  // // start I2C communication
+  // xSemaphoreGive(xSemaphoreWire);
+  // // Wire.begin(SDA, SCL);
+  // // Wire.setClock(I2C_SPEED);
 
-  // set default serial parameters values in case of reboot
-  // todo: this doesn't work -> setAndSave? doesn't work either
-  setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
+  // // set default serial parameters values in case of reboot
+  // // todo: this doesn't work -> setAndSave? doesn't work either
+  // setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
 
-  setupParameters();
-  taskSerial();
-  taskWifi();
-  taskWebserver();
-  taskWire();
+  // setupParameters();
+  // taskSerial();
+  // taskWifi();
+  // taskWebserver();
+  // taskWire();
   // taskGY521();
   // taskVL53L1X();
-  taskDcMotor();
+  // taskDcMotor();
   // taskBuzzer();
-  taskEncodersX4();
-  taskBattery();
+  // taskEncodersX4();
+  // taskBattery();
   // taskButton();
-  taskEventSourceSender();
+  // taskEventSourceSender();
   taskBlink();
 }
 

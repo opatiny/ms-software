@@ -32,6 +32,9 @@
 #define SDA_PIN SDA
 #define SCL_PIN SCL
 
+// serial communication
+#define SERIAL_SPEED 115200
+
 #elif BOARD == ESPRESSIF
 
 #define BATTERY_PIN A8
@@ -60,5 +63,8 @@
 // I2C
 #define SDA_PIN SDA
 #define SCL_PIN SCL
+
+// serial communication
+#define SERIAL_SPEED 115200
 
 #endif

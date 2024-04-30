@@ -39,13 +39,12 @@ void TaskEncodersX4(void* pvParameters) {
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
                   CHANGE);
 
-  int encoderTime = 0;
   while (true) {
     vTaskDelay(DELAY);
     if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
-      Serial.print(encoderTime);
+      int time = millis();
+      Serial.print(time);
       Serial.print(", \t");
-      encoderTime = millis();
       Serial.print(*leftEncoderPt);
       Serial.print(", \t");
       Serial.print(*rightEncoderPt);
