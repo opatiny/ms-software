@@ -62,7 +62,8 @@ There is another task called `taskWifiAP` which allows the esp to appear as an a
 - to access all executables that are installed by the platformio extension
 - add this line to .zshrc : `export PATH=$PATH:~/.platformio/penv/bin`
 
-With this, we can for instance dump a folder in the microcontroller memory memory. An example of this can be found in the next section.
+With this, we can for instance dump a folder in the microcontroller memory. An example of this can be found in the next section.
+If you have problems with the pio commands, check that all serial monitors are closed, because pio is also using serial.
 
 ## Setting up webserver task
 

@@ -1,22 +1,23 @@
 #include <Arduino.h>
-
+#include "../../src/pinMapping.h"
 void TaskBlink(void* pvParameters) {
   (void)pvParameters;
-
-  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.println("set led pin as output");
+  pinMode(LED_PIN, OUTPUT);
 
   while (true) {
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(LED_PIN, HIGH);
+    Serial.println("High");
     vTaskDelay(500);
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(LED_PIN, LOW);
+    Serial.println("Low");
     vTaskDelay(500);
   }
 }
 
 void taskBlink() {
-  // Now set up two tasks to run independently.
   xTaskCreatePinnedToCore(TaskBlink, "TaskBlink",
-                          1024,  // Crashes if less than 1024 !!!!
+                          2048,  // Crashes if less than 1024 !!!!
                                  // This stack size can be checked & adjusted by
                                  // reading the Stack Highwater
                           NULL,

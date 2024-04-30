@@ -24,20 +24,20 @@ void taskEventSourceSender();
 void taskDcMotorTest();
 
 void setup() {
-  // // start serial communication
-  // Serial.begin(SERIAL_SPEED);  // only for debug purpose
+  // start serial communication
+  Serial.begin(SERIAL_SPEED);  // only for debug purpose
 
   // // start I2C communication
   // xSemaphoreGive(xSemaphoreWire);
   // // Wire.begin(SDA, SCL);
   // // Wire.setClock(I2C_SPEED);
 
-  // // set default serial parameters values in case of reboot
-  // // todo: this doesn't work -> setAndSave? doesn't work either
-  // setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
+  // set default serial parameters values in case of reboot
+  // todo: this doesn't work -> setAndSave? doesn't work either
+  setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
 
-  // setupParameters();
-  // taskSerial();
+  setupParameters();
+  taskSerial();
   // taskWifi();
   // taskWebserver();
   // taskWire();
