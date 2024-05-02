@@ -20,7 +20,7 @@ Encoder* rightEncoderPt = &(rightMotor.encoderCounts);
 /**
  * Delay between each encoder reading.
  */
-#define DELAY 1000
+#define DELAY 50
 
 void counterRoutine(Encoder* encoderCounter,
                     int interruptPin,
