@@ -21,7 +21,7 @@ Encoder* rightEncoderPt = &(rightMotor.encoderCounts);
 /**
  * Delay between each encoder reading.
  */
-#define DELAY 5
+#define DELAY 1000
 
 void counterRoutine(Encoder* encoderCounter,
                     int interruptPin,
@@ -29,14 +29,28 @@ void counterRoutine(Encoder* encoderCounter,
                     int increment);
 void leftCounterPin1();
 void leftCounterPin2();
+void rightCounterPin1();
+void rightCounterPin2();
 
+// todo: try to blink on the pins and use multimeter to see if blinks
+// todo: trigger interrupt manually by pulling up / down
 void TaskEncodersX4(void* pvParameters) {
+  // left encoder
   pinMode(LEFT_ENCODER_PIN1, INPUT_PULLUP);
   pinMode(LEFT_ENCODER_PIN2, INPUT_PULLUP);
 
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN1), leftCounterPin1,
                   CHANGE);
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
+                  CHANGE);
+
+  // right encoder
+  pinMode(RIGHT_ENCODER_PIN1, INPUT_PULLUP);
+  pinMode(RIGHT_ENCODER_PIN2, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_PIN1), rightCounterPin1,
+                  CHANGE);
+  attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_PIN2), rightCounterPin2,
                   CHANGE);
 
   while (true) {
@@ -65,6 +79,7 @@ void taskEncodersX4() {
                               // being the highest, and 0 being the lowest.
                           NULL, 1);
 }
+
 uint32_t timeLeft = 0;
 
 void leftCounterPin1() {
@@ -72,7 +87,15 @@ void leftCounterPin1() {
 }
 
 void leftCounterPin2() {
-  counterRoutine(rightEncoderPt, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1, -1);
+  counterRoutine(leftEncoderPt, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1, -1);
+}
+
+void rightCounterPin1() {
+  counterRoutine(rightEncoderPt, RIGHT_ENCODER_PIN1, RIGHT_ENCODER_PIN2, 1);
+}
+
+void rightCounterPin2() {
+  counterRoutine(rightEncoderPt, RIGHT_ENCODER_PIN2, RIGHT_ENCODER_PIN1, -1);
 }
 
 /**

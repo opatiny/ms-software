@@ -1,8 +1,7 @@
 /**
  * Task for the control of the on board RGB LED.
- *   - color of the LED is set by the parameter PARAM_RGB_LED_COLOR.
- *   - brightness of the LED is set by the parameter PARAM_RGB_LED_BRIGHTNESS
- * (0-255).
+ *   - color: AL
+ *   - brightness: AM (0-255)
  */
 
 #include <Adafruit_NeoPixel.h>

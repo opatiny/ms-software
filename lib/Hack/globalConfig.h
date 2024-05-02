@@ -17,6 +17,7 @@ enum DebugMode {
   DEBUG_BUTTON,            // 6
   DEBUG_MOTORS,            // 7
   DEBUG_RGB_LED,           // 8
+  DEBUG_BUZZER,            // 9
 };
 
 // SERIAL PARAMETERS

@@ -49,10 +49,10 @@
 #define MOTOR_RIGHT_PIN1 38  // CANT BE USED -> RGB LED
 #define MOTOR_RIGHT_PIN2 37  // CANT BE USED -> MEMORY
 
-#define LEFT_ENCODER_PIN1 40
-#define LEFT_ENCODER_PIN2 39
-#define RIGHT_ENCODER_PIN1 42
-#define RIGHT_ENCODER_PIN2 41
+#define LEFT_ENCODER_PIN1 21
+#define LEFT_ENCODER_PIN2 19
+#define RIGHT_ENCODER_PIN1 41
+#define RIGHT_ENCODER_PIN2 42
 
 // distance sensors shutdown pins: device is off when pin is low
 #define XSHUT_PIN_LEFT 13

@@ -1,3 +1,10 @@
+/**
+ * Thread for the control of the buzzer.
+ *
+ * Buzzer mode: T
+ * Debug: U9
+ */
+
 #include "./taskBuzzer.h"
 #include <globalConfig.h>
 #include <utilities/params.h>
@@ -10,8 +17,14 @@ void TaskBuzzer(void* pvParameters) {
 
   int repetitionsAlarm = 0;
   setAndSaveParameter(PARAM_BUZZER, BUZZER_OFF);
-
+  int previousMode = BUZZER_OFF;
   while (true) {
+    if (getParameter(PARAM_DEBUG) == DEBUG_BUZZER &&
+        getParameter(PARAM_BUZZER) != previousMode) {
+      Serial.print("Buzzer mode: ");
+      Serial.println(getParameter(PARAM_BUZZER));
+      previousMode = getParameter(PARAM_BUZZER);
+    }
     switch (getParameter(PARAM_BUZZER)) {
       case BUZZER_OFF:
         // duration of zero turn output off
