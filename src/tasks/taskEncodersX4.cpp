@@ -4,7 +4,6 @@
  * This should give us 360 counts per revolution of the wheel.
  *
  * Debug: U5
- * Log data for matlab: U8
  */
 
 #include <globalConfig.h>
@@ -32,8 +31,6 @@ void leftCounterPin2();
 void rightCounterPin1();
 void rightCounterPin2();
 
-// todo: try to blink on the pins and use multimeter to see if blinks
-// todo: trigger interrupt manually by pulling up / down
 void TaskEncodersX4(void* pvParameters) {
   // left encoder
   pinMode(LEFT_ENCODER_PIN1, INPUT_PULLUP);

@@ -1,6 +1,6 @@
 #pragma once
 
-#define NB_DISTANCE_SENSORS 2
+#define NB_DISTANCE_SENSORS 4
 
 /**
  * Specify the information you want to print to serial.

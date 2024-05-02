@@ -1,6 +1,8 @@
 /**
  * Thread to handle the I2C communication with the five VL53L1X distance
  * sensors.
+ *
+ * Debug: U1
  */
 
 #include <Adafruit_Sensor.h>
@@ -20,26 +22,24 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
                        int addresses[]);
 
-int addresses[] = {VL53_LEFT_ADDRESS, VL53_FRONT_LEFT_ADDRESS,
-                   VL53_FRONT_ADDRESS, VL53_FRONT_RIGHT_ADDRESS,
-                   VL53_RIGHT_ADDRESS};
+// todo: add the left sensor back
+int addresses[] = {  // VL53_LEFT_ADDRESS,
+    VL53_FRONT_LEFT_ADDRESS, VL53_FRONT_ADDRESS, VL53_FRONT_RIGHT_ADDRESS,
+    VL53_RIGHT_ADDRESS};
 
-int distancesParameters[] = {PARAM_DISTANCE_LEFT, PARAM_DISTANCE_FRONT_LEFT,
-                             PARAM_DISTANCE_FRONT, PARAM_DISTANCE_FRONT_RIGHT,
-                             PARAM_DISTANCE_RIGHT};
+int distancesParameters[] = {  // PARAM_DISTANCE_LEFT,
+    PARAM_DISTANCE_FRONT_LEFT, PARAM_DISTANCE_FRONT, PARAM_DISTANCE_FRONT_RIGHT,
+    PARAM_DISTANCE_RIGHT};
 
-int xshutPins[] = {XSHUT_PIN_LEFT, XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT,
-                   XSHUT_PIN_FRONT_RIGHT, XSHUT_PIN_RIGHT};
+int xshutPins[] = {  // XSHUT_PIN_LEFT,
+    XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT, XSHUT_PIN_FRONT_RIGHT,
+    XSHUT_PIN_RIGHT};
 
 VL53L1X sensors[NB_DISTANCE_SENSORS];
 
 void TaskVL53L1X(void* pvParameters) {
-  Serial.print("Debug value: ");
-  Serial.println(getParameter(PARAM_DEBUG));
-
-  vTaskDelay(1000);
-
   initialiseVL53L1X(sensors, xshutPins, addresses);
+  vTaskDelay(1000);
 
   if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
     Serial.println(F("VL53L1X sensors initialized"));
@@ -127,7 +127,7 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
     }
 
     if (addresses[i] == VL53_DEFAULT_ADDRESS) {
-      Serial.println("New adresses should be different from the default one");
+      Serial.println("New adress should be different from the default one");
     }
 
     sensors[i].setAddress(addresses[i]);
