@@ -37,7 +37,7 @@
 
 #elif BOARD == ESPRESSIF
 
-#define BATTERY_PIN A8
+#define BATTERY_PIN 20
 #define BUTTON_PIN 47
 #define BUZZER_PIN 48
 #define BLINK_LED_PIN 2

@@ -1,3 +1,10 @@
+/**
+ * Task to measure battery voltage.
+ *
+ * Debug: U3
+ * Log data for matlab: U4
+ */
+
 #include <Arduino.h>
 
 #include <globalConfig.h>
@@ -33,9 +40,9 @@ void TaskBattery(void* pvParameters) {
       Serial.print(batteryLevel / 1000.0, 2);
       Serial.println(" V");
     }
-    if (batteryLevel <= BATTERY_EMPTY) {
-      Serial.println("Warning: battery is empty!");
-    }
+    // if (batteryLevel <= BATTERY_EMPTY) {
+    //   Serial.println("Warning: battery is empty!");
+    // }
     setParameter(PARAM_BATTERY, batteryLevel);
     vTaskDelay(DELAY);
   }

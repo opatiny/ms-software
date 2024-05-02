@@ -48,7 +48,7 @@ void setup() {
   // taskDcMotor();
   // taskBuzzer();
   taskEncodersX4();
-  // taskBattery();
+  taskBattery();
   taskButton();
   taskRgbLed();
   // taskEventSourceSender();
