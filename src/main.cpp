@@ -31,8 +31,9 @@ void setup() {
   // start I2C communication
   // todo: define pins as SDA SCL
   xSemaphoreGive(xSemaphoreWire);
-  Wire.begin(SDA, SCL);
+
   Wire.setClock(I2C_SPEED);
+  Wire.begin(SDA_PIN, SCL_PIN);
 
   // set default serial parameters values in case of reboot
   // todo: this doesn't work -> setAndSave? doesn't work either
@@ -43,7 +44,7 @@ void setup() {
   taskWifi();
   taskWebserver();
   taskWire();
-  // taskGY521();
+  taskGY521();
   // taskVL53L1X();
   // taskDcMotor();
   // taskBuzzer();

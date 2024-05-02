@@ -62,8 +62,8 @@
 #define XSHUT_PIN_RIGHT 11
 
 // I2C
-#define SDA_PIN SDA
-#define SCL_PIN SCL
+#define SDA_PIN 4
+#define SCL_PIN 5
 
 // serial communication
 #define SERIAL_SPEED 115200

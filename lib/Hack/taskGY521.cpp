@@ -3,6 +3,8 @@
  *
  * This script is widely based on the following script:
  * https://github.com/Hackuarium/esp32-c3/blob/8ada83e8a572f8f5f3fa828a6459efc6a0985f04/lib/hack/taskGY521.cpp
+ *
+ * Debug: U2
  */
 
 #include <Adafruit_MPU6050.h>
@@ -12,6 +14,7 @@
 #include "./utilities/params.h"
 
 #define IMU_ADDRESS 0x68
+#define LOG_DELAY 250
 
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);
@@ -30,6 +33,7 @@ void TaskGY521(void* pvParameters) {
     mpu.setFilterBandwidth(MPU6050_BAND_94_HZ);
 
     sensors_event_t a, g, temp;
+    int previousMillis = millis();
     while (true) {
       vTaskDelay(5);
       if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
@@ -41,6 +45,23 @@ void TaskGY521(void* pvParameters) {
         setParameter(PARAM_ROTATION_X, g.gyro.x * 100);
         setParameter(PARAM_ROTATION_Y, g.gyro.y * 100);
         setParameter(PARAM_ROTATION_Z, g.gyro.z * 100);
+      }
+      if (getParameter(PARAM_DEBUG) == DEBUG_IMU) {
+        if (millis() - previousMillis > LOG_DELAY) {
+          Serial.print("Acceleration: ");
+          Serial.print(getParameter(PARAM_ACCELERATION_X));
+          Serial.print(", ");
+          Serial.print(getParameter(PARAM_ACCELERATION_Y));
+          Serial.print(", ");
+          Serial.print(getParameter(PARAM_ACCELERATION_Z));
+          Serial.print(" | Rotation: ");
+          Serial.print(getParameter(PARAM_ROTATION_X));
+          Serial.print(", ");
+          Serial.print(getParameter(PARAM_ROTATION_Y));
+          Serial.print(", ");
+          Serial.println(getParameter(PARAM_ROTATION_Z));
+          previousMillis = millis();
+        }
       }
     }
   }
