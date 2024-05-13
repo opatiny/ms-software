@@ -3,6 +3,9 @@
 #include "../globalConfig.h"
 #include "./params.h"
 
+/**
+ * @brief Print the accelerometer's data.
+ */
 void printImu(ImuData* imuData) {
   Serial.print("\t- Acceleration: ");
   Serial.print(imuData->acceleration.x);
@@ -18,6 +21,9 @@ void printImu(ImuData* imuData) {
   Serial.println(imuData->rotation.z);
 }
 
+/**
+ * @brief Print the distance sensors' data.
+ */
 void printDistances(int* distances) {
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
     Serial.print(distances[i]);
@@ -26,6 +32,9 @@ void printDistances(int* distances) {
   Serial.println();
 }
 
+/**
+ * @brief Print the data of one of the motors.
+ */
 void printMotor(Motor* motor) {
   Serial.print("\t - Pins: ");
   Serial.print(motor->pin1);
@@ -43,6 +52,9 @@ void printMotor(Motor* motor) {
   Serial.println(motor->encoderCounts);
 }
 
+/**
+ * @brief Print the current state of the robot.
+ */
 void printState() {
   Serial.println("Logging current state...\n");
   Serial.println("Left motor:");
@@ -55,6 +67,9 @@ void printState() {
   printImu(&state.imuData);
 }
 
+/**
+ * @brief Print the help for the debug modes and the current debug mode.
+ */
 void printDebug() {
   Serial.println("Use serial parameter U to switch between debug modes.");
   Serial.println("\t0) No debug");

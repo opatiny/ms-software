@@ -1,17 +1,19 @@
 /**
- * Thread to control the two DC motors.
+ * Thread to control the movement of the robot.
  *
- * Use the serial parameters to act on the motors.
+ * Use the serial parameters.
  *
- *   - motor mode: commands AC (left) and AD (right)
- *   - motor speed: commands AA (left) and AB (right)
+ *   - robot mode: commands A
+ *   - robot speed: commands A
  *     - speed is in range [-255,255]
  *     - 0 means stop
  *     - positive values means forward
  *     - negative values means backward
- *  - motor angle: commands AJ (left) and AK (right)
+ *  - robot angle: commands A (used for rotation modes)
+ *  - robot distance: commands A
+ *  - robot radius: commands A (used for arc mode)
  *
- * Debug: U7
+ * Debug: U10
  */
 
 #include <globalConfig.h>
@@ -25,7 +27,7 @@
 void initialiseMotor(Motor* motor, MotorParams* params);
 void motorControl(Motor* motor);
 
-void TaskDcMotor(void* pvParameters) {
+void TaskRobotMove(void* pvParameters) {
   // define parameters of the motors
   MotorParams leftMotorParams = {
     speedParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
@@ -44,7 +46,6 @@ void TaskDcMotor(void* pvParameters) {
   };
 
   // initialise the motors
-
   initialiseMotor(&state.leftMotor, &leftMotorParams);
   initialiseMotor(&state.rightMotor, &rightMotorParams);
 
@@ -52,14 +53,13 @@ void TaskDcMotor(void* pvParameters) {
   setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
-    motorControl(&state.leftMotor);
-    motorControl(&state.rightMotor);
+    robotControl(&state.leftMotor);
     vTaskDelay(1000);
   }
 }
 
-void taskDcMotor() {
-  xTaskCreatePinnedToCore(TaskDcMotor, "TaskDcMotor",
+void taskRobotMove() {
+  xTaskCreatePinnedToCore(TaskRobotMove, "TaskRobotMove",
                           4096,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
@@ -93,66 +93,25 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
   setParameter(motor->angleParameter, 90);  // degrees
 }
 
-void motorControl(Motor* motor) {
-  int targetSpeed = getParameter(motor->speedParameter);
-  int currentMode = getParameter(motor->modeParameter);
+void robotControl(State* state) {
+  int targetSpeed = getParameter(state->robot.speedParameter);
+  int currentMode = getParameter(state->robot.modeParameter);
 
   switch (currentMode) {
     case MOTOR_STOP:
-      stopMotor(motor);
+      stopRobot(robot);
       break;
     case MOTOR_CONSTANT_SPEED:
-      if (motor->previousMode != currentMode ||
-          targetSpeed != motor->currentSpeed) {
+      if (state->robot.previousMode != currentMode ||
+          targetSpeed != state->robot.currentSpeed) {
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("Motor constant speed mode");
+          Serial.println("Robot constant speed mode");
         }
         speedRamp(motor, targetSpeed, getParameter(PARAM_MOTOR_RAMP_STEP));
       }
       break;
-    case MOTOR_MOVE_SECONDS: {
-      int delaySeconds = 1;
-      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-        Serial.print("Move for ");
-        Serial.print(delaySeconds);
-        Serial.print(" seconds at speed ");
-        Serial.println(targetSpeed);
-      }
-      moveSeconds(motor, delaySeconds, targetSpeed,
-                  getParameter(PARAM_MOTOR_RAMP_STEP));
-      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-        Serial.println("End of movement");
-      }
-      break;
-    }
-    case MOTOR_MOVE_DEGREES: {
-      int degrees = getParameter(motor->angleParameter);
-      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-        Serial.print("Move for ");
-        Serial.print(degrees);
-        Serial.print(" degrees at speed ");
-        Serial.println(targetSpeed);
-      }
-      moveDegrees(motor, degrees, targetSpeed);
-      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-      }
-      break;
-    }
-    case MOTOR_SHORT: {
-      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-        int delay = 1;
-        Serial.println("Short pulse mode (only for debug)");
-        Serial.print("Motor will spin for ");
-        Serial.print(delay);
-        Serial.print(" seconds at speed ");
-        Serial.println(targetSpeed);
-      }
-      shortFullSpeed(motor, targetSpeed, 1);
-      setParameter(motor->modeParameter, MOTOR_STOP);
-      break;
-    }
     default:
-      Serial.println("Unknown motor mode");
+      Serial.println("Unknown robot movement mode");
       setParameter(motor->modeParameter, MOTOR_STOP);
       break;
   }

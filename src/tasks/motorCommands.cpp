@@ -7,6 +7,16 @@
 // set to 1 for additional debug about speed ramps
 #define RAMP_UP_DOWN_DEBUG 0
 
+// prototypes
+void rampDown(Motor* motor,
+              Direction direction,
+              int finalSpeed,
+              int rampDelay = DEFAULT_RAMP_DELAY);
+void rampUp(Motor* motor,
+            Direction direction,
+            int finalSpeed,
+            int rampDelay = DEFAULT_RAMP_DELAY);
+
 /**
  * @brief Convert nb of encoder counts to an angle in degrees.
  * todo: Is the return type int a problem?
@@ -83,12 +93,12 @@ void moveSeconds(Motor* motor, int seconds, int speed, int rampDelay) {
  * @param motor - Struct of the motor to stop
  */
 void stopMotor(Motor* motor) {
-  if (motor->speed > 0) {
+  if (motor->currentSpeed > 0) {
     rampDown(motor, FORWARD, 0);
-  } else if (motor->speed < 0) {
+  } else if (motor->currentSpeed < 0) {
     rampDown(motor, BACKWARD, 0);
   }
-  motor->speed = 0;
+  motor->currentSpeed = 0;
 }
 
 /**
@@ -100,7 +110,7 @@ void stopMotor(Motor* motor) {
  * @param rampDelay - Delay between each step of the ramp
  */
 void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
-  int initialSpeed = motor->speed;
+  int initialSpeed = motor->currentSpeed;
   if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
     Serial.print("speed ramp: ");
     Serial.print(initialSpeed);
@@ -117,7 +127,7 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
         rampDown(motor, FORWARD, finalSpeed, rampDelay);
       } else {
         rampDown(motor, FORWARD, 0, rampDelay);
-        motor->speed = 0;
+        motor->currentSpeed = 0;
         rampUp(motor, BACKWARD, -finalSpeed, rampDelay);
       }
     } else {
@@ -129,14 +139,14 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       } else {
         rampDown(motor, BACKWARD, 0, rampDelay);
-        motor->speed = 0;
+        motor->currentSpeed = 0;
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       }
     } else {
       rampDown(motor, BACKWARD, -finalSpeed, rampDelay);
     }
   }
-  motor->speed = finalSpeed;
+  motor->currentSpeed = finalSpeed;
 }
 
 /**
@@ -148,7 +158,7 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
  * @param rampDelay - Delay between each step of the ramp
  */
 void rampUp(Motor* motor, Direction direction, int finalSpeed, int rampDelay) {
-  int initialSpeed = motor->speed;
+  int initialSpeed = motor->currentSpeed;
   if (initialSpeed < 0) {
     initialSpeed = -initialSpeed;
   }
@@ -190,7 +200,7 @@ void rampDown(Motor* motor,
               Direction direction,
               int finalSpeed,
               int rampDelay) {
-  int initialSpeed = motor->speed;
+  int initialSpeed = motor->currentSpeed;
   if (initialSpeed < 0) {
     initialSpeed = -initialSpeed;
   }
@@ -233,5 +243,5 @@ void shortFullSpeed(Motor* motor, int speed, int delaySec) {
   analogWrite(motor->pin2, 0);
   vTaskDelay(delaySec * 1000);
   analogWrite(motor->pin1, 0);
-  motor->speed = 0;
+  motor->currentSpeed = 0;
 }
