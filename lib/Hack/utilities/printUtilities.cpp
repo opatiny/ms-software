@@ -1,5 +1,6 @@
 #include "./printUtilities.h"
 #include "../../src/tasks/motorCommands.h"
+#include "../globalConfig.h"
 #include "./params.h"
 
 void printImu(ImuData* imuData) {
@@ -52,4 +53,21 @@ void printState() {
   printDistances(state.distances);
   Serial.println("\nIMU data");
   printImu(&state.imuData);
+}
+
+void printDebug() {
+  Serial.println("Use serial parameter U to switch between debug modes.");
+  Serial.println("\t0) No debug");
+  Serial.println("\t1) Distance sensors");
+  Serial.println("\t2) Accelerometer");
+  Serial.println("\t3) Battery");
+  Serial.println("\t4) Battery for matlab");
+  Serial.println("\t5) Encoders");
+  Serial.println("\t6) Push button");
+  Serial.println("\t7) Motors");
+  Serial.println("\t8) RGB LED");
+  Serial.println("\t9) Buzzer");
+
+  Serial.print("\nCurrent debug mode: U");
+  Serial.println(getParameter(PARAM_DEBUG));
 }

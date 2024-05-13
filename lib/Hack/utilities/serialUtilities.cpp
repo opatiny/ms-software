@@ -78,13 +78,14 @@ void printUtilitiesHelp(Print* output) {
 }
 
 void printHelp(Print* output) {
-  output->println(F("(d)isplay state"));
+  output->println(F("(d)ebug"));
   output->println(F("(f)s"));
   output->println(F("(h)elp"));
   output->println(F("(i)2c"));
 #ifdef THR_EEPROM_LOGGER
   output->println(F("(l)og"));
 #endif
+  output->println(F("(p)rint state"));
   output->println(F("(s)ettings"));
   output->println(F("(u)tilities"));
   output->println(F("(w)ifi"));

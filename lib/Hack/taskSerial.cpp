@@ -159,8 +159,9 @@ void printResult(char* data, Print* output) {
   // we will process the commands, it means it starts with lowercase
   switch (data[0]) {
     case 'd':
-      printState();
+      printDebug();
       break;
+
     case 'h':
       printHelp(output);
       break;
@@ -176,6 +177,9 @@ void printResult(char* data, Print* output) {
       processLoggerCommand(data[1], paramValue, output);
       break;
 #endif
+    case 'p':
+      printState();
+      break;
     case 's':
       printParameters(output);
       break;
