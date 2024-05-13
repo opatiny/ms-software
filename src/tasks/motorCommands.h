@@ -13,7 +13,9 @@
 struct Motor {
   int speedParameter;
   int modeParameter;
+  int angleParameter;
   Encoder encoderCounts;
+  int previousMode;
   int speed;
   int pin1;
   int pin2;

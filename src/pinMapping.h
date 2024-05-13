@@ -39,7 +39,7 @@
 
 #define BATTERY_PIN 20
 #define BUTTON_PIN 47
-#define BUZZER_PIN 48
+#define BUZZER_PIN 6
 #define BLINK_LED_PIN 2
 #define RGB_LED_PIN 38
 

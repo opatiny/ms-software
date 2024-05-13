@@ -8,19 +8,23 @@
 Motor leftMotor = {
   speedParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
   modeParameter : PARAM_MOTOR_LEFT_MODE,
+  angleParameter : PARAM_MOTOR_LEFT_ANGLE_CMD,
   encoderCounts : 0,
+  previousMode : MOTOR_STOP,
   speed : 0,
   pin1 : MOTOR_LEFT_PIN1,
-  pin2 : MOTOR_LEFT_PIN2
+  pin2 : MOTOR_LEFT_PIN2,
 };
 
 Motor rightMotor = {
   speedParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
   modeParameter : PARAM_MOTOR_RIGHT_MODE,
+  angleParameter : PARAM_MOTOR_RIGHT_ANGLE_CMD,
   encoderCounts : 0,
+  previousMode : MOTOR_STOP,
   speed : 0,
   pin1 : MOTOR_RIGHT_PIN1,
-  pin2 : MOTOR_RIGHT_PIN2
+  pin2 : MOTOR_RIGHT_PIN2,
 };
 
 /**

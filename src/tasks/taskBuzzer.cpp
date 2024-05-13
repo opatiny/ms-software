@@ -27,7 +27,7 @@ void TaskBuzzer(void* pvParameters) {
     }
     switch (getParameter(PARAM_BUZZER)) {
       case BUZZER_OFF:
-        // duration of zero turn output off
+        // duration of zero turns output off
         buzzer.note(BUZZER_PIN, NOTE_E, 3, 0, 0);
         vTaskDelay(10);
         break;

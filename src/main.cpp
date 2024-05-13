@@ -46,13 +46,13 @@ void setup() {
   taskWire();
   taskGY521();
   taskVL53L1X();
-  // taskDcMotor();
-  // taskBuzzer();
+  taskDcMotor();
+  taskBuzzer();
   taskEncodersX4();
   taskBattery();
   taskButton();
   taskRgbLed();
-  // taskEventSourceSender();
+  taskEventSourceSender();
   taskBlink();
 }
 
