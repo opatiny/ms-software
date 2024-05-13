@@ -21,9 +21,6 @@ struct Motor {
   int pin2;
 };
 
-extern Motor leftMotor;
-extern Motor rightMotor;
-
 /**
  * Direction in which the motor spins.
  *

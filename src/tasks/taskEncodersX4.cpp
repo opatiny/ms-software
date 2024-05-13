@@ -10,17 +10,17 @@
 #include <utilities/params.h>
 #include "../pinMapping.h"
 
-#include "motorCommands.h"
+#include "../state.h"
 #include "taskEncoders.h"
-
-// Pointers to the encoders counters of the motors.
-Encoder* leftEncoderPt = &(leftMotor.encoderCounts);
-Encoder* rightEncoderPt = &(rightMotor.encoderCounts);
 
 /**
  * Delay between each encoder reading.
  */
 #define DELAY 50
+
+// Pointers to the encoders counters of the motors.
+Encoder* leftEncoderPt = &(state.leftMotor.encoderCounts);
+Encoder* rightEncoderPt = &(state.rightMotor.encoderCounts);
 
 void counterRoutine(Encoder* encoderCounter,
                     int interruptPin,

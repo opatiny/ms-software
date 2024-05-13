@@ -18,23 +18,42 @@
 #include <utilities/params.h>
 #include "../pinMapping.h"
 
+#include "../state.h"
 #include "./motorCommands.h"
 #include "./taskDcMotor.h"
 
-void initialiseMotor(Motor* motor);
+void initialiseMotor(Motor* motor, MotorParams* params);
 void motorControl(Motor* motor);
 
 void TaskDcMotor(void* pvParameters) {
-  // initialise motors
-  initialiseMotor(&leftMotor);
-  initialiseMotor(&rightMotor);
+  // define parameters of the motors
+  MotorParams leftMotorParams = {
+    speedParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
+    modeParameter : PARAM_MOTOR_LEFT_MODE,
+    angleParameter : PARAM_MOTOR_LEFT_ANGLE_CMD,
+    pin1 : MOTOR_LEFT_PIN1,
+    pin2 : MOTOR_LEFT_PIN2
+  };
+
+  MotorParams rightMotorParams = {
+    speedParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
+    modeParameter : PARAM_MOTOR_RIGHT_MODE,
+    angleParameter : PARAM_MOTOR_RIGHT_ANGLE_CMD,
+    pin1 : MOTOR_RIGHT_PIN1,
+    pin2 : MOTOR_RIGHT_PIN2
+  };
+
+  // initialise the motors
+
+  initialiseMotor(&state.leftMotor, &leftMotorParams);
+  initialiseMotor(&state.rightMotor, &rightMotorParams);
 
   // set time delay for ramps
   setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
-    motorControl(&leftMotor);
-    motorControl(&rightMotor);
+    motorControl(&state.leftMotor);
+    motorControl(&state.rightMotor);
     vTaskDelay(1000);
   }
 }
@@ -49,14 +68,26 @@ void taskDcMotor() {
                           NULL, 1);
 }
 
-void initialiseMotor(Motor* motor) {
+void initialiseMotor(Motor* motor, MotorParams* params) {
+  // setup the motor parameters
+  motor->speedParameter = params->speedParameter;
+  motor->modeParameter = params->modeParameter;
+  motor->angleParameter = params->angleParameter;
+  motor->pin1 = params->pin1;
+  motor->pin2 = params->pin2;
+  motor->previousMode = MOTOR_STOP;
+  motor->speed = 0;
+  motor->encoderCounts = 0;
+
   // we will do some PWM on the motor pins
   pinMode(motor->pin1, OUTPUT);
   pinMode(motor->pin2, OUTPUT);
+
   // initally stop the motor
   analogWrite(motor->pin1, 0);
   analogWrite(motor->pin2, 0);
   setParameter(motor->modeParameter, MOTOR_STOP);
+
   // initialise motor parameters
   setParameter(motor->speedParameter, 100);
   setParameter(motor->angleParameter, 90);  // degrees

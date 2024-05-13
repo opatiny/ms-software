@@ -11,10 +11,16 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
+#include "../../src/state.h"
+#include "./taskGY521.h"
 #include "./utilities/params.h"
 
-#define IMU_ADDRESS 0x68
 #define LOG_DELAY 250
+
+void setImuData(ImuData* imuData,
+                sensors_event_t* a,
+                sensors_event_t* g,
+                sensors_event_t* temp);
 
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);
@@ -39,12 +45,7 @@ void TaskGY521(void* pvParameters) {
       if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
         mpu.getEvent(&a, &g, &temp);
         xSemaphoreGive(xSemaphoreWire);
-        setParameter(PARAM_ACCELERATION_X, a.acceleration.x * 100);
-        setParameter(PARAM_ACCELERATION_Y, a.acceleration.y * 100);
-        setParameter(PARAM_ACCELERATION_Z, a.acceleration.z * 100);
-        setParameter(PARAM_ROTATION_X, g.gyro.x * 100);
-        setParameter(PARAM_ROTATION_Y, g.gyro.y * 100);
-        setParameter(PARAM_ROTATION_Z, g.gyro.z * 100);
+        setImuData(&state.imuData, &a, &g, &temp);
       }
       if (getParameter(PARAM_DEBUG) == DEBUG_IMU) {
         if (millis() - previousMillis > LOG_DELAY) {
@@ -76,4 +77,34 @@ void taskGY521() {
                           3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 1);
+}
+
+void setImuData(ImuData* imuData,
+                sensors_event_t* a,
+                sensors_event_t* g,
+                sensors_event_t* temp) {
+  int factor = 100;
+
+  int ax = a->acceleration.x * factor;
+  int ay = a->acceleration.y * factor;
+  int az = a->acceleration.z * factor;
+  int rx = g->gyro.x * factor;
+  int ry = g->gyro.y * factor;
+  int rz = g->gyro.z * factor;
+  int temperature = temp->temperature;
+
+  imuData->acceleration.x = ax;
+  imuData->acceleration.y = ay;
+  imuData->acceleration.z = az;
+  imuData->rotation.x = rx;
+  imuData->rotation.y = ry;
+  imuData->rotation.z = rz;
+  imuData->temperature = temperature;
+
+  setParameter(PARAM_ACCELERATION_X, ax);
+  setParameter(PARAM_ACCELERATION_Y, ay);
+  setParameter(PARAM_ACCELERATION_Z, az);
+  setParameter(PARAM_ROTATION_X, rx);
+  setParameter(PARAM_ROTATION_Y, ry);
+  setParameter(PARAM_ROTATION_Z, rz);
 }

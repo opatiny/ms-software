@@ -4,6 +4,7 @@
 #include <utilities/params.h>
 
 #include "./pinMapping.h"
+#include "./state.h"
 #include "./tasks/taskBattery.h"
 #include "./tasks/taskButton.h"
 #include "./tasks/taskBuzzer.h"
@@ -12,6 +13,8 @@
 #include "./tasks/taskRgbLed.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
+
+State state;
 
 // functions prototypes
 void taskBlink();
