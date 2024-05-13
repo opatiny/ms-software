@@ -11,6 +11,7 @@
 #include "./utilities/params.h"
 #include "./utilities/serialUtilities.h"
 #include "./utilities/wifiUtilities.h"
+#include "utilities/printUtilities.h"
 
 #define SERIAL_BUFFER_LENGTH 256
 #define SERIAL_MAX_PARAM_VALUE_LENGTH 256
@@ -157,6 +158,9 @@ void printResult(char* data, Print* output) {
 
   // we will process the commands, it means it starts with lowercase
   switch (data[0]) {
+    case 'd':
+      printState();
+      break;
     case 'h':
       printHelp(output);
       break;

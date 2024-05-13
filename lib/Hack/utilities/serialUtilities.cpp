@@ -78,6 +78,7 @@ void printUtilitiesHelp(Print* output) {
 }
 
 void printHelp(Print* output) {
+  output->println(F("(d)isplay state"));
   output->println(F("(f)s"));
   output->println(F("(h)elp"));
   output->println(F("(i)2c"));

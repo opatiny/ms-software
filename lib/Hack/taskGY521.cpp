@@ -21,6 +21,7 @@ void setImuData(ImuData* imuData,
                 sensors_event_t* a,
                 sensors_event_t* g,
                 sensors_event_t* temp);
+void printImuDebug(ImuData* imuData);
 
 void TaskGY521(void* pvParameters) {
   vTaskDelay(1000);
@@ -49,18 +50,7 @@ void TaskGY521(void* pvParameters) {
       }
       if (getParameter(PARAM_DEBUG) == DEBUG_IMU) {
         if (millis() - previousMillis > LOG_DELAY) {
-          Serial.print("Acceleration: ");
-          Serial.print(getParameter(PARAM_ACCELERATION_X));
-          Serial.print(", ");
-          Serial.print(getParameter(PARAM_ACCELERATION_Y));
-          Serial.print(", ");
-          Serial.print(getParameter(PARAM_ACCELERATION_Z));
-          Serial.print(" | Rotation: ");
-          Serial.print(getParameter(PARAM_ROTATION_X));
-          Serial.print(", ");
-          Serial.print(getParameter(PARAM_ROTATION_Y));
-          Serial.print(", ");
-          Serial.println(getParameter(PARAM_ROTATION_Z));
+          printImuDebug(&state.imuData);
           previousMillis = millis();
         }
       }
@@ -107,4 +97,19 @@ void setImuData(ImuData* imuData,
   setParameter(PARAM_ROTATION_X, rx);
   setParameter(PARAM_ROTATION_Y, ry);
   setParameter(PARAM_ROTATION_Z, rz);
+}
+
+void printImuDebug(ImuData* imuData) {
+  Serial.print("Acceleration: ");
+  Serial.print(imuData->acceleration.x);
+  Serial.print(", ");
+  Serial.print(imuData->acceleration.y);
+  Serial.print(", ");
+  Serial.print(imuData->acceleration.z);
+  Serial.print(" | Rotation: ");
+  Serial.print(imuData->rotation.x);
+  Serial.print(", ");
+  Serial.print(imuData->rotation.y);
+  Serial.print(", ");
+  Serial.println(imuData->rotation.z);
 }

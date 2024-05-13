@@ -10,8 +10,9 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
-#include "../pinMapping.h"
 
+#include "../pinMapping.h"
+#include "../state.h"
 #include "./taskVl53L1X.h"
 
 #define DISTANCE_TASK_DELAY 50
@@ -53,6 +54,7 @@ void TaskVL53L1X(void* pvParameters) {
         distance = sensors[i].read();  // read distance in mm
         xSemaphoreGive(xSemaphoreWire);
 
+        state.distances[i] = distance;
         setParameter(distancesParameters[i], distance);
       }
     }
