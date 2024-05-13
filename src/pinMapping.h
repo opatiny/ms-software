@@ -1,9 +1,10 @@
 #pragma once
 
 #define XIAO 0
-#define ESPRESSIF 1
+#define ALGERNON_V1_0_0 1
+#define ALGERNON_V1_1_0 2
 
-#define BOARD ESPRESSIF
+#define BOARD ALGERNON_V1_0_0
 
 #if BOARD == XIAO
 
@@ -35,7 +36,7 @@
 // serial communication
 #define SERIAL_SPEED 115200
 
-#elif BOARD == ESPRESSIF
+#elif BOARD == ALGERNON_V1_0_0
 
 #define BATTERY_PIN 20
 #define BUTTON_PIN 47
@@ -44,10 +45,10 @@
 #define RGB_LED_PIN 38
 
 // motor pins
-#define MOTOR_LEFT_PIN1 36   // CANT BE USED -> MEMORY
-#define MOTOR_LEFT_PIN2 35   // CANT BE USED -> MEMORY
-#define MOTOR_RIGHT_PIN1 38  // CANT BE USED -> RGB LED
-#define MOTOR_RIGHT_PIN2 37  // CANT BE USED -> MEMORY
+#define MOTOR_LEFT_PIN1 36
+#define MOTOR_LEFT_PIN2 35
+#define MOTOR_RIGHT_PIN1 0
+#define MOTOR_RIGHT_PIN2 37
 
 #define LEFT_ENCODER_PIN1 21
 #define LEFT_ENCODER_PIN2 19
