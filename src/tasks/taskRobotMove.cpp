@@ -22,10 +22,12 @@
 #include "../pinMapping.h"
 #include "../state.h"
 #include "./motorCommands.h"
+#include "./robotCommands.h"
 #include "./taskDcMotor.h"
+#include "./taskRobotMove.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);
-void motorControl(Motor* motor);
+void robotControl(State* state);
 
 void TaskRobotMove(void* pvParameters) {
   // define parameters of the motors
@@ -53,7 +55,7 @@ void TaskRobotMove(void* pvParameters) {
   setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
-    robotControl(&state.leftMotor);
+    robotControl(&state);
     vTaskDelay(1000);
   }
 }
@@ -68,52 +70,24 @@ void taskRobotMove() {
                           NULL, 1);
 }
 
-void initialiseMotor(Motor* motor, MotorParams* params) {
-  // setup the motor parameters
-  motor->speedParameter = params->speedParameter;
-  motor->modeParameter = params->modeParameter;
-  motor->angleParameter = params->angleParameter;
-  motor->pin1 = params->pin1;
-  motor->pin2 = params->pin2;
-  motor->previousMode = MOTOR_STOP;
-  motor->currentSpeed = 0;
-  motor->encoderCounts = 0;
-
-  // we will do some PWM on the motor pins
-  pinMode(motor->pin1, OUTPUT);
-  pinMode(motor->pin2, OUTPUT);
-
-  // initally stop the motor
-  analogWrite(motor->pin1, 0);
-  analogWrite(motor->pin2, 0);
-  setParameter(motor->modeParameter, MOTOR_STOP);
-
-  // initialise motor parameters
-  setParameter(motor->speedParameter, 100);
-  setParameter(motor->angleParameter, 90);  // degrees
-}
-
 void robotControl(State* state) {
   int targetSpeed = getParameter(state->robot.speedParameter);
   int currentMode = getParameter(state->robot.modeParameter);
 
   switch (currentMode) {
-    case MOTOR_STOP:
-      stopRobot(robot);
+    case ROBOT_STOP:
+      robotStop();
       break;
-    case MOTOR_CONSTANT_SPEED:
-      if (state->robot.previousMode != currentMode ||
-          targetSpeed != state->robot.currentSpeed) {
-        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("Robot constant speed mode");
-        }
-        speedRamp(motor, targetSpeed, getParameter(PARAM_MOTOR_RAMP_STEP));
-      }
+    case ROBOT_MOVE:
+      robotMove(targetSpeed);
+      break;
+    case ROBOT_TURN_IN_PLACE:
+      robotTurnInPlace(targetSpeed);
       break;
     default:
       Serial.println("Unknown robot movement mode");
-      setParameter(motor->modeParameter, MOTOR_STOP);
+      setParameter(state->robot.modeParameter, ROBOT_STOP);
       break;
   }
-  motor->previousMode = currentMode;
+  state->robot.previousMode = currentMode;
 }

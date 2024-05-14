@@ -1,15 +1,5 @@
 #pragma once
 
-#include <pwmWrite.h>
-
-struct MotorParams {
-  int speedParameter;
-  int modeParameter;
-  int angleParameter;
-  int pin1;
-  int pin2;
-};
-
 enum MotorMode {
   MOTOR_STOP,            // 0
   MOTOR_CONSTANT_SPEED,  // 1

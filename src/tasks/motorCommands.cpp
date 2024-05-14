@@ -32,6 +32,31 @@ int angleToCounts(int angle) {
   return angle * 12 * GEAR_RATIO / 360;
 }
 
+void initialiseMotor(Motor* motor, MotorParams* params) {
+  // setup the motor parameters
+  motor->speedParameter = params->speedParameter;
+  motor->modeParameter = params->modeParameter;
+  motor->angleParameter = params->angleParameter;
+  motor->pin1 = params->pin1;
+  motor->pin2 = params->pin2;
+  motor->previousMode = MOTOR_STOP;
+  motor->currentSpeed = 0;
+  motor->encoderCounts = 0;
+
+  // we will do some PWM on the motor pins
+  pinMode(motor->pin1, OUTPUT);
+  pinMode(motor->pin2, OUTPUT);
+
+  // initally stop the motor
+  analogWrite(motor->pin1, 0);
+  analogWrite(motor->pin2, 0);
+  setParameter(motor->modeParameter, MOTOR_STOP);
+
+  // initialise motor parameters
+  setParameter(motor->speedParameter, 100);
+  setParameter(motor->angleParameter, 90);  // degrees
+}
+
 /**
  * @brief Rotate the specified motor of a given number of degrees.
  * @param motor Motor to rotate.

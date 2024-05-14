@@ -43,7 +43,7 @@ void printMotor(Motor* motor) {
   Serial.print("\t - Mode: ");
   Serial.println(getParameter(motor->modeParameter));
   Serial.print("\t - Current speed: ");
-  Serial.println(motor->speed);
+  Serial.println(motor->currentSpeed);
   Serial.print("\t - Target speed: ");
   Serial.println(getParameter(motor->speedParameter));
   Serial.print("\t - Target angle (mode 3 only): ");

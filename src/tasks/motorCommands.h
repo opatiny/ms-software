@@ -32,12 +32,25 @@ struct Motor {
 };
 
 /**
+ * Parameters for the initialisation of a motor.
+ */
+struct MotorParams {
+  int speedParameter;
+  int modeParameter;
+  int angleParameter;
+  int pin1;
+  int pin2;
+};
+
+/**
  * Direction in which the motor spins.
  *
  * - BACKWARD: 0
  * - FORWARD: 1
  */
 enum Direction { BACKWARD, FORWARD };
+
+void initialiseMotor(Motor* motor, MotorParams* params);
 
 void stopMotor(Motor* motor);
 

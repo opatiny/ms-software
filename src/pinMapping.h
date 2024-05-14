@@ -4,7 +4,7 @@
 #define ALGERNON_V1_0_0 1
 #define ALGERNON_V1_1_0 2
 
-#define BOARD ALGERNON_V1_0_0
+#define BOARD ALGERNON_V1_1_0
 
 #if BOARD == XIAO
 
@@ -69,4 +69,37 @@
 // serial communication
 #define SERIAL_SPEED 115200
 
+#elif BOARD == ALGERNON_V1_1_0
+
+#define BATTERY_PIN 3  // battery voltage
+#define VCC_PIN 48     // 3.3 V
+#define BUTTON_PIN 17
+#define BUZZER_PIN 6
+#define BLINK_LED_PIN 2
+#define RGB_LED_PIN 38
+
+// motor pins
+#define MOTOR_LEFT_PIN1 46
+#define MOTOR_LEFT_PIN2 9
+#define MOTOR_RIGHT_PIN1 11
+#define MOTOR_RIGHT_PIN2 10
+
+#define LEFT_ENCODER_PIN1 4
+#define LEFT_ENCODER_PIN2 5
+#define RIGHT_ENCODER_PIN1 13
+#define RIGHT_ENCODER_PIN2 14
+
+// distance sensors shutdown pins: device is off when pin is low
+#define XSHUT_PIN_LEFT 40
+#define XSHUT_PIN_FRONT_LEFT 39
+#define XSHUT_PIN_FRONT 0
+#define XSHUT_PIN_FRONT_RIGHT 20
+#define XSHUT_PIN_RIGHT 119
+
+// I2C
+#define SDA_PIN 47
+#define SCL_PIN 21
+
+// serial communication
+#define SERIAL_SPEED 115200
 #endif
