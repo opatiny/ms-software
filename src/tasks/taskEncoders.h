@@ -1,8 +1,6 @@
 #pragma once
 
-#include <stdint.h>
-
-typedef int64_t Encoder;
+#include "../state.h"
 
 extern Encoder leftEncoderCounts;
 extern Encoder rightEncoderCounts;

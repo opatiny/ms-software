@@ -6,6 +6,7 @@ enum RobotMode {
   ROBOT_TURN_IN_PLACE,     // 2
   ROBOT_TURN_WITH_RADIUS,  // 3
   ROBOT_MOVE_DISTANCE,     // 4
+  ROBOT_STOP_OBSTACLE,     // 5
 };
 
 void taskRobotMove();

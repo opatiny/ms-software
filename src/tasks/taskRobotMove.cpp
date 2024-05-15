@@ -28,7 +28,7 @@
 #include "./taskRobotMove.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);
-void robotControl(RobotController* state);
+void robotControl(Robot* robot);
 
 void TaskRobotMove(void* pvParameters) {
   // define parameters of the motors
@@ -51,7 +51,8 @@ void TaskRobotMove(void* pvParameters) {
   ControllerParams robotParams = {
     speedParameter : PARAM_ROBOT_SPEED_CMD,
     modeParameter : PARAM_ROBOT_MODE,
-    angleParameter : PARAM_ROBOT_ANGLE_CMD
+    angleParameter : PARAM_ROBOT_ANGLE_CMD,
+    rampStepParameter : PARAM_MOTOR_RAMP_STEP
   };
 
   initialiseController(&robot.controller, &robotParams);
@@ -59,9 +60,6 @@ void TaskRobotMove(void* pvParameters) {
   // initialise the motors
   initialiseMotor(&robot.leftMotor, &leftMotorParams);
   initialiseMotor(&robot.rightMotor, &rightMotorParams);
-
-  // set time delay for ramps
-  setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
     robotControl(&robot);
@@ -106,6 +104,9 @@ void robotControl(Robot* robot) {
         break;
       case ROBOT_TURN_IN_PLACE:
         robotTurnInPlace(robot, targetSpeed);
+        break;
+      case ROBOT_STOP_OBSTACLE:
+        stopWhenObstacle(robot, targetSpeed, 100);
         break;
       default:
         Serial.println("Unknown robot movement mode");

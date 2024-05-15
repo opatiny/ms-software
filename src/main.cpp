@@ -15,7 +15,7 @@
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 
-RobotController robot;
+Robot robot;
 
 // functions prototypes
 void taskBlink();

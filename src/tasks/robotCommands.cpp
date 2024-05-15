@@ -1,8 +1,8 @@
 #include <utilities/params.h>
 
-#include "robotCommands.h"
-
 #include "../state.h"
+#include "motorCommands.h"
+#include "robotCommands.h"
 #include "taskRobotMove.h"
 
 void initialiseController(RobotController* controller,
@@ -20,11 +20,13 @@ void initialiseController(RobotController* controller,
   // initialise robot parameters
   setParameter(controller->speedParameter, 100);
   setParameter(controller->angleParameter, 90);  // degrees
+  setParameter(controller->rampStepParameter,
+               1);  // set time delay for ramps in ms
 }
 
 void robotMove(Robot* robot, int speed) {
-  speedRamp(&robot->leftMotor, speed);
-  speedRamp(&robot->rightMotor, speed);
+  speedRamp(&robot->leftMotor, speed, robot->controller.rampStepParameter);
+  speedRamp(&robot->rightMotor, speed, robot->controller.rampStepParameter);
   robot->controller.currentSpeed = speed;
 }
 
@@ -35,11 +37,12 @@ void robotStop(Robot* robot) {
 }
 
 void robotTurnInPlace(Robot* robot, int speed) {
-  speedRamp(&robot->leftMotor, speed);
-  speedRamp(&robot->rightMotor, -speed);
+  speedRamp(&robot->leftMotor, speed, robot->controller.rampStepParameter);
+  speedRamp(&robot->rightMotor, -speed, robot->controller.rampStepParameter);
 }
 
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
+  robotMove(robot, speed);
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
     if (robot->distances[i] < distance) {
       robotStop(robot);

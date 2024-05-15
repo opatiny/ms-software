@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../state.h"
+
+#include "motorCommands.h"
 #include "taskEncoders.h"
 
 // motors and wheels properties
@@ -10,26 +13,6 @@
 #define DEFAULT_RAMP_DELAY 1  // delay between each speed increment for ramps
 
 // motors structures with all data
-/**
- * Motor structure.
- *  - speedParameter: Serial parameter for the target speed of the motor.
- * - modeParameter: Serial parameter for the mode of the motor.
- * - previousMode: Previous mode of the motor.
- * - angleParameter: Serial parameter for the angle of the motor.
- * - encoderCounts: Number of counts of the encoder since the robot was turned
- * on.
- * - speed: Current speed of the motor.
- */
-struct Motor {
-  int speedParameter;
-  int modeParameter;
-  int previousMode;
-  int angleParameter;
-  Encoder encoderCounts;
-  int currentSpeed;
-  int pin1;
-  int pin2;
-};
 
 /**
  * Parameters for the initialisation of a motor.

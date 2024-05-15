@@ -1,13 +1,6 @@
 #pragma once
 
-struct RobotController {
-  int speedParameter;
-  int angleParameter;
-  int distanceParameter;
-  int modeParameter;
-  int currentSpeed;
-  int previousMode;
-};
+#include "../state.h"
 
 /**
  * Parameters for the initialisation of the robot.
@@ -16,6 +9,7 @@ struct ControllerParams {
   int speedParameter;
   int modeParameter;
   int angleParameter;
+  int rampStepParameter;
 };
 
 void initialiseController(RobotController* controller,
@@ -23,3 +17,4 @@ void initialiseController(RobotController* controller,
 void robotMove(Robot* robot, int speed);
 void robotStop(Robot* robot);
 void robotTurnInPlace(Robot* robot, int speed);
+void stopWhenObstacle(Robot* robot, int speed, int distance);
