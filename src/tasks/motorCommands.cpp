@@ -1,9 +1,11 @@
-#include "./motorCommands.h"
 #include <utilities/params.h>
+
 #include "../pinMapping.h"
 #include "../state.h"
-#include "./taskDcMotor.h"
 
+#include "kinematics.h"
+#include "motorCommands.h"
+#include "taskDcMotor.h"
 // set to 1 for additional debug about speed ramps
 #define RAMP_UP_DOWN_DEBUG 0
 
@@ -16,21 +18,6 @@ void rampUp(Motor* motor,
             Direction direction,
             int finalSpeed,
             int rampDelay = DEFAULT_RAMP_DELAY);
-
-/**
- * @brief Convert nb of encoder counts to an angle in degrees.
- * todo: Is the return type int a problem?
- */
-int countsToAngle(int counts) {
-  return counts * 360 / (12 * GEAR_RATIO);
-}
-
-/**
- * @brief Convert an angle in degrees to nb of encoder counts.
- */
-int angleToCounts(int angle) {
-  return angle * 12 * GEAR_RATIO / 360;
-}
 
 void initialiseMotor(Motor* motor, MotorParams* params) {
   // setup the motor parameters

@@ -5,14 +5,7 @@
 #include "motorCommands.h"
 #include "taskEncoders.h"
 
-// motors and wheels properties
-#define GEAR_RATIO 30
-#define COUNTS_PER_REV 12
-#define WHEEL_DIAMETER 32     // in mm
-#define WHEEL_BASE 100        // in mm, distance between centers of wheels
 #define DEFAULT_RAMP_DELAY 1  // delay between each speed increment for ramps
-
-// motors structures with all data
 
 /**
  * Parameters for the initialisation of a motor.
