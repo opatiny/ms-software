@@ -19,14 +19,11 @@
  */
 #define DELAY 50
 
-// Pointers to the encoders counters of the motors.
-Encoder* leftEncoderPt = &(robot.leftMotor.encoderCounts);
-Encoder* rightEncoderPt = &(robot.rightMotor.encoderCounts);
-
-void counterRoutine(Encoder* encoderCounter,
+void counterRoutine(EncoderCounter* counter,
                     int interruptPin,
                     int directionPin,
                     int increment);
+
 void leftCounterPin1();
 void leftCounterPin2();
 void rightCounterPin1();
@@ -57,9 +54,9 @@ void TaskEncodersX4(void* pvParameters) {
       int time = millis();
       Serial.print(time);
       Serial.print(", \t");
-      Serial.print(*leftEncoderPt);
+      Serial.print(robot.leftEncoder.counter);
       Serial.print(", \t");
-      Serial.print(*rightEncoderPt);
+      Serial.print(robot.rightEncoder.counter);
       Serial.print(", \t");
       Serial.print(getParameter(PARAM_MOTOR_LEFT_MODE));
       Serial.print(", \t");
@@ -78,24 +75,25 @@ void taskEncodersX4() {
                           NULL, 1);
 }
 
-uint32_t timeLeft = 0;
-
 void leftCounterPin1() {
-  counterRoutine(leftEncoderPt, LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2, 1);
+  counterRoutine(&(robot.leftEncoder.counter), LEFT_ENCODER_PIN1,
+                 LEFT_ENCODER_PIN2, 1);
 }
 
 void leftCounterPin2() {
-  counterRoutine(leftEncoderPt, LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1, -1);
+  counterRoutine(&(robot.leftEncoder.counter), LEFT_ENCODER_PIN2,
+                 LEFT_ENCODER_PIN1, -1);
 }
 
 void rightCounterPin1() {
-  counterRoutine(rightEncoderPt, RIGHT_ENCODER_PIN1, RIGHT_ENCODER_PIN2, 1);
+  counterRoutine(&(robot.leftEncoder.counter), RIGHT_ENCODER_PIN1,
+                 RIGHT_ENCODER_PIN2, 1);
 }
 
 void rightCounterPin2() {
-  counterRoutine(rightEncoderPt, RIGHT_ENCODER_PIN2, RIGHT_ENCODER_PIN1, -1);
+  counterRoutine(&(robot.leftEncoder.counter), RIGHT_ENCODER_PIN2,
+                 RIGHT_ENCODER_PIN1, -1);
 }
-
 /**
  * Interrupt routine to count the encoder pulses.
  *
@@ -106,14 +104,14 @@ void rightCounterPin2() {
  *  @param directionPin - The pin used to determine the direction of the
  * rotation.
  */
-void counterRoutine(Encoder* encoderCounter,
+void counterRoutine(EncoderCounter* counter,
                     int interruptPin,
                     int directionPin,
                     int increment) {
   int interruptValue = digitalRead(interruptPin);
   int directionValue = digitalRead(directionPin);
 
-  int newValue = *encoderCounter;
+  EncoderCounter newValue = *counter;
   if (interruptValue == HIGH) {
     if (directionValue == HIGH) {
       newValue = newValue - increment;
@@ -127,5 +125,5 @@ void counterRoutine(Encoder* encoderCounter,
       newValue = newValue - increment;
     }
   }
-  *encoderCounter = newValue;
+  *counter = newValue;
 }

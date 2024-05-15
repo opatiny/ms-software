@@ -2,10 +2,10 @@
 
 #include "../pinMapping.h"
 #include "../state.h"
-
 #include "../tasks/taskDcMotor.h"
 #include "kinematics.h"
 #include "motorCommands.h"
+
 // set to 1 for additional debug about speed ramps
 #define RAMP_UP_DOWN_DEBUG 0
 

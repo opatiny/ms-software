@@ -19,7 +19,6 @@ int angleToCounts(int angle) {
 
 UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed) {
   int L = WHEEL_BASE;
-
   double v = (diffSpeed.left + diffSpeed.right) / 2;
   double rho = L * v / (diffSpeed.right - diffSpeed.left);
   return {v, rho};
