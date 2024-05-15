@@ -10,6 +10,7 @@ struct ControllerParams {
   int modeParameter;
   int angleParameter;
   int rampStepParameter;
+  int obstacleDistanceParameter;
 };
 
 void initialiseController(RobotController* controller,

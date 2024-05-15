@@ -33,6 +33,7 @@ struct RobotController {
   int angleParameter;
   int distanceParameter;
   int rampStepParameter;
+  int obstacleDistanceParameter;
   int modeParameter;
   int currentSpeed;
   int previousMode;

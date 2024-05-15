@@ -63,7 +63,7 @@ void TaskRobotMove(void* pvParameters) {
 
   while (true) {
     robotControl(&robot);
-    vTaskDelay(1000);
+    vTaskDelay(10);
   }
 }
 
@@ -82,10 +82,10 @@ void robotControl(Robot* robot) {
   int currentMode = getParameter(robot->controller.modeParameter);
 
   if (buttonFlags.robotMode) {
-    if (currentMode == ROBOT_MOVE) {
+    if (currentMode != ROBOT_STOP) {
       currentMode = ROBOT_STOP;
     } else {
-      currentMode = ROBOT_MOVE;
+      currentMode = ROBOT_STOP_OBSTACLE;
     }
     Serial.println("Button pressed!");
     setParameter(robot->controller.modeParameter, currentMode);
@@ -95,24 +95,27 @@ void robotControl(Robot* robot) {
   if (robot->controller.previousMode != currentMode) {
     Serial.print("New robot mode: ");
     Serial.println(currentMode);
-    switch (currentMode) {
-      case ROBOT_STOP:
-        robotStop(robot);
-        break;
-      case ROBOT_MOVE:
-        robotMove(robot, targetSpeed);
-        break;
-      case ROBOT_TURN_IN_PLACE:
-        robotTurnInPlace(robot, targetSpeed);
-        break;
-      case ROBOT_STOP_OBSTACLE:
-        stopWhenObstacle(robot, targetSpeed, 100);
-        break;
-      default:
-        Serial.println("Unknown robot movement mode");
-        setParameter(robot->controller.modeParameter, ROBOT_STOP);
-        break;
-    }
   }
+  switch (currentMode) {
+    case ROBOT_STOP:
+      robotStop(robot);
+      break;
+    case ROBOT_MOVE:
+      robotMove(robot, targetSpeed);
+      break;
+    case ROBOT_TURN_IN_PLACE:
+      robotTurnInPlace(robot, targetSpeed);
+      break;
+    case ROBOT_STOP_OBSTACLE: {
+      int distance = getParameter(PARAM_OBSTACLE_DISTANCE);
+      stopWhenObstacle(robot, targetSpeed, distance);
+      break;
+    }
+    default:
+      Serial.println("Unknown robot movement mode");
+      setParameter(robot->controller.modeParameter, ROBOT_STOP);
+      break;
+  }
+
   robot->controller.previousMode = currentMode;
 }

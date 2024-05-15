@@ -11,6 +11,8 @@ void initialiseController(RobotController* controller,
   controller->speedParameter = params->speedParameter;
   controller->modeParameter = params->modeParameter;
   controller->angleParameter = params->angleParameter;
+  controller->rampStepParameter = params->rampStepParameter;
+  controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
   controller->previousMode = ROBOT_STOP;
   controller->currentSpeed = 0;
 
@@ -18,8 +20,10 @@ void initialiseController(RobotController* controller,
   setParameter(controller->modeParameter, ROBOT_STOP);
 
   // initialise robot parameters
-  setParameter(controller->speedParameter, 100);
+  setParameter(controller->speedParameter, 30);
   setParameter(controller->angleParameter, 90);  // degrees
+  setParameter(controller->obstacleDistanceParameter,
+               200);  // distance in mm
   setParameter(controller->rampStepParameter,
                1);  // set time delay for ramps in ms
 }
@@ -42,11 +46,11 @@ void robotTurnInPlace(Robot* robot, int speed) {
 }
 
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
-  robotMove(robot, speed);
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
     if (robot->distances[i] < distance) {
       robotStop(robot);
-      break;
+      return;
     }
   }
+  robotMove(robot, speed);
 }

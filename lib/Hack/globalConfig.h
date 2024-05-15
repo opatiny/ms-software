@@ -83,8 +83,9 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_RGB_LED_COLOR 37       // AL
 #define PARAM_RGB_LED_BRIGHTNESS 38  // AM
 
-#define PARAM_ROBOT_SPEED_CMD 39  // AN
-#define PARAM_ROBOT_MODE 40       // AO
-#define PARAM_ROBOT_ANGLE_CMD 41  // AP
+#define PARAM_ROBOT_SPEED_CMD 39    // AN
+#define PARAM_ROBOT_MODE 40         // AO
+#define PARAM_ROBOT_ANGLE_CMD 41    // AP
+#define PARAM_OBSTACLE_DISTANCE 42  // AQ
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0
