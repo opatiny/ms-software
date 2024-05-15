@@ -46,11 +46,11 @@ void TaskGY521(void* pvParameters) {
       if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {
         mpu.getEvent(&a, &g, &temp);
         xSemaphoreGive(xSemaphoreWire);
-        setImuData(&state.imuData, &a, &g, &temp);
+        setImuData(&robot.imuData, &a, &g, &temp);
       }
       if (getParameter(PARAM_DEBUG) == DEBUG_IMU) {
         if (millis() - previousMillis > LOG_DELAY) {
-          printImuDebug(&state.imuData);
+          printImuDebug(&robot.imuData);
           previousMillis = millis();
         }
       }

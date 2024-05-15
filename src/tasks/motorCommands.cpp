@@ -136,6 +136,10 @@ void stopMotor(Motor* motor) {
  */
 void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
   int initialSpeed = motor->currentSpeed;
+  if (initialSpeed == finalSpeed) {
+    return;
+  }
+
   if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
     Serial.print("speed ramp: ");
     Serial.print(initialSpeed);

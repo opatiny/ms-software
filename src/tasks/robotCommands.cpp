@@ -5,35 +5,45 @@
 #include "../state.h"
 #include "taskRobotMove.h"
 
-void initialiseRobot(Robot* robot, RobotParams* params) {
+void initialiseController(RobotController* controller,
+                          ControllerParams* params) {
   // setup the motor parameters
-  robot->speedParameter = params->speedParameter;
-  robot->modeParameter = params->modeParameter;
-  robot->angleParameter = params->angleParameter;
-  robot->previousMode = ROBOT_STOP;
-  robot->currentSpeed = 0;
+  controller->speedParameter = params->speedParameter;
+  controller->modeParameter = params->modeParameter;
+  controller->angleParameter = params->angleParameter;
+  controller->previousMode = ROBOT_STOP;
+  controller->currentSpeed = 0;
 
   // initally stop the robot
-  setParameter(robot->modeParameter, ROBOT_STOP);
+  setParameter(controller->modeParameter, ROBOT_STOP);
 
-  // initialise motor parameters
-  setParameter(robot->speedParameter, 100);
-  setParameter(robot->angleParameter, 90);  // degrees
+  // initialise robot parameters
+  setParameter(controller->speedParameter, 100);
+  setParameter(controller->angleParameter, 90);  // degrees
 }
 
-void robotMove(int speed) {
-  speedRamp(&state.leftMotor, speed);
-  speedRamp(&state.rightMotor, speed);
-  state.robot.currentSpeed = speed;
+void robotMove(Robot* robot, int speed) {
+  speedRamp(&robot->leftMotor, speed);
+  speedRamp(&robot->rightMotor, speed);
+  robot->controller.currentSpeed = speed;
 }
 
-void robotStop() {
-  stopMotor(&state.leftMotor);
-  stopMotor(&state.rightMotor);
-  state.robot.currentSpeed = 0;
+void robotStop(Robot* robot) {
+  stopMotor(&robot->leftMotor);
+  stopMotor(&robot->rightMotor);
+  robot->controller.currentSpeed = 0;
 }
 
-void robotTurnInPlace(int speed) {
-  speedRamp(&state.leftMotor, speed);
-  speedRamp(&state.rightMotor, -speed);
+void robotTurnInPlace(Robot* robot, int speed) {
+  speedRamp(&robot->leftMotor, speed);
+  speedRamp(&robot->rightMotor, -speed);
+}
+
+void stopWhenObstacle(Robot* robot, int speed, int distance) {
+  for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+    if (robot->distances[i] < distance) {
+      robotStop(robot);
+      break;
+    }
+  }
 }

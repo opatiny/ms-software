@@ -1,6 +1,6 @@
 #pragma once
 
-struct Robot {
+struct RobotController {
   int speedParameter;
   int angleParameter;
   int distanceParameter;
@@ -12,12 +12,14 @@ struct Robot {
 /**
  * Parameters for the initialisation of the robot.
  */
-struct RobotParams {
+struct ControllerParams {
   int speedParameter;
   int modeParameter;
   int angleParameter;
 };
 
-void robotMove(int speed);
-void robotStop();
-void robotTurnInPlace(int speed);
+void initialiseController(RobotController* controller,
+                          ControllerParams* params);
+void robotMove(Robot* robot, int speed);
+void robotStop(Robot* robot);
+void robotTurnInPlace(Robot* robot, int speed);

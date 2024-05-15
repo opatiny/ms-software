@@ -5,4 +5,11 @@
 
 enum ButtonState { BUTTON_RELEASED, BUTTON_PRESSED };
 
+struct ButtonFlags {
+  bool distanceCalibration = false;
+  bool robotMode = false;
+};
+
+extern ButtonFlags buttonFlags;
+
 void taskButton();

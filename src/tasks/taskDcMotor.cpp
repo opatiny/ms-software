@@ -45,15 +45,15 @@ void TaskDcMotor(void* pvParameters) {
 
   // initialise the motors
 
-  initialiseMotor(&state.leftMotor, &leftMotorParams);
-  initialiseMotor(&state.rightMotor, &rightMotorParams);
+  initialiseMotor(&robot.leftMotor, &leftMotorParams);
+  initialiseMotor(&robot.rightMotor, &rightMotorParams);
 
   // set time delay for ramps
   setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
-    motorControl(&state.leftMotor);
-    motorControl(&state.rightMotor);
+    motorControl(&robot.leftMotor);
+    motorControl(&robot.rightMotor);
     vTaskDelay(1000);
   }
 }

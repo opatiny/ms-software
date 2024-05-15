@@ -27,8 +27,5 @@ enum DistanceDebugMode { RANGING, CONSTANT, CALIBRATION };
 #define TIMING_BUDGET 140  // ms
 #define VL53_DEFAULT_ADDRESS 0x29
 
-// global variables
-extern bool distance_calibration_button_pressed;
-
 // prototypes
 void taskVL53L1X();

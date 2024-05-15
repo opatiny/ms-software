@@ -4,7 +4,7 @@
 #define ALGERNON_V1_0_0 1
 #define ALGERNON_V1_1_0 2
 
-#define BOARD ALGERNON_V1_1_0
+#define BOARD ALGERNON_V1_0_0
 
 #if BOARD == XIAO
 

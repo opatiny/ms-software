@@ -6,12 +6,12 @@
 #include "tasks/robotCommands.h"
 #include "tasks/taskVl53L1X.h"
 
-struct State {
+struct Robot {
   Motor leftMotor;
   Motor rightMotor;
   int distances[NB_DISTANCE_SENSORS];
   ImuData imuData;
-  Robot robot;
+  RobotController controller;
 };
 
-extern State state;
+extern Robot robot;

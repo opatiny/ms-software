@@ -11,10 +11,11 @@
 #include "./tasks/taskDcMotor.h"
 #include "./tasks/taskEncoders.h"
 #include "./tasks/taskRgbLed.h"
+#include "./tasks/taskRobotMove.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 
-State state;
+RobotController robot;
 
 // functions prototypes
 void taskBlink();
@@ -49,7 +50,8 @@ void setup() {
   taskWire();
   taskGY521();
   taskVL53L1X();
-  taskDcMotor();
+  // taskDcMotor();
+  taskRobotMove();
   taskBuzzer();
   taskEncodersX4();
   taskBattery();

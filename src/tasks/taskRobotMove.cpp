@@ -1,15 +1,15 @@
 /**
- * Thread to control the movement of the robot.
+ * Thread to control the movement of the controller.
  *
  * Use the serial parameters.
  *
- *   - robot mode: commands A
- *   - robot speed: commands A
+ *   - robot mode: commands AO
+ *   - robot speed: commands AN
  *     - speed is in range [-255,255]
  *     - 0 means stop
  *     - positive values means forward
  *     - negative values means backward
- *  - robot angle: commands A (used for rotation modes)
+ *  - robot angle: commands AP (used for rotation modes)
  *  - robot distance: commands A
  *  - robot radius: commands A (used for arc mode)
  *
@@ -23,11 +23,12 @@
 #include "../state.h"
 #include "./motorCommands.h"
 #include "./robotCommands.h"
+#include "./taskButton.h"
 #include "./taskDcMotor.h"
 #include "./taskRobotMove.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);
-void robotControl(State* state);
+void robotControl(RobotController* state);
 
 void TaskRobotMove(void* pvParameters) {
   // define parameters of the motors
@@ -47,15 +48,23 @@ void TaskRobotMove(void* pvParameters) {
     pin2 : MOTOR_RIGHT_PIN2
   };
 
+  ControllerParams robotParams = {
+    speedParameter : PARAM_ROBOT_SPEED_CMD,
+    modeParameter : PARAM_ROBOT_MODE,
+    angleParameter : PARAM_ROBOT_ANGLE_CMD
+  };
+
+  initialiseController(&robot.controller, &robotParams);
+
   // initialise the motors
-  initialiseMotor(&state.leftMotor, &leftMotorParams);
-  initialiseMotor(&state.rightMotor, &rightMotorParams);
+  initialiseMotor(&robot.leftMotor, &leftMotorParams);
+  initialiseMotor(&robot.rightMotor, &rightMotorParams);
 
   // set time delay for ramps
   setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
-    robotControl(&state);
+    robotControl(&robot);
     vTaskDelay(1000);
   }
 }
@@ -70,24 +79,39 @@ void taskRobotMove() {
                           NULL, 1);
 }
 
-void robotControl(State* state) {
-  int targetSpeed = getParameter(state->robot.speedParameter);
-  int currentMode = getParameter(state->robot.modeParameter);
+void robotControl(Robot* robot) {
+  int targetSpeed = getParameter(robot->controller.speedParameter);
+  int currentMode = getParameter(robot->controller.modeParameter);
 
-  switch (currentMode) {
-    case ROBOT_STOP:
-      robotStop();
-      break;
-    case ROBOT_MOVE:
-      robotMove(targetSpeed);
-      break;
-    case ROBOT_TURN_IN_PLACE:
-      robotTurnInPlace(targetSpeed);
-      break;
-    default:
-      Serial.println("Unknown robot movement mode");
-      setParameter(state->robot.modeParameter, ROBOT_STOP);
-      break;
+  if (buttonFlags.robotMode) {
+    if (currentMode == ROBOT_MOVE) {
+      currentMode = ROBOT_STOP;
+    } else {
+      currentMode = ROBOT_MOVE;
+    }
+    Serial.println("Button pressed!");
+    setParameter(robot->controller.modeParameter, currentMode);
+    buttonFlags.robotMode = false;
   }
-  state->robot.previousMode = currentMode;
+
+  if (robot->controller.previousMode != currentMode) {
+    Serial.print("New robot mode: ");
+    Serial.println(currentMode);
+    switch (currentMode) {
+      case ROBOT_STOP:
+        robotStop(robot);
+        break;
+      case ROBOT_MOVE:
+        robotMove(robot, targetSpeed);
+        break;
+      case ROBOT_TURN_IN_PLACE:
+        robotTurnInPlace(robot, targetSpeed);
+        break;
+      default:
+        Serial.println("Unknown robot movement mode");
+        setParameter(robot->controller.modeParameter, ROBOT_STOP);
+        break;
+    }
+  }
+  robot->controller.previousMode = currentMode;
 }

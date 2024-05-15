@@ -13,11 +13,10 @@
 
 #include "../pinMapping.h"
 #include "../state.h"
+#include "./taskButton.h"
 #include "./taskVl53L1X.h"
 
 #define DISTANCE_TASK_DELAY 50
-
-bool distance_calibration_button_pressed = false;
 
 void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
@@ -54,7 +53,7 @@ void TaskVL53L1X(void* pvParameters) {
         distance = sensors[i].read();  // read distance in mm
         xSemaphoreGive(xSemaphoreWire);
 
-        state.distances[i] = distance;
+        robot.distances[i] = distance;
         setParameter(distancesParameters[i], distance);
       }
     }
@@ -70,13 +69,13 @@ void TaskVL53L1X(void* pvParameters) {
           Serial.println();
           break;
         case CALIBRATION:
-          if (distance_calibration_button_pressed) {
+          if (buttonFlags.distanceCalibration) {
             for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
               Serial.print(getParameter(distancesParameters[i]));
               Serial.print(F(",\t"));
             }
             Serial.println();
-            distance_calibration_button_pressed = false;
+            buttonFlags.distanceCalibration = false;
           }
           break;
         case RANGING:

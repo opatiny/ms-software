@@ -7,6 +7,8 @@
 #include "./taskButton.h"
 #include "./taskVl53L1X.h"
 
+struct ButtonFlags buttonFlags;
+
 void buttonRoutine();
 void setButtonFlags();
 
@@ -71,5 +73,6 @@ void buttonRoutine() {
  * other tasks.
  */
 void setButtonFlags() {
-  distance_calibration_button_pressed = true;
+  buttonFlags.distanceCalibration = BUTTON_PRESSED;
+  buttonFlags.robotMode = BUTTON_PRESSED;
 }

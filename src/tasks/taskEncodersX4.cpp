@@ -19,8 +19,8 @@
 #define DELAY 50
 
 // Pointers to the encoders counters of the motors.
-Encoder* leftEncoderPt = &(state.leftMotor.encoderCounts);
-Encoder* rightEncoderPt = &(state.rightMotor.encoderCounts);
+Encoder* leftEncoderPt = &(robot.leftMotor.encoderCounts);
+Encoder* rightEncoderPt = &(robot.rightMotor.encoderCounts);
 
 void counterRoutine(Encoder* encoderCounter,
                     int interruptPin,

@@ -58,13 +58,13 @@ void printMotor(Motor* motor) {
 void printState() {
   Serial.println("Logging current state...\n");
   Serial.println("Left motor:");
-  printMotor(&state.leftMotor);
+  printMotor(&robot.leftMotor);
   Serial.println("Right motor:");
-  printMotor(&state.rightMotor);
+  printMotor(&robot.rightMotor);
   Serial.print("\nDistances: ");
-  printDistances(state.distances);
+  printDistances(robot.distances);
   Serial.println("\nIMU data");
-  printImu(&state.imuData);
+  printImu(&robot.imuData);
 }
 
 /**
