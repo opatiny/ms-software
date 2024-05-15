@@ -8,6 +8,7 @@ enum ButtonState { BUTTON_RELEASED, BUTTON_PRESSED };
 struct ButtonFlags {
   bool distanceCalibration = false;
   bool robotMode = false;
+  bool rgbLed = false;
 };
 
 extern ButtonFlags buttonFlags;

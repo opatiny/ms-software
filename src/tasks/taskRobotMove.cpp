@@ -52,7 +52,6 @@ void TaskRobotMove(void* pvParameters) {
     speedParameter : PARAM_ROBOT_SPEED_CMD,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
-    rampStepParameter : PARAM_MOTOR_RAMP_STEP
   };
 
   initialiseController(&robot.controller, &robotParams);

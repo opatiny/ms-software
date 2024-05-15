@@ -9,7 +9,6 @@ struct ControllerParams {
   int speedParameter;
   int modeParameter;
   int angleParameter;
-  int rampStepParameter;
   int obstacleDistanceParameter;
 };
 

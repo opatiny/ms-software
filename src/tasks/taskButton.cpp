@@ -75,4 +75,5 @@ void buttonRoutine() {
 void setButtonFlags() {
   buttonFlags.distanceCalibration = BUTTON_PRESSED;
   buttonFlags.robotMode = BUTTON_PRESSED;
+  buttonFlags.rgbLed = BUTTON_PRESSED;
 }

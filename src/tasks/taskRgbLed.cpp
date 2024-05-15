@@ -10,7 +10,10 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 #include "../pinMapping.h"
+#include "./taskButton.h"
 #include "./taskRgbLed.h"
+
+#define BUTTON_PRESSED_COLOR 1
 
 uint32_t getColorFromIndex(int colorIndex);
 
@@ -21,6 +24,12 @@ void TaskRgbLed(void* pvParameters) {
   pixels.clear();  // turn all pixels off
   while (true) {
     int colorIndex = getParameter(PARAM_RGB_LED_COLOR);
+
+    if (buttonFlags.rgbLed == BUTTON_PRESSED) {
+      colorIndex = BUTTON_PRESSED_COLOR;
+      buttonFlags.rgbLed = BUTTON_RELEASED;
+    }
+
     int brightness = getParameter(PARAM_RGB_LED_BRIGHTNESS);
     if (getParameter(PARAM_DEBUG) == DEBUG_RGB_LED) {
       Serial.print("Color index: ");
@@ -33,7 +42,7 @@ void TaskRgbLed(void* pvParameters) {
     pixels.setPixelColor(0, getColorFromIndex(colorIndex));
     pixels.show();  // todo: go check the doc, there's something about
                     // interrupts being disabled for a short time!!
-    vTaskDelay(1000);
+    vTaskDelay(200);
   }
 }
 

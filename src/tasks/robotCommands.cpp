@@ -11,7 +11,6 @@ void initialiseController(RobotController* controller,
   controller->speedParameter = params->speedParameter;
   controller->modeParameter = params->modeParameter;
   controller->angleParameter = params->angleParameter;
-  controller->rampStepParameter = params->rampStepParameter;
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
   controller->previousMode = ROBOT_STOP;
   controller->currentSpeed = 0;
@@ -20,18 +19,19 @@ void initialiseController(RobotController* controller,
   setParameter(controller->modeParameter, ROBOT_STOP);
 
   // initialise robot parameters
-  setParameter(controller->speedParameter, 30);
+  // setParameter(controller->speedParameter, 70);
   setParameter(controller->angleParameter, 90);  // degrees
   setParameter(controller->obstacleDistanceParameter,
-               200);  // distance in mm
-  setParameter(controller->rampStepParameter,
-               1);  // set time delay for ramps in ms
+               150);  // distance in mm
+  controller->rampStep = 1;
 }
 
 void robotMove(Robot* robot, int speed) {
-  speedRamp(&robot->leftMotor, speed, robot->controller.rampStepParameter);
-  speedRamp(&robot->rightMotor, speed, robot->controller.rampStepParameter);
-  robot->controller.currentSpeed = speed;
+  if (speed != robot->controller.currentSpeed) {
+    speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
+    speedRamp(&robot->rightMotor, speed, robot->controller.rampStep);
+    robot->controller.currentSpeed = speed;
+  }
 }
 
 void robotStop(Robot* robot) {
@@ -41,8 +41,8 @@ void robotStop(Robot* robot) {
 }
 
 void robotTurnInPlace(Robot* robot, int speed) {
-  speedRamp(&robot->leftMotor, speed, robot->controller.rampStepParameter);
-  speedRamp(&robot->rightMotor, -speed, robot->controller.rampStepParameter);
+  speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
+  speedRamp(&robot->rightMotor, -speed, robot->controller.rampStep);
 }
 
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
