@@ -1,7 +1,8 @@
-#include "./printUtilities.h"
-#include "../../src/tasks/motorCommands.h"
-#include "../globalConfig.h"
-#include "./params.h"
+#include <globalConfig.h>
+#include <utilities/params.h>
+
+#include "motorCommands.h"
+#include "printUtilities.h"
 
 /**
  * @brief Print the accelerometer's data.

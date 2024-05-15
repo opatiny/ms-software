@@ -5,13 +5,13 @@
 
 #include <FS.h>
 
+#include "../../src/utilities/printUtilities.h"  // todo: change this, lib should not depend on src....
 #include "./globalConfig.h"
 #include "./taskWire.h"
 #include "./utilities/fileUtilities.h"
 #include "./utilities/params.h"
 #include "./utilities/serialUtilities.h"
 #include "./utilities/wifiUtilities.h"
-#include "utilities/printUtilities.h"
 
 #define SERIAL_BUFFER_LENGTH 256
 #define SERIAL_MAX_PARAM_VALUE_LENGTH 256

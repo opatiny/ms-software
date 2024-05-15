@@ -19,7 +19,7 @@
 
 #include "../pinMapping.h"
 #include "../state.h"
-#include "./motorCommands.h"
+#include "../utilities/motorCommands.h"
 #include "./taskDcMotor.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);

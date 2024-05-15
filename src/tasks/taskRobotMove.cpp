@@ -21,11 +21,11 @@
 
 #include "../pinMapping.h"
 #include "../state.h"
-#include "./motorCommands.h"
-#include "./robotCommands.h"
-#include "./taskButton.h"
-#include "./taskDcMotor.h"
-#include "./taskRobotMove.h"
+#include "../utilities/motorCommands.h"
+#include "../utilities/robotCommands.h"
+#include "taskButton.h"
+#include "taskDcMotor.h"
+#include "taskRobotMove.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);
 void robotControl(Robot* robot);

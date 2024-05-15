@@ -9,9 +9,10 @@
 
 #include <globalConfig.h>
 #include <utilities/params.h>
+
 #include "../pinMapping.h"
-#include "./taskButton.h"
-#include "./taskRgbLed.h"
+#include "taskButton.h"
+#include "taskRgbLed.h"
 
 #define BUTTON_PRESSED_COLOR 1
 

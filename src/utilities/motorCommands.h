@@ -2,8 +2,8 @@
 
 #include "../state.h"
 
+#include "../tasks/taskEncoders.h"
 #include "motorCommands.h"
-#include "taskEncoders.h"
 
 #define DEFAULT_RAMP_DELAY 1  // delay between each speed increment for ramps
 
