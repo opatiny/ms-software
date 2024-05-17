@@ -85,8 +85,8 @@
 // motor pins
 #define MOTOR_LEFT_PIN1 46
 #define MOTOR_LEFT_PIN2 9
-#define MOTOR_RIGHT_PIN1 11
-#define MOTOR_RIGHT_PIN2 10
+#define MOTOR_RIGHT_PIN1 10
+#define MOTOR_RIGHT_PIN2 11
 
 #define LEFT_ENCODER_PIN1 5
 #define LEFT_ENCODER_PIN2 4

@@ -25,7 +25,6 @@ void taskWifi();
 void taskWebserver();
 void taskWire();
 void taskGY521();
-// void taskVL53L1X();
 void taskEventSourceSender();
 void taskDcMotorTest();
 
@@ -51,7 +50,6 @@ void setup() {
   taskWire();
   taskGY521();
   taskVL53L1X();
-  taskDcMotor();
   taskRobotMove();
   taskEncodersX4();
   taskOdometry();
