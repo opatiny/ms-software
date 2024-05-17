@@ -1,7 +1,7 @@
 /**
  * Thread to handle the I2C communication with the five VL53L1X distance
  * sensors.
- *
+ * Set the distance debug mode with parameter AH.
  * Debug: U1
  */
 
@@ -16,14 +16,15 @@
 #include "./taskButton.h"
 #include "./taskVl53L1X.h"
 
-#define DISTANCE_TASK_DELAY 50
+#define DISTANCE_TASK_DELAY 1000
 
 void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
                        int addresses[]);
 
-// todo: add the left sensor back
-#if BOARD == ALGERNON_V1_0_0
+void distanceSensorsDebug(int* distancesParameters);
+
+#if BOARD == ALGERNON_V1_1_0
 int addresses[] = {VL53_LEFT_ADDRESS, VL53_FRONT_LEFT_ADDRESS,
                    VL53_FRONT_ADDRESS, VL53_FRONT_RIGHT_ADDRESS,
                    VL53_RIGHT_ADDRESS};
@@ -34,7 +35,7 @@ int distancesParameters[] = {PARAM_DISTANCE_LEFT, PARAM_DISTANCE_FRONT_LEFT,
 
 int xshutPins[] = {XSHUT_PIN_LEFT, XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT,
                    XSHUT_PIN_FRONT_RIGHT, XSHUT_PIN_RIGHT};
-#elif BOARD == ALGERNON_V1_1_0
+#elif BOARD == ALGERNON_V1_0_0
 // only 4 sensors because left is where the USB connector is
 int addresses[] = {VL53_FRONT_LEFT_ADDRESS, VL53_FRONT_ADDRESS,
                    VL53_FRONT_RIGHT_ADDRESS, VL53_RIGHT_ADDRESS};
@@ -48,13 +49,9 @@ int xshutPins[] = {XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT, XSHUT_PIN_FRONT_RIGHT,
 
 void TaskVL53L1X(void* pvParameters) {
   VL53L1X sensors[NB_DISTANCE_SENSORS];
-
+  vTaskDelay(2000);
   initialiseVL53L1X(sensors, xshutPins, addresses);
   vTaskDelay(1000);
-
-  if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
-    Serial.println(F("VL53L1X sensors initialized"));
-  }
 
   int16_t distance;
   while (true) {
@@ -68,39 +65,7 @@ void TaskVL53L1X(void* pvParameters) {
         setParameter(distancesParameters[i], distance);
       }
     }
-
-    if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
-      switch (getParameter(PARAM_DISTANCE_DEBUG_MODE)) {
-        case CONSTANT:
-          Serial.print(millis());
-          for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-            Serial.print(F(",\t"));
-            Serial.print(getParameter(distancesParameters[i]));
-          }
-          Serial.println();
-          break;
-        case CALIBRATION:
-          if (buttonFlags.distanceCalibration) {
-            for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-              Serial.print(getParameter(distancesParameters[i]));
-              Serial.print(F(",\t"));
-            }
-            Serial.println();
-            buttonFlags.distanceCalibration = false;
-          }
-          break;
-        case RANGING:
-        default:
-          for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-            Serial.print(i);
-            Serial.print(F(": "));
-            Serial.print(getParameter(distancesParameters[i]));
-            Serial.print(F("\t"));
-          }
-          Serial.println();
-          break;
-      }
-    }
+    distanceSensorsDebug(distancesParameters);
   }
 }
 
@@ -116,8 +81,7 @@ void taskVL53L1X() {
 
 /**
  * Initialize all VL53L1X sensors by changing their I2C addresses.
-
-*/
+ */
 void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
                        int addresses[]) {
@@ -125,6 +89,10 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
   for (uint8_t i = 0; i < NB_DISTANCE_SENSORS; i++) {
     pinMode(xshutPins[i], OUTPUT);
     digitalWrite(xshutPins[i], LOW);
+  }
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
+    Serial.println(F("Initializing VL53L1X sensors ..."));
   }
 
   // Enable, initialize, and start each sensor, one by one.
@@ -152,5 +120,40 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
     }
     // start ranging and wait for TIMING_BUDGET ms between measurements.
     sensors[i].startContinuous(TIMING_BUDGET);
+  }
+}
+
+void distanceSensorsDebug(int* distancesParameters) {
+  if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
+    switch (getParameter(PARAM_DISTANCE_DEBUG_MODE)) {
+      case CONSTANT:
+        Serial.print(millis());
+        for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+          Serial.print(F(",\t"));
+          Serial.print(getParameter(distancesParameters[i]));
+        }
+        Serial.println();
+        break;
+      case CALIBRATION:
+        if (buttonFlags.distanceCalibration) {
+          for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+            Serial.print(getParameter(distancesParameters[i]));
+            Serial.print(F(",\t"));
+          }
+          Serial.println();
+          buttonFlags.distanceCalibration = false;
+        }
+        break;
+      case RANGING:
+      default:
+        for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
+          Serial.print(i);
+          Serial.print(F(": "));
+          Serial.print(getParameter(distancesParameters[i]));
+          Serial.print(F("\t"));
+        }
+        Serial.println();
+        break;
+    }
   }
 }
