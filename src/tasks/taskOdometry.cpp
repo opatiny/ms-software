@@ -1,8 +1,9 @@
-
 #include <globalConfig.h>
+#include <utilities/params.h>
 
 #include "../hardwareProperties.h"
 #include "../state.h"
+
 // delay between each time the debug information is printed
 #define DEBUG_DELAY 250
 
@@ -10,9 +11,10 @@ void updateOdometry(Robot* robot);
 
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
+  robot.odometry.time = previousTime;
   while (true) {
-    if (millis() - previousTime > DEBUG_DELAY) {
-      previousTime = millis();
+    if (millis() - previousTime > DEBUG_DELAY &&
+        getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
       Serial.print(robot.odometry.pose.x);
       Serial.print(", ");
       Serial.print(robot.odometry.pose.y);
@@ -22,20 +24,21 @@ void TaskOdometry(void* pvParameters) {
       Serial.print(robot.odometry.speed.v);
       Serial.print(", ");
       Serial.println(robot.odometry.speed.omega);
+      previousTime = millis();
     }
     updateOdometry(&robot);
-    vTaskDelay(1);
+    vTaskDelay(10);
   }
 }
 
 void taskOdometry() {
   xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry",
-                          4096,  // This stack size can be checked & adjusted
+                          8192,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
                           3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
-                          NULL, 2);  // attached on core 2!!
+                          NULL, 1);  // attached on core 2!!
 }
 
 void updateOdometry(Robot* robot) {
@@ -43,6 +46,7 @@ void updateOdometry(Robot* robot) {
   uint32_t now = millis();
   // get the time elapsed since the last update
   float dt = (now - robot->odometry.time) / 1000.0;
+
   // update the last update time
   robot->odometry.time = now;
 

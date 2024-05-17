@@ -16,7 +16,7 @@
 #include "./taskButton.h"
 #include "./taskVl53L1X.h"
 
-#define DISTANCE_TASK_DELAY 1000
+#define DISTANCE_TASK_DELAY 50
 
 void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
                        int xshutPins[],
@@ -71,7 +71,7 @@ void TaskVL53L1X(void* pvParameters) {
 
 void taskVL53L1X() {
   xTaskCreatePinnedToCore(TaskVL53L1X, "TaskVL53L1X",
-                          4096,  // This stack size can be checked & adjusted
+                          8192,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
                           3,  // Priority, with 3 (configMAX_PRIORITIES - 1)

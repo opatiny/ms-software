@@ -83,6 +83,12 @@ struct Odometry {
   int time;
 };
 
+struct Battery {
+  int voltageParameter;
+  int pin;
+  int warningVoltage;
+};
+
 /**
  * The highest level structure for the robot. Contains all the robot's data.
  */
@@ -92,10 +98,11 @@ struct Robot {
   Encoder leftEncoder;
   Encoder rightEncoder;
   int distances[NB_DISTANCE_SENSORS];
-  bool walls[NB_DISTANCE_SENSORS];
+  // bool walls[NB_DISTANCE_SENSORS];
   ImuData imuData;
   RobotController controller;
   Odometry odometry;
+  Battery battery;
 };
 
 extern Robot robot;

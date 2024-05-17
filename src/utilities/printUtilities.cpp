@@ -8,7 +8,7 @@
  * @brief Print the accelerometer's data.
  */
 void printImu(ImuData* imuData) {
-  Serial.print("\t- Acceleration: ");
+  Serial.print("\t- Acceleration [mm/s^2]: ");
   Serial.print(imuData->acceleration.x);
   Serial.print(", ");
   Serial.print(imuData->acceleration.y);
@@ -47,7 +47,7 @@ void printMotor(Motor* motor) {
   Serial.println(motor->currentSpeed);
   Serial.print("\t - Target speed: ");
   Serial.println(getParameter(motor->speedParameter));
-  Serial.print("\t - Target angle (mode 3 only): ");
+  Serial.print("\t - Target angle: ");
   Serial.println(getParameter(motor->angleParameter));
 }
 
@@ -61,6 +61,31 @@ void printEncoder(Encoder* encoder) {
   Serial.println(encoder->pin2);
   Serial.print("\t - Counts: ");
   Serial.println(encoder->counts);
+}
+
+/**
+ * @brief Print the data of the battery.
+ */
+void printBattery(Battery* battery) {
+  Serial.print("\t - Pin: ");
+  Serial.println(battery->pin);
+  Serial.print("\t - Voltage [mV]: ");
+  Serial.println(getParameter(battery->voltageParameter));
+  Serial.print("\t - Warning voltage [mV]: ");
+  Serial.println(battery->warningVoltage);
+}
+
+void printOdometry(Odometry* odometry) {
+  Serial.print("\t - Pose (x,y,theta): ");
+  Serial.print(odometry->pose.x);
+  Serial.print(", ");
+  Serial.print(odometry->pose.y);
+  Serial.print(", ");
+  Serial.println(odometry->pose.theta);
+  Serial.print("\t - Speed (v,omega): ");
+  Serial.print(odometry->speed.v);
+  Serial.print(", ");
+  Serial.println(odometry->speed.omega);
 }
 
 // todo: enhance print state
@@ -78,10 +103,14 @@ void printState() {
   printEncoder(&robot.leftEncoder);
   Serial.println("\nRight encoder:");
   printEncoder(&robot.rightEncoder);
-  Serial.print("\nDistances: ");
+  Serial.println("\nOdometry:");
+  printOdometry(&robot.odometry);
+  Serial.print("\nDistances [mm]: ");
   printDistances(robot.distances);
   Serial.println("\nIMU data");
   printImu(&robot.imuData);
+  Serial.println("\nBattery:");
+  printBattery(&robot.battery);
 }
 
 /**
@@ -99,6 +128,7 @@ void printDebug() {
   Serial.println("\t7) Motors");
   Serial.println("\t8) RGB LED");
   Serial.println("\t9) Buzzer");
+  Serial.println("\t10) Odometry");
 
   Serial.print("\nCurrent debug mode: U");
   Serial.println(getParameter(PARAM_DEBUG));

@@ -10,6 +10,7 @@
 #include "./tasks/taskBuzzer.h"
 #include "./tasks/taskDcMotor.h"
 #include "./tasks/taskEncoders.h"
+#include "./tasks/taskOdometry.h"
 #include "./tasks/taskRgbLed.h"
 #include "./tasks/taskRobotMove.h"
 
@@ -52,10 +53,11 @@ void setup() {
   taskVL53L1X();
   taskDcMotor();
   taskRobotMove();
-  taskBuzzer();
   taskEncodersX4();
+  taskOdometry();
   taskBattery();
   taskButton();
+  taskBuzzer();
   taskRgbLed();
   taskEventSourceSender();
   taskBlink();
