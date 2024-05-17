@@ -14,10 +14,10 @@
 
 #include "taskEncoders.h"
 
-/**
- * Delay between each encoder reading.
- */
-#define DELAY 50
+// delay between each time the debug information is printed
+#define DEBUG_DELAY 100
+
+void initialiseEncoder(Encoder* encoder, EncoderParams* params);
 
 void counterRoutine(EncoderCounter* counter,
                     int interruptPin,
@@ -30,26 +30,31 @@ void rightCounterPin1();
 void rightCounterPin2();
 
 void TaskEncodersX4(void* pvParameters) {
-  // left encoder
-  pinMode(LEFT_ENCODER_PIN1, INPUT_PULLUP);
-  pinMode(LEFT_ENCODER_PIN2, INPUT_PULLUP);
+  // initialise the encoders
+  EncoderParams leftEncoderParams = {
+    pin1 : LEFT_ENCODER_PIN1,
+    pin2 : LEFT_ENCODER_PIN2,
+  };
+  EncoderParams rightEncoderParams = {
+    pin1 : RIGHT_ENCODER_PIN1,
+    pin2 : RIGHT_ENCODER_PIN2,
+  };
 
+  initialiseEncoder(&(robot.leftEncoder), &leftEncoderParams);
+  initialiseEncoder(&(robot.rightEncoder), &rightEncoderParams);
+
+  // attach interrupts on both pins of each encoder
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN1), leftCounterPin1,
                   CHANGE);
   attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_PIN2), leftCounterPin2,
                   CHANGE);
-
-  // right encoder
-  pinMode(RIGHT_ENCODER_PIN1, INPUT_PULLUP);
-  pinMode(RIGHT_ENCODER_PIN2, INPUT_PULLUP);
-
   attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_PIN1), rightCounterPin1,
                   CHANGE);
   attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_PIN2), rightCounterPin2,
                   CHANGE);
 
   while (true) {
-    vTaskDelay(DELAY);
+    vTaskDelay(DEBUG_DELAY);
     if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
       int time = millis();
       Serial.print(time);
@@ -86,12 +91,12 @@ void leftCounterPin2() {
 }
 
 void rightCounterPin1() {
-  counterRoutine(&(robot.leftEncoder.counts), RIGHT_ENCODER_PIN1,
+  counterRoutine(&(robot.rightEncoder.counts), RIGHT_ENCODER_PIN1,
                  RIGHT_ENCODER_PIN2, 1);
 }
 
 void rightCounterPin2() {
-  counterRoutine(&(robot.leftEncoder.counts), RIGHT_ENCODER_PIN2,
+  counterRoutine(&(robot.rightEncoder.counts), RIGHT_ENCODER_PIN2,
                  RIGHT_ENCODER_PIN1, -1);
 }
 /**
@@ -128,7 +133,10 @@ void counterRoutine(EncoderCounter* counter,
   *counter = newValue;
 }
 
-void initialiseEncoderCounter(Encoder* encoder) {
+void initialiseEncoder(Encoder* encoder, EncoderParams* params) {
+  encoder->pin1 = params->pin1;
+  encoder->pin2 = params->pin2;
+
   pinMode(encoder->pin1, INPUT_PULLUP);
   pinMode(encoder->pin2, INPUT_PULLUP);
   encoder->counts = 0;

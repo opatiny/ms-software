@@ -23,7 +23,7 @@
 #include "./taskDcMotor.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);
-void motorControl(Motor* motor);
+void motorControl(Motor* motor, Encoder* encoder);
 
 void TaskDcMotor(void* pvParameters) {
   // define parameters of the motors
@@ -52,8 +52,8 @@ void TaskDcMotor(void* pvParameters) {
   setParameter(PARAM_MOTOR_RAMP_STEP, 1);  // ms
 
   while (true) {
-    motorControl(&robot.leftMotor);
-    motorControl(&robot.rightMotor);
+    motorControl(&robot.leftMotor, &robot.leftEncoder);
+    motorControl(&robot.rightMotor, &robot.rightEncoder);
     vTaskDelay(1000);
   }
 }
@@ -68,7 +68,7 @@ void taskDcMotor() {
                           NULL, 1);
 }
 
-void motorControl(Motor* motor) {
+void motorControl(Motor* motor, Encoder* encoder) {
   int targetSpeed = getParameter(motor->speedParameter);
   int currentMode = getParameter(motor->modeParameter);
 
@@ -108,7 +108,7 @@ void motorControl(Motor* motor) {
         Serial.print(" degrees at speed ");
         Serial.println(targetSpeed);
       }
-      moveDegrees(motor, degrees, targetSpeed);
+      moveDegrees(motor, encoder, degrees, targetSpeed);
       if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
       }
       break;

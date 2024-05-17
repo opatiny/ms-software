@@ -9,6 +9,11 @@
 
 typedef int64_t EncoderCounter;
 
+struct EncoderParams {
+  int pin1;
+  int pin2;
+};
+
 /**
  * Structure containing all the encoder data.
  * - counts: Number of counts of the encoder since the robot was turned on.
@@ -35,10 +40,10 @@ struct Encoder {
  *  - speed: Current speed of the motor.
  */
 struct Motor {
-  int speedParameter;
+  int speedParameter;  // target speed
   int modeParameter;
-  int previousMode;
   int angleParameter;
+  int previousMode;
   int currentSpeed;
   int pin1;
   int pin2;
@@ -87,6 +92,7 @@ struct Robot {
   Encoder leftEncoder;
   Encoder rightEncoder;
   int distances[NB_DISTANCE_SENSORS];
+  bool walls[NB_DISTANCE_SENSORS];
   ImuData imuData;
   RobotController controller;
   Odometry odometry;

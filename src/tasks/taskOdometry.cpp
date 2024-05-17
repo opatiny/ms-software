@@ -3,14 +3,28 @@
 
 #include "../hardwareProperties.h"
 #include "../state.h"
+// delay between each time the debug information is printed
+#define DEBUG_DELAY 250
 
 void updateOdometry(Robot* robot);
 
 void TaskOdometry(void* pvParameters) {
-  // left encoder
+  int previousTime = millis();
   while (true) {
-    vTaskDelay(1);
+    if (millis() - previousTime > DEBUG_DELAY) {
+      previousTime = millis();
+      Serial.print(robot.odometry.pose.x);
+      Serial.print(", ");
+      Serial.print(robot.odometry.pose.y);
+      Serial.print(", ");
+      Serial.print(robot.odometry.pose.theta);
+      Serial.print(", ");
+      Serial.print(robot.odometry.speed.v);
+      Serial.print(", ");
+      Serial.println(robot.odometry.speed.omega);
+    }
     updateOdometry(&robot);
+    vTaskDelay(1);
   }
 }
 
@@ -19,7 +33,7 @@ void taskOdometry() {
                           4096,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
-                          2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
+                          3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 2);  // attached on core 2!!
 }

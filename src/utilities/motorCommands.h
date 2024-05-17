@@ -40,4 +40,4 @@ void moveSeconds(Motor* motor,
                  int speed,
                  int rampDelay = DEFAULT_RAMP_DELAY);
 
-void moveDegrees(Motor* motor, int degrees, int speed);
+void moveDegrees(Motor* motor, Encoder* encoder, int degrees, int speed);

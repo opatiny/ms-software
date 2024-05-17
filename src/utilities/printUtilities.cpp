@@ -51,6 +51,18 @@ void printMotor(Motor* motor) {
   Serial.println(getParameter(motor->angleParameter));
 }
 
+/**
+ * @brief Print the data of the encoders.
+ */
+void printEncoder(Encoder* encoder) {
+  Serial.print("\t - Pins: ");
+  Serial.print(encoder->pin1);
+  Serial.print(", ");
+  Serial.println(encoder->pin2);
+  Serial.print("\t - Counts: ");
+  Serial.println(encoder->counts);
+}
+
 // todo: enhance print state
 
 /**
@@ -62,6 +74,10 @@ void printState() {
   printMotor(&robot.leftMotor);
   Serial.println("\nRight motor:");
   printMotor(&robot.rightMotor);
+  Serial.println("\nLeft encoder:");
+  printEncoder(&robot.leftEncoder);
+  Serial.println("\nRight encoder:");
+  printEncoder(&robot.rightEncoder);
   Serial.print("\nDistances: ");
   printDistances(robot.distances);
   Serial.println("\nIMU data");

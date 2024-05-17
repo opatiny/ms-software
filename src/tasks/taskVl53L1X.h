@@ -22,8 +22,8 @@ enum DistanceDebugMode { RANGING, CONSTANT, CALIBRATION };
  * Time to perform a measurement. 140 ms is the min time for max range of 4
  * meters.
  */
-#define TIMING_BUDGET 140  // ms
-#define VL53_DEFAULT_ADDRESS 0x29
+#define TIMING_BUDGET 140          // ms
+#define VL53_DEFAULT_ADDRESS 0x29  // 41
 
 // prototypes
 void taskVL53L1X();
