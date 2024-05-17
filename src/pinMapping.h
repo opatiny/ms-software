@@ -29,6 +29,8 @@
 #define XSHUT_PIN_FRONT_RIGHT 0
 #define XSHUT_PIN_RIGHT 0
 
+#define NB_DISTANCE_SENSORS 2
+
 // I2C
 #define SDA_PIN SDA
 #define SCL_PIN SCL
@@ -61,6 +63,8 @@
 #define XSHUT_PIN_FRONT 12
 #define XSHUT_PIN_FRONT_RIGHT 10
 #define XSHUT_PIN_RIGHT 11
+
+#define NB_DISTANCE_SENSORS 4
 
 // I2C
 #define SDA_PIN 4
@@ -95,6 +99,8 @@
 #define XSHUT_PIN_FRONT 0
 #define XSHUT_PIN_FRONT_RIGHT 20
 #define XSHUT_PIN_RIGHT 119
+
+#define NB_DISTANCE_SENSORS 5
 
 // I2C
 #define SDA_PIN 47

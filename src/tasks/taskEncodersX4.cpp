@@ -54,9 +54,9 @@ void TaskEncodersX4(void* pvParameters) {
       int time = millis();
       Serial.print(time);
       Serial.print(", \t");
-      Serial.print(robot.leftEncoder.counter);
+      Serial.print(robot.leftEncoder.counts);
       Serial.print(", \t");
-      Serial.print(robot.rightEncoder.counter);
+      Serial.print(robot.rightEncoder.counts);
       Serial.print(", \t");
       Serial.print(getParameter(PARAM_MOTOR_LEFT_MODE));
       Serial.print(", \t");
@@ -76,22 +76,22 @@ void taskEncodersX4() {
 }
 
 void leftCounterPin1() {
-  counterRoutine(&(robot.leftEncoder.counter), LEFT_ENCODER_PIN1,
+  counterRoutine(&(robot.leftEncoder.counts), LEFT_ENCODER_PIN1,
                  LEFT_ENCODER_PIN2, 1);
 }
 
 void leftCounterPin2() {
-  counterRoutine(&(robot.leftEncoder.counter), LEFT_ENCODER_PIN2,
+  counterRoutine(&(robot.leftEncoder.counts), LEFT_ENCODER_PIN2,
                  LEFT_ENCODER_PIN1, -1);
 }
 
 void rightCounterPin1() {
-  counterRoutine(&(robot.leftEncoder.counter), RIGHT_ENCODER_PIN1,
+  counterRoutine(&(robot.leftEncoder.counts), RIGHT_ENCODER_PIN1,
                  RIGHT_ENCODER_PIN2, 1);
 }
 
 void rightCounterPin2() {
-  counterRoutine(&(robot.leftEncoder.counter), RIGHT_ENCODER_PIN2,
+  counterRoutine(&(robot.leftEncoder.counts), RIGHT_ENCODER_PIN2,
                  RIGHT_ENCODER_PIN1, -1);
 }
 /**
@@ -126,4 +126,10 @@ void counterRoutine(EncoderCounter* counter,
     }
   }
   *counter = newValue;
+}
+
+void initialiseEncoderCounter(Encoder* encoder) {
+  pinMode(encoder->pin1, INPUT_PULLUP);
+  pinMode(encoder->pin2, INPUT_PULLUP);
+  encoder->counts = 0;
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#define NB_DISTANCE_SENSORS 4
-
 /**
  * Specify the information you want to print to serial.
  * - RANGING: Normal mode, display distance of all sensors every time a

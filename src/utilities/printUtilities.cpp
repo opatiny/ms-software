@@ -49,9 +49,9 @@ void printMotor(Motor* motor) {
   Serial.println(getParameter(motor->speedParameter));
   Serial.print("\t - Target angle (mode 3 only): ");
   Serial.println(getParameter(motor->angleParameter));
-  Serial.print("\t - Encoder counts: ");
-  Serial.println(motor->encoderCounts);
 }
+
+// todo: enhance print state
 
 /**
  * @brief Print the current state of the robot.
@@ -60,7 +60,7 @@ void printState() {
   Serial.println("Logging current state...\n");
   Serial.println("Left motor:");
   printMotor(&robot.leftMotor);
-  Serial.println("Right motor:");
+  Serial.println("\nRight motor:");
   printMotor(&robot.rightMotor);
   Serial.print("\nDistances: ");
   printDistances(robot.distances);

@@ -28,7 +28,6 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
   motor->pin2 = params->pin2;
   motor->previousMode = MOTOR_STOP;
   motor->currentSpeed = 0;
-  motor->encoderCounts = 0;
 
   // we will do some PWM on the motor pins
   pinMode(motor->pin1, OUTPUT);
@@ -51,9 +50,9 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
  * @param speed Speed of the motor (-255 to 255). It is the sign of the speed
  * that defines the direction of the rotation!!
  */
-void moveDegrees(Motor* motor, int degrees, int speed) {
+void moveDegrees(Motor* motor, Encoder* encoder, int degrees, int speed) {
   int counts = angleToCounts(degrees);
-  int startCounts = motor->encoderCounts;
+  int startCounts = encoder->counts;
   int targetCounts = startCounts + counts;
 
   if (targetCounts > 2 ^ 15 - 1) {
@@ -63,11 +62,11 @@ void moveDegrees(Motor* motor, int degrees, int speed) {
   }
   speedRamp(motor, speed);
   if (speed > 0) {
-    while (motor->encoderCounts < targetCounts) {
+    while (encoder->counts < targetCounts) {
       vTaskDelay(1);
     }
   } else {
-    while (motor->encoderCounts > targetCounts) {
+    while (encoder->counts > targetCounts) {
       vTaskDelay(1);
     }
   }
@@ -76,11 +75,11 @@ void moveDegrees(Motor* motor, int degrees, int speed) {
 
     int trueNbCounts = 0;
     if (speed > 0) {
-      trueNbCounts = motor->encoderCounts - startCounts;
+      trueNbCounts = encoder->counts - startCounts;
     } else {
-      trueNbCounts = startCounts - motor->encoderCounts;
+      trueNbCounts = startCounts - encoder->counts;
     }
-    Serial.println(motor->encoderCounts - startCounts);
+    Serial.println(encoder->counts - startCounts);
   }
 
   speedRamp(motor, 0);

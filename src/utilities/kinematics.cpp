@@ -7,14 +7,14 @@
  * todo: Is the return type int a problem?
  */
 int countsToAngle(int counts) {
-  return counts * 360 / (12 * GEAR_RATIO);
+  return counts * 360 / (ENCODER_COUNTS_PER_REV * GEAR_RATIO);
 }
 
 /**
  * @brief Convert an angle in degrees to nb of encoder counts.
  */
 int angleToCounts(int angle) {
-  return angle * 12 * GEAR_RATIO / 360;
+  return angle * ENCODER_COUNTS_PER_REV * GEAR_RATIO / 360;
 }
 
 UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed) {

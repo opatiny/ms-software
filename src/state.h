@@ -3,12 +3,23 @@
 #include <stdint.h>
 
 #include <taskGY521.h>
+
 #include "./tasks/taskVl53L1X.h"
+#include "pinMapping.h"
 
 typedef int64_t EncoderCounter;
 
+/**
+ * Structure containing all the encoder data.
+ * - counts: Number of counts of the encoder since the robot was turned on.
+ * - previousCounts: Number of counts of the encoder at the previous odometry
+ *   update.
+ * - pin1: Pin 1 of the encoder.
+ * - pin2: Pin 2 of the encoder.
+ */
 struct Encoder {
-  EncoderCounter counter;
+  EncoderCounter counts;
+  EncoderCounter previousCounts;
   int pin1;
   int pin2;
 };
@@ -47,15 +58,24 @@ struct RobotController {
   int rampStep;
 };
 
+/**
+ * Position of the robot in a cartesian reference frame.
+ */
 struct Pose {
   double x;
   double y;
   double theta;
 };
 
+struct RobotSpeed {
+  double v;
+  double omega;
+};
+
 struct Odometry {
-  Pose previousPose;
-  int previousTime;
+  Pose pose;
+  RobotSpeed speed;
+  int time;
 };
 
 /**
@@ -69,6 +89,7 @@ struct Robot {
   int distances[NB_DISTANCE_SENSORS];
   ImuData imuData;
   RobotController controller;
+  Odometry odometry;
 };
 
 extern Robot robot;
