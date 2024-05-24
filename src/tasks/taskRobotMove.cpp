@@ -47,10 +47,21 @@ void TaskRobotMove(void* pvParameters) {
     pin2 : MOTOR_RIGHT_PIN2
   };
 
+  // pid control to ensure both wheels go at same speed
+  PidController wheelsController = {
+    kp : 0.5,
+    ki : 0,
+    kd : 0,
+    integral : 0,
+    previousError : 0,
+    previousTime : 0,
+  };
+
   ControllerParams robotParams = {
     speedParameter : PARAM_ROBOT_SPEED_CMD,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
+    wheelsController : wheelsController,
   };
 
   initialiseController(&robot.controller, &robotParams);
@@ -113,6 +124,10 @@ void robotControl(Robot* robot) {
       motorControl(&robot->leftMotor, &robot->leftEncoder);
       motorControl(&robot->rightMotor, &robot->rightEncoder);
       vTaskDelay(1000);
+      break;
+    case ROBOT_MOVE_STRAIGHT:
+      robotMoveStraight(robot, targetSpeed);
+      vTaskDelay(10);
       break;
     default:
       Serial.println("Unknown robot movement mode");

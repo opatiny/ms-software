@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include <pidController.h>
 #include <taskGY521.h>
 
 #include "./tasks/taskVl53L1X.h"
@@ -48,6 +49,12 @@ struct Motor {
   int pin1;
   int pin2;
 };
+
+struct WheelsCommands {
+  int leftSpeed;
+  int rightSpeed;
+};
+
 /**
  * The structure for the control of the robot movement. Allows to set the
  * movement mode, speed, etc
@@ -61,6 +68,8 @@ struct RobotController {
   int currentSpeed;
   int previousMode;
   int rampStep;
+  PidController wheelsController;
+  WheelsCommands wheelsCommands;
 };
 
 /**

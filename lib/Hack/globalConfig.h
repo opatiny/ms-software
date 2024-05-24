@@ -15,7 +15,7 @@ enum DebugMode {
   DEBUG_BATTERY_LOG_DATA,  // 4
   DEBUG_ENCODERS,          // 5
   DEBUG_BUTTON,            // 6
-  DEBUG_MOTORS,            // 7
+  DEBUG_ROBOT_CONTROL,     // 7
   DEBUG_RGB_LED,           // 8
   DEBUG_BUZZER,            // 9
   DEBUG_ODOMETRY,          // 10

@@ -6,6 +6,8 @@
 #include "motorCommands.h"
 
 #define DEFAULT_RAMP_DELAY 1  // delay between each speed increment for ramps
+#define MAX_SPEED_COMMAND 255
+#define MIN_SPEED_COMMAND -256
 
 /**
  * Parameters for the initialisation of a motor.

@@ -1,8 +1,15 @@
-#include "pidRegulation.h"
+#include "pidController.h"
 
 #include <Arduino.h>
 
-double getNewPidValue(PidRegulator* regulator, double error) {
+void initialisePidController(PidController* regulator, PidParams* params) {
+  regulator->kp = params->kp;
+  regulator->ki = params->ki;
+  regulator->kd = params->kd;
+  regulator->previousTime = millis() / 1000.0;
+}
+
+double getNewPidValue(PidController* regulator, double error) {
   double time = millis() / 1000.0;
   double dt = time - regulator->previousTime;
   regulator->integral += error * dt;

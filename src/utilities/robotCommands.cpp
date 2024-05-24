@@ -5,6 +5,11 @@
 #include "motorCommands.h"
 #include "robotCommands.h"
 
+#define MOVE_STRAIGHT_DEBUG_DELAY 500
+int moveStraightDebugTime = millis();
+
+int getClampedSpeed(int speed);
+
 /**
  * @brief Initialise the robot controller by giving the desired default values
  * to the parameters.
@@ -17,7 +22,6 @@ void initialiseController(RobotController* controller,
   controller->angleParameter = params->angleParameter;
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
   controller->previousMode = ROBOT_STOP;
-  controller->currentSpeed = 0;
   controller->rampStep = 1;  // 1ms delay between each speed increment
 
   // initally stop the robot
@@ -84,5 +88,56 @@ void robotMoveStraight(Robot* robot, int speed) {
     speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
     speedRamp(&robot->rightMotor, speed, robot->controller.rampStep);
     robot->controller.currentSpeed = speed;
+    robot->controller.wheelsCommands.leftSpeed = speed;
+    robot->controller.wheelsCommands.rightSpeed = speed;
+  } else {
+    // speed difference between the two wheels in rpm
+    double errorRpm =
+        robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
+    double correction =
+        getNewPidValue(&robot->controller.wheelsController, errorRpm);
+
+    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+        millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
+      Serial.print("Error: ");
+      Serial.print(errorRpm);
+      Serial.print(", Correction: ");
+      Serial.print(correction);
+      Serial.print(", Left speed rpm: ");
+      Serial.print(robot->odometry.leftWheelSpeed);
+      Serial.print(", Right speed rpm: ");
+      Serial.print(robot->odometry.rightWheelSpeed);
+      Serial.print(", Left cmd: ");
+      Serial.print(robot->controller.wheelsCommands.leftSpeed);
+      Serial.print(", Right speed cmd: ");
+      Serial.println(robot->controller.wheelsCommands.rightSpeed);
+      moveStraightDebugTime = millis();
+    }
+
+    int newLeftCmd = getClampedSpeed(
+        robot->controller.wheelsCommands.leftSpeed + correction);
+    int newRightCmd = getClampedSpeed(
+        robot->controller.wheelsCommands.rightSpeed - correction);
+    speedRamp(&robot->leftMotor, newLeftCmd, robot->controller.rampStep);
+    speedRamp(&robot->rightMotor, newRightCmd, robot->controller.rampStep);
+
+    robot->controller.wheelsCommands.leftSpeed = newLeftCmd;
+    robot->controller.wheelsCommands.rightSpeed = newRightCmd;
   }
+}
+
+/**
+ * @brief Get the clamped speed value between the minimum and maximum speed
+ * values.
+ * @param speed The speed to clamp.
+ * @return The clamped speed value.
+ */
+int getClampedSpeed(int speed) {
+  int rounded = round(speed);
+  if (speed > MAX_SPEED_COMMAND) {
+    return MAX_SPEED_COMMAND;
+  } else if (speed < MIN_SPEED_COMMAND) {
+    return MIN_SPEED_COMMAND;
+  }
+  return speed;
 }
