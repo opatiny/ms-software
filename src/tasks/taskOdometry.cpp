@@ -3,6 +3,11 @@
 
 #include "../hardwareProperties.h"
 #include "../state.h"
+#include "../utilities/kinematics.h"
+
+#define SPEED_CALIBRATION_DELAY 1000
+#define SPEED_STEP 10
+#define MAX_MOTOR_SPEED 255
 
 // delay between each time the debug information is printed
 #define DEBUG_DELAY 250
@@ -12,7 +17,33 @@ void updateOdometry(Robot* robot);
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
   robot.odometry.time = previousTime;
+  int speed = 0;
   while (true) {
+    updateOdometry(&robot);
+
+    if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
+      int currentTime = millis();
+      if (currentTime - previousTime > SPEED_CALIBRATION_DELAY) {
+        Serial.print(currentTime);
+        Serial.print(", ");
+        Serial.print(speed);
+        Serial.print(", ");
+        Serial.print(robot.odometry.leftWheelSpeed);
+        Serial.print(", ");
+        Serial.println(robot.odometry.rightWheelSpeed);
+
+        speed += SPEED_STEP;
+        if (speed > MAX_MOTOR_SPEED) {
+          Serial.println("Speed calibration finished.");
+          setParameter(PARAM_DEBUG, NO_DEBUG);
+          speed = 0;
+        }
+        setAndSaveParameter(PARAM_MOTOR_LEFT_SPEED_CMD, speed);
+        setAndSaveParameter(PARAM_MOTOR_RIGHT_SPEED_CMD, speed);
+        previousTime = currentTime;
+      }
+    }
+
     if (millis() - previousTime > DEBUG_DELAY &&
         getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
       Serial.print(robot.odometry.pose.x);
@@ -26,8 +57,7 @@ void TaskOdometry(void* pvParameters) {
       Serial.println(robot.odometry.speed.omega);
       previousTime = millis();
     }
-    updateOdometry(&robot);
-    vTaskDelay(10);
+    vTaskDelay(100);
   }
 }
 
@@ -54,11 +84,24 @@ void updateOdometry(Robot* robot) {
   int32_t leftEncoder = robot->leftEncoder.counts;
   int32_t rightEncoder = robot->rightEncoder.counts;
 
+  // nb of counts since last update
+  float leftCounts = leftEncoder - robot->leftEncoder.previousCounts;
+  float rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
+
+  // calculate speed of each wheel in rpm
+
+  Serial.print("leftCounts: ");
+  Serial.println(leftCounts);
+  Serial.print("dt: ");
+  Serial.println(dt);
+  Serial.print("leftWheelSpeed: ");
+  Serial.println(computeWheelRpm(leftCounts, dt));
+  robot->odometry.leftWheelSpeed = computeWheelRpm(leftCounts, dt);
+  robot->odometry.rightWheelSpeed = computeWheelRpm(rightCounts, dt);
+
   // calculate the distance traveled by each wheel
-  float leftDistance =
-      (leftEncoder - robot->leftEncoder.previousCounts) * DISTANCE_PER_COUNT;
-  float rightDistance =
-      (rightEncoder - robot->rightEncoder.previousCounts) * DISTANCE_PER_COUNT;
+  float leftDistance = leftCounts * DISTANCE_PER_COUNT;
+  float rightDistance = rightCounts * DISTANCE_PER_COUNT;
 
   // update the last encoder values
   robot->leftEncoder.previousCounts = leftEncoder;

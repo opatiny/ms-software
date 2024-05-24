@@ -64,7 +64,7 @@ struct RobotController {
 };
 
 /**
- * Position of the robot in a cartesian reference frame.
+ * Position of the robot in a cartesian reference frame in meters and radians.
  */
 struct Pose {
   double x;
@@ -77,10 +77,20 @@ struct RobotSpeed {
   double omega;
 };
 
+/**
+ * Structure for the odometry data.
+ * - pose: The pose of the robot in meters and radians.
+ * - speed: The speed of the robot in m/s and rad/s.
+ * - time: The time at the last update of the odometry in milliseconds.
+ * - leftWheelSpeed: The speed of the left wheel in rpm.
+ * - rightWheelSpeed: The speed of the right wheel in rpm.
+ */
 struct Odometry {
   Pose pose;
   RobotSpeed speed;
   int time;
+  float leftWheelSpeed;
+  float rightWheelSpeed;
 };
 
 struct Battery {

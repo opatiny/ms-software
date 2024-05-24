@@ -1,12 +1,13 @@
-#include "../hardwareProperties.h"
+#include <Arduino.h>
 
+#include "../../src/hardwareProperties.h"
 #include "kinematics.h"
 
 /**
  * @brief Convert nb of encoder counts to an angle in degrees.
  * todo: Is the return type int a problem?
  */
-int countsToAngle(int counts) {
+float countsToAngle(int counts) {
   return counts * 360 / (ENCODER_COUNTS_PER_REV * GEAR_RATIO);
 }
 
@@ -29,4 +30,18 @@ DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed) {
   double vl = unicycleSpeed.v * (1 - L / (4 * unicycleSpeed.rho));
   double vr = unicycleSpeed.v * (1 + L / (4 * unicycleSpeed.rho));
   return {vl, vr};
+}
+
+/**
+ * @brief Compute the wheel speed in rpm from the encoder counts difference and
+ * the time elapsed since the last update.
+ * @param counts The number of encoder counts since the last update.
+ * @param dt The time elapsed since the last update in seconds.
+ */
+float computeWheelRpm(int counts, int dt) {
+  Serial.print("counts: ");
+  Serial.println(counts);
+  float angle = countsToAngle(counts);
+  float degSec = angle / dt;
+  return degSec * 60 / 360;
 }
