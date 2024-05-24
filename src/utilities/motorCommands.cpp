@@ -7,7 +7,7 @@
 #include "motorCommands.h"
 
 // set to 1 for additional debug about speed ramps
-#define RAMP_UP_DOWN_DEBUG 1
+#define RAMP_UP_DOWN_DEBUG 0
 
 // prototypes
 void rampDown(Motor* motor,

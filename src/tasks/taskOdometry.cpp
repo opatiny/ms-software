@@ -6,8 +6,9 @@
 #include "../state.h"
 #include "taskRobotMove.h"
 
-#define SPEED_CALIBRATION_DELAY 1000
-#define SPEED_STEP 10
+#define SPEED_CALIBRATION_DELAY 2000
+#define SPEED_STEP 5
+#define MIN_MOTOR_SPEED -255
 #define MAX_MOTOR_SPEED 255
 
 // delay between each time the debug information is printed
@@ -20,7 +21,7 @@ void wheelSpeedCalibration(int* speed, int* previousTime);
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
   robot.odometry.time = previousTime;
-  int speed = 0;
+  int speed = MIN_MOTOR_SPEED;
   while (true) {
     updateOdometry(&robot);
 
@@ -34,8 +35,9 @@ void TaskOdometry(void* pvParameters) {
       previousTime = millis();
     }
     // handle case where user changes debug mode before calibration is finished
-    if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION && speed != 0) {
-      speed = 0;
+    if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION &&
+        speed != MIN_MOTOR_SPEED) {
+      speed = MIN_MOTOR_SPEED;
       setParameter(PARAM_ROBOT_SPEED_CMD, 0);
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     }
@@ -127,7 +129,7 @@ void printOdometry(Robot* robot) {
 void wheelSpeedCalibration(int* speed, int* previousTime) {
   int currentTime = millis();
   if (currentTime - *previousTime > SPEED_CALIBRATION_DELAY) {
-    if (*speed == 0) {
+    if (*speed == MIN_MOTOR_SPEED) {
       Serial.println("Speed calibration started...\n");
       setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
     }
@@ -143,7 +145,7 @@ void wheelSpeedCalibration(int* speed, int* previousTime) {
     if (*speed > MAX_MOTOR_SPEED) {
       Serial.println("Speed calibration finished.");
       setParameter(PARAM_DEBUG, NO_DEBUG);
-      *speed = 0;
+      *speed = -MIN_MOTOR_SPEED;
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
       setParameter(PARAM_ROBOT_SPEED_CMD, 0);
     }
