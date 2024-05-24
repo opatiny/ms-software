@@ -2,8 +2,8 @@
 
 #include <stdint.h>
 
-#include <pidController.h>
 #include <taskGY521.h>
+#include "../lib/customUtilities/pidController.h"  // todo: why does #include <pidController.h> not work?
 
 #include "./tasks/taskVl53L1X.h"
 #include "pinMapping.h"

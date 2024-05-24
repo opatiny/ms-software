@@ -48,20 +48,17 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   // pid control to ensure both wheels go at same speed
-  PidController wheelsController = {
-    kp : 0.5,
+  PidParams wheelsParams = {
+    kp : 0.05,
     ki : 0,
     kd : 0,
-    integral : 0,
-    previousError : 0,
-    previousTime : 0,
   };
 
   ControllerParams robotParams = {
     speedParameter : PARAM_ROBOT_SPEED_CMD,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
-    wheelsController : wheelsController,
+    wheelsParams : wheelsParams,
   };
 
   initialiseController(&robot.controller, &robotParams);

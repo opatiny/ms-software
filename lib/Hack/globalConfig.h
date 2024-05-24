@@ -8,18 +8,19 @@ extern SemaphoreHandle_t xSemaphoreWire;
 
 // debug (U)
 enum DebugMode {
-  NO_DEBUG,                // 0
-  DEBUG_DISTANCE,          // 1
-  DEBUG_IMU,               // 2
-  DEBUG_BATTERY,           // 3
-  DEBUG_BATTERY_LOG_DATA,  // 4
-  DEBUG_ENCODERS,          // 5
-  DEBUG_BUTTON,            // 6
-  DEBUG_ROBOT_CONTROL,     // 7
-  DEBUG_RGB_LED,           // 8
-  DEBUG_BUZZER,            // 9
-  DEBUG_ODOMETRY,          // 10
-  DEBUG_SPEED_CALIBRATION  // 11
+  NO_DEBUG,                 // 0
+  DEBUG_DISTANCE,           // 1
+  DEBUG_IMU,                // 2
+  DEBUG_BATTERY,            // 3
+  DEBUG_BATTERY_LOG_DATA,   // 4
+  DEBUG_ENCODERS,           // 5
+  DEBUG_BUTTON,             // 6
+  DEBUG_MOTORS,             // 7
+  DEBUG_RGB_LED,            // 8
+  DEBUG_BUZZER,             // 9
+  DEBUG_ODOMETRY,           // 10
+  DEBUG_SPEED_CALIBRATION,  // 11
+  DEBUG_ROBOT_CONTROL,      // 12
 };
 
 // SERIAL PARAMETERS

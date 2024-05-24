@@ -24,6 +24,9 @@ void initialiseController(RobotController* controller,
   controller->previousMode = ROBOT_STOP;
   controller->rampStep = 1;  // 1ms delay between each speed increment
 
+  // initialize PID
+  initialisePidController(&controller->wheelsController, &params->wheelsParams);
+
   // initally stop the robot
   setParameter(controller->modeParameter, ROBOT_STOP);
 
@@ -115,9 +118,9 @@ void robotMoveStraight(Robot* robot, int speed) {
     }
 
     int newLeftCmd = getClampedSpeed(
-        robot->controller.wheelsCommands.leftSpeed + correction);
+        robot->controller.wheelsCommands.leftSpeed - correction);
     int newRightCmd = getClampedSpeed(
-        robot->controller.wheelsCommands.rightSpeed - correction);
+        robot->controller.wheelsCommands.rightSpeed + correction);
     speedRamp(&robot->leftMotor, newLeftCmd, robot->controller.rampStep);
     speedRamp(&robot->rightMotor, newRightCmd, robot->controller.rampStep);
 

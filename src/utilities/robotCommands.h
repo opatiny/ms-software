@@ -10,7 +10,7 @@ struct ControllerParams {
   int modeParameter;
   int angleParameter;
   int obstacleDistanceParameter;
-  PidController wheelsController;
+  PidParams wheelsParams;
 };
 
 int getClampedSpeed(int speed);

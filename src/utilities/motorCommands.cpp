@@ -69,7 +69,7 @@ void moveDegrees(Motor* motor, Encoder* encoder, int degrees, int speed) {
       vTaskDelay(1);
     }
   }
-  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+  if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
     Serial.print("true movement in encoder counts: ");
 
     int trueNbCounts = 0;
@@ -125,7 +125,7 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
     return;
   }
 
-  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+  if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
     Serial.print("speed ramp: ");
     Serial.print(initialSpeed);
     Serial.print(" -> ");
@@ -277,7 +277,7 @@ void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
     case MOTOR_CONSTANT_SPEED:
       if (motor->previousMode != currentMode ||
           targetSpeed != motor->currentSpeed) {
-        if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
           Serial.println("Motor constant speed mode");
         }
         speedRamp(motor, targetSpeed, getParameter(PARAM_MOTOR_RAMP_STEP));
@@ -285,7 +285,7 @@ void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
       break;
     case MOTOR_MOVE_SECONDS: {
       int delaySeconds = 1;
-      if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
         Serial.print("Move for ");
         Serial.print(delaySeconds);
         Serial.print(" seconds at speed ");
@@ -293,26 +293,26 @@ void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
       }
       moveSeconds(motor, delaySeconds, targetSpeed,
                   getParameter(PARAM_MOTOR_RAMP_STEP));
-      if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
         Serial.println("End of movement");
       }
       break;
     }
     case MOTOR_MOVE_DEGREES: {
       int degrees = getParameter(motor->angleParameter);
-      if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
         Serial.print("Move for ");
         Serial.print(degrees);
         Serial.print(" degrees at speed ");
         Serial.println(targetSpeed);
       }
       moveDegrees(motor, encoder, degrees, targetSpeed);
-      if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
       }
       break;
     }
     case MOTOR_SHORT: {
-      if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
         int delay = 1;
         Serial.println("Short pulse mode (only for debug)");
         Serial.print("Motor will spin for ");
