@@ -158,7 +158,8 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       }
     } else {
-      rampDown(motor, BACKWARD, -finalSpeed, rampDelay);
+      Serial.println(finalSpeed);
+      rampUp(motor, FORWARD, finalSpeed, rampDelay);
     }
   }
   motor->currentSpeed = finalSpeed;
@@ -265,9 +266,9 @@ void shortFullSpeed(Motor* motor, int speed, int delaySec) {
  * Control the motor based on the current mode and target speed.
  * @param motor - Motor to control
  * @param encoder - Encoder of the motor
-
-*/
-void motorControl(Motor* motor, Encoder* encoder) {
+ * @param rampStep (opt) - Speed ramp step in ms (default: 1)
+ */
+void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
   int targetSpeed = getParameter(motor->speedParameter);
   int currentMode = getParameter(motor->modeParameter);
 

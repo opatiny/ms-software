@@ -42,4 +42,4 @@ void moveSeconds(Motor* motor,
 
 void moveDegrees(Motor* motor, Encoder* encoder, int degrees, int speed);
 
-void motorControl(Motor* motor, Encoder* encoder);
+void motorControl(Motor* motor, Encoder* encoder, int rampStep = 1);

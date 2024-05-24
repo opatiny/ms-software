@@ -33,8 +33,11 @@ void TaskOdometry(void* pvParameters) {
       printOdometry(&robot);
       previousTime = millis();
     }
+    // handle case where user changes debug mode before calibration is finished
     if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION && speed != 0) {
       speed = 0;
+      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
+      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     }
     vTaskDelay(100);
   }
@@ -125,7 +128,7 @@ void wheelSpeedCalibration(int* speed, int* previousTime) {
   int currentTime = millis();
   if (currentTime - *previousTime > SPEED_CALIBRATION_DELAY) {
     if (*speed == 0) {
-      Serial.println("Speed calibration started.");
+      Serial.println("Speed calibration started...\n");
       setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
     }
     Serial.print(currentTime);
@@ -142,8 +145,9 @@ void wheelSpeedCalibration(int* speed, int* previousTime) {
       setParameter(PARAM_DEBUG, NO_DEBUG);
       *speed = 0;
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
+      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
     }
-    setAndSaveParameter(PARAM_ROBOT_SPEED_CMD, *speed);
+    setParameter(PARAM_ROBOT_SPEED_CMD, *speed);
     *previousTime = currentTime;
   }
 }

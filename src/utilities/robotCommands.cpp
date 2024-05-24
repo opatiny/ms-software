@@ -14,6 +14,7 @@ void initialiseController(RobotController* controller,
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
   controller->previousMode = ROBOT_STOP;
   controller->currentSpeed = 0;
+  controller->rampStep = 1;  // 1ms delay between each speed increment
 
   // initally stop the robot
   setParameter(controller->modeParameter, ROBOT_STOP);

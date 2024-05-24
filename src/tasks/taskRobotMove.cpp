@@ -13,7 +13,7 @@
  *  - robot distance: commands A
  *  - robot radius: commands A (used for arc mode)
  *
- * Debug: U10
+ * Debug: U7
  */
 
 #include <globalConfig.h>
