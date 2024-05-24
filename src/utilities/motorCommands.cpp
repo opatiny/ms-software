@@ -7,7 +7,7 @@
 #include "motorCommands.h"
 
 // set to 1 for additional debug about speed ramps
-#define RAMP_UP_DOWN_DEBUG 0
+#define RAMP_UP_DOWN_DEBUG 1
 
 // prototypes
 void rampDown(Motor* motor,
@@ -151,14 +151,13 @@ void speedRamp(Motor* motor, int finalSpeed, int rampDelay) {
   } else {
     if (initialSpeed <= 0) {
       if (finalSpeed <= 0) {
-        rampUp(motor, FORWARD, finalSpeed, rampDelay);
+        rampDown(motor, BACKWARD, -finalSpeed, rampDelay);
       } else {
         rampDown(motor, BACKWARD, 0, rampDelay);
         motor->currentSpeed = 0;
         rampUp(motor, FORWARD, finalSpeed, rampDelay);
       }
     } else {
-      Serial.println(finalSpeed);
       rampUp(motor, FORWARD, finalSpeed, rampDelay);
     }
   }
