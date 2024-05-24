@@ -17,6 +17,7 @@ void test_countsToAngle(void) {
 
 void test_computeWheelRpm(void) {
   TEST_ASSERT_EQUAL_FLOAT(60, computeWheelRpm(360, 1));
+  TEST_ASSERT_EQUAL_FLOAT(600, computeWheelRpm(360, 0.1));
 }
 
 int runUnityTests(void) {

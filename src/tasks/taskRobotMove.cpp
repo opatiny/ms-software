@@ -24,7 +24,6 @@
 #include "../utilities/motorCommands.h"
 #include "../utilities/robotCommands.h"
 #include "taskButton.h"
-#include "taskDcMotor.h"
 #include "taskRobotMove.h"
 
 void initialiseMotor(Motor* motor, MotorParams* params);
@@ -110,6 +109,11 @@ void robotControl(Robot* robot) {
       stopWhenObstacle(robot, targetSpeed, distance);
       break;
     }
+    case ROBOT_EACH_WHEEL:
+      motorControl(&robot->leftMotor, &robot->leftEncoder);
+      motorControl(&robot->rightMotor, &robot->rightEncoder);
+      vTaskDelay(1000);
+      break;
     default:
       Serial.println("Unknown robot movement mode");
       setParameter(robot->controller.modeParameter, ROBOT_STOP);

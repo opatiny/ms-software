@@ -12,7 +12,6 @@
 #include "../pinMapping.h"
 #include "../state.h"
 #include "./taskBattery.h"
-#include "./taskDcMotor.h"
 
 #define DELAY 1000
 

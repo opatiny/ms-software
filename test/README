@@ -1,4 +1,3 @@
-
 This directory is intended for PlatformIO Test Runner and project tests.
 
 Unit Testing is a software testing method by which individual units of
@@ -8,4 +7,11 @@ determine whether they are fit for use. Unit testing finds problems early
 in the development cycle.
 
 More information about PlatformIO Unit Testing:
+
 - https://docs.platformio.org/en/latest/advanced/unit-testing/index.html
+
+## Personal notes
+
+- run tests with the erlen meier icon in the bottom bar menu
+- caution: files in src not compiled?? -> migrate everything to lib
+  https://community.platformio.org/t/pio-test-not-building-project-source/4501/5

@@ -61,7 +61,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_WIFI_RSSI 24  // Y
 #define PARAM_ERROR 25      // Z
 
-// motors parameters
+// motors parameters -> read only!!
 /**
  * Desired speed for when the motors are moving. This is not the current speed
  * of the motors.
@@ -85,6 +85,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_RGB_LED_COLOR 37       // AL
 #define PARAM_RGB_LED_BRIGHTNESS 38  // AM
 
+// robot control parameters
 #define PARAM_ROBOT_SPEED_CMD 39    // AN
 #define PARAM_ROBOT_MODE 40         // AO
 #define PARAM_ROBOT_ANGLE_CMD 41    // AP

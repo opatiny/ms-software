@@ -8,7 +8,6 @@
 #include "./tasks/taskBattery.h"
 #include "./tasks/taskButton.h"
 #include "./tasks/taskBuzzer.h"
-#include "./tasks/taskDcMotor.h"
 #include "./tasks/taskEncoders.h"
 #include "./tasks/taskOdometry.h"
 #include "./tasks/taskRgbLed.h"
@@ -49,7 +48,7 @@ void setup() {
   taskWebserver();
   taskWire();
   taskGY521();
-  taskVL53L1X();
+  // taskVL53L1X();
   taskRobotMove();
   taskEncodersX4();
   taskOdometry();

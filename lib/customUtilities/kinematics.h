@@ -22,4 +22,4 @@ float countsToAngle(int counts);
 int angleToCounts(int angle);
 UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed);
 DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed);
-float computeWheelRpm(int counts, int dt);
+float computeWheelRpm(int counts, float dt);

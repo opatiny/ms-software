@@ -2,7 +2,7 @@
 
 #include "../pinMapping.h"
 #include "../state.h"
-#include "../tasks/taskDcMotor.h"
+#include "../tasks/taskRobotMove.h"
 #include "kinematics.h"
 #include "motorCommands.h"
 
@@ -259,4 +259,76 @@ void shortFullSpeed(Motor* motor, int speed, int delaySec) {
   vTaskDelay(delaySec * 1000);
   analogWrite(motor->pin1, 0);
   motor->currentSpeed = 0;
+}
+
+/**
+ * Control the motor based on the current mode and target speed.
+ * @param motor - Motor to control
+ * @param encoder - Encoder of the motor
+
+*/
+void motorControl(Motor* motor, Encoder* encoder) {
+  int targetSpeed = getParameter(motor->speedParameter);
+  int currentMode = getParameter(motor->modeParameter);
+
+  switch (currentMode) {
+    case MOTOR_STOP:
+      stopMotor(motor);
+      break;
+    case MOTOR_CONSTANT_SPEED:
+      if (motor->previousMode != currentMode ||
+          targetSpeed != motor->currentSpeed) {
+        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+          Serial.println("Motor constant speed mode");
+        }
+        speedRamp(motor, targetSpeed, getParameter(PARAM_MOTOR_RAMP_STEP));
+      }
+      break;
+    case MOTOR_MOVE_SECONDS: {
+      int delaySeconds = 1;
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+        Serial.print("Move for ");
+        Serial.print(delaySeconds);
+        Serial.print(" seconds at speed ");
+        Serial.println(targetSpeed);
+      }
+      moveSeconds(motor, delaySeconds, targetSpeed,
+                  getParameter(PARAM_MOTOR_RAMP_STEP));
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+        Serial.println("End of movement");
+      }
+      break;
+    }
+    case MOTOR_MOVE_DEGREES: {
+      int degrees = getParameter(motor->angleParameter);
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+        Serial.print("Move for ");
+        Serial.print(degrees);
+        Serial.print(" degrees at speed ");
+        Serial.println(targetSpeed);
+      }
+      moveDegrees(motor, encoder, degrees, targetSpeed);
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+      }
+      break;
+    }
+    case MOTOR_SHORT: {
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+        int delay = 1;
+        Serial.println("Short pulse mode (only for debug)");
+        Serial.print("Motor will spin for ");
+        Serial.print(delay);
+        Serial.print(" seconds at speed ");
+        Serial.println(targetSpeed);
+      }
+      shortFullSpeed(motor, targetSpeed, 1);
+      setParameter(motor->modeParameter, MOTOR_STOP);
+      break;
+    }
+    default:
+      Serial.println("Unknown motor mode");
+      setParameter(motor->modeParameter, MOTOR_STOP);
+      break;
+  }
+  motor->previousMode = currentMode;
 }

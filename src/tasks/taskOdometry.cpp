@@ -1,9 +1,10 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
+#include <kinematics.h>
 #include "../hardwareProperties.h"
 #include "../state.h"
-#include "../utilities/kinematics.h"
+#include "taskRobotMove.h"
 
 #define SPEED_CALIBRATION_DELAY 1000
 #define SPEED_STEP 10
@@ -13,6 +14,8 @@
 #define DEBUG_DELAY 250
 
 void updateOdometry(Robot* robot);
+void printOdometry(Robot* robot);
+void wheelSpeedCalibration(int* speed, int* previousTime);
 
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
@@ -22,40 +25,16 @@ void TaskOdometry(void* pvParameters) {
     updateOdometry(&robot);
 
     if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
-      int currentTime = millis();
-      if (currentTime - previousTime > SPEED_CALIBRATION_DELAY) {
-        Serial.print(currentTime);
-        Serial.print(", ");
-        Serial.print(speed);
-        Serial.print(", ");
-        Serial.print(robot.odometry.leftWheelSpeed);
-        Serial.print(", ");
-        Serial.println(robot.odometry.rightWheelSpeed);
-
-        speed += SPEED_STEP;
-        if (speed > MAX_MOTOR_SPEED) {
-          Serial.println("Speed calibration finished.");
-          setParameter(PARAM_DEBUG, NO_DEBUG);
-          speed = 0;
-        }
-        setAndSaveParameter(PARAM_MOTOR_LEFT_SPEED_CMD, speed);
-        setAndSaveParameter(PARAM_MOTOR_RIGHT_SPEED_CMD, speed);
-        previousTime = currentTime;
-      }
+      wheelSpeedCalibration(&speed, &previousTime);
     }
 
     if (millis() - previousTime > DEBUG_DELAY &&
         getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
-      Serial.print(robot.odometry.pose.x);
-      Serial.print(", ");
-      Serial.print(robot.odometry.pose.y);
-      Serial.print(", ");
-      Serial.print(robot.odometry.pose.theta);
-      Serial.print(", ");
-      Serial.print(robot.odometry.speed.v);
-      Serial.print(", ");
-      Serial.println(robot.odometry.speed.omega);
+      printOdometry(&robot);
       previousTime = millis();
+    }
+    if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION && speed != 0) {
+      speed = 0;
     }
     vTaskDelay(100);
   }
@@ -89,13 +68,6 @@ void updateOdometry(Robot* robot) {
   float rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
 
   // calculate speed of each wheel in rpm
-
-  Serial.print("leftCounts: ");
-  Serial.println(leftCounts);
-  Serial.print("dt: ");
-  Serial.println(dt);
-  Serial.print("leftWheelSpeed: ");
-  Serial.println(computeWheelRpm(leftCounts, dt));
   robot->odometry.leftWheelSpeed = computeWheelRpm(leftCounts, dt);
   robot->odometry.rightWheelSpeed = computeWheelRpm(rightCounts, dt);
 
@@ -135,4 +107,43 @@ void updateOdometry(Robot* robot) {
   // update the linear and angular velocities of the robot
   robot->odometry.speed.v = distance / dt;
   robot->odometry.speed.omega = dTheta / dt;
+}
+
+void printOdometry(Robot* robot) {
+  Serial.print(robot->odometry.pose.x);
+  Serial.print(", ");
+  Serial.print(robot->odometry.pose.y);
+  Serial.print(", ");
+  Serial.print(robot->odometry.pose.theta);
+  Serial.print(", ");
+  Serial.print(robot->odometry.speed.v);
+  Serial.print(", ");
+  Serial.println(robot->odometry.speed.omega);
+}
+
+void wheelSpeedCalibration(int* speed, int* previousTime) {
+  int currentTime = millis();
+  if (currentTime - *previousTime > SPEED_CALIBRATION_DELAY) {
+    if (*speed == 0) {
+      Serial.println("Speed calibration started.");
+      setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
+    }
+    Serial.print(currentTime);
+    Serial.print(", ");
+    Serial.print(*speed);
+    Serial.print(", ");
+    Serial.print(robot.odometry.leftWheelSpeed);
+    Serial.print(", ");
+    Serial.println(robot.odometry.rightWheelSpeed);
+
+    *speed += SPEED_STEP;
+    if (*speed > MAX_MOTOR_SPEED) {
+      Serial.println("Speed calibration finished.");
+      setParameter(PARAM_DEBUG, NO_DEBUG);
+      *speed = 0;
+      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
+    }
+    setAndSaveParameter(PARAM_ROBOT_SPEED_CMD, *speed);
+    *previousTime = currentTime;
+  }
 }

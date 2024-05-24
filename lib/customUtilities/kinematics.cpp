@@ -38,9 +38,7 @@ DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed) {
  * @param counts The number of encoder counts since the last update.
  * @param dt The time elapsed since the last update in seconds.
  */
-float computeWheelRpm(int counts, int dt) {
-  Serial.print("counts: ");
-  Serial.println(counts);
+float computeWheelRpm(int counts, float dt) {
   float angle = countsToAngle(counts);
   float degSec = angle / dt;
   return degSec * 60 / 360;
