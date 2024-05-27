@@ -44,9 +44,9 @@ void printMotor(Motor* motor) {
   Serial.print("\t - Mode: ");
   Serial.println(getParameter(motor->modeParameter));
   Serial.print("\t - Current speed: ");
-  Serial.println(motor->currentSpeed);
+  Serial.println(motor->currentCommand);
   Serial.print("\t - Target speed: ");
-  Serial.println(getParameter(motor->speedParameter));
+  Serial.println(getParameter(motor->commandParameter));
   Serial.print("\t - Target angle: ");
   Serial.println(getParameter(motor->angleParameter));
 }

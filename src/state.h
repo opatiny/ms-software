@@ -32,22 +32,25 @@ struct Encoder {
 
 /**
  * Motor structure.
- *  - speedParameter: Serial parameter for the target speed of the motor.
+ *  - commandParameter: Serial parameter for the target speed of the motor.
  *  - modeParameter: Serial parameter for the mode of the motor.
  *  - previousMode: Previous mode of the motor.
  *  - angleParameter: Serial parameter for the angle of the motor.
  *  - encoderCounts: Number of counts of the encoder since the robot was turned
  *     on.
- *  - speed: Current speed of the motor.
+ *  - currentCommand: Current speed command of the motor.
  */
 struct Motor {
-  int speedParameter;  // target speed
+  int commandParameter;  // target command
   int modeParameter;
   int angleParameter;
   int previousMode;
-  int currentSpeed;
+  int currentCommand;
+  int previousTargetCommand;
+  int step; // command step variation per ms
   int pin1;
   int pin2;
+  int previousTime;
 };
 
 struct WheelsCommands {
@@ -60,12 +63,12 @@ struct WheelsCommands {
  * movement mode, speed, etc
  */
 struct RobotController {
-  int speedParameter;
+  int commandParameter;
   int angleParameter;
   int distanceParameter;
   int obstacleDistanceParameter;
   int modeParameter;
-  int currentSpeed;
+  int currentCommand;
   int previousMode;
   int rampStep;
   PidController angularPid;

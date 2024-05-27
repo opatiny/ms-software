@@ -17,7 +17,7 @@ int getClampedSpeed(int speed);
 void initialiseController(RobotController* controller,
                           ControllerParams* params) {
   // setup the motor parameters
-  controller->speedParameter = params->speedParameter;
+  controller->commandParameter = params->commandParameter;
   controller->modeParameter = params->modeParameter;
   controller->angleParameter = params->angleParameter;
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
@@ -31,13 +31,14 @@ void initialiseController(RobotController* controller,
   setParameter(controller->modeParameter, ROBOT_STOP);
 
   // initialise robot parameters
-  // setParameter(controller->speedParameter, 70);
+  // setParameter(controller->commandParameter, 70);
   setParameter(controller->angleParameter, 90);  // degrees
   setParameter(controller->obstacleDistanceParameter,
                150);  // distance in mm
   controller->rampStep = 1;
 }
 
+#if 0
 /**
  * @brief Move the robot at a given speed by applying the same command on both
  * wheels. There is no regulation of the speed.
@@ -45,10 +46,10 @@ void initialiseController(RobotController* controller,
  * @param speed The speed command for the wheels
  */
 void robotMove(Robot* robot, int speed) {
-  if (speed != robot->controller.currentSpeed) {
+  if (speed != robot->controller.currentCommand) {
     speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
     speedRamp(&robot->rightMotor, speed, robot->controller.rampStep);
-    robot->controller.currentSpeed = speed;
+    robot->controller.currentCommand = speed;
   }
 }
 
@@ -56,9 +57,8 @@ void robotMove(Robot* robot, int speed) {
  * @brief Stop the robot.
  */
 void robotStop(Robot* robot) {
-  stopMotor(&robot->leftMotor);
-  stopMotor(&robot->rightMotor);
-  robot->controller.currentSpeed = 0;
+  updateMotors(robot, 0, 0, 10);
+  robot->controller.currentCommand = 0;
 }
 
 /**
@@ -87,10 +87,10 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
 }
 
 void robotMoveStraight(Robot* robot, int speed) {
-  if (speed != robot->controller.currentSpeed) {
+  if (speed != robot->controller.currentCommand) {
     speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
     speedRamp(&robot->rightMotor, speed, robot->controller.rampStep);
-    robot->controller.currentSpeed = speed;
+    robot->controller.currentCommand = speed;
     robot->controller.wheelsCommands.leftSpeed = speed;
     robot->controller.wheelsCommands.rightSpeed = speed;
   } else {
@@ -127,6 +127,7 @@ void robotMoveStraight(Robot* robot, int speed) {
     robot->controller.wheelsCommands.rightSpeed = newRightCmd;
   }
 }
+#endif
 
 /**
  * @brief Get the clamped speed value between the minimum and maximum speed

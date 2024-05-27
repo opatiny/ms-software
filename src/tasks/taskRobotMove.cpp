@@ -32,7 +32,7 @@ void robotControl(Robot* robot);
 void TaskRobotMove(void* pvParameters) {
   // define parameters of the motors
   MotorParams leftMotorParams = {
-    speedParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
+    commandParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
     modeParameter : PARAM_MOTOR_LEFT_MODE,
     angleParameter : PARAM_MOTOR_LEFT_ANGLE_CMD,
     pin1 : MOTOR_LEFT_PIN1,
@@ -40,7 +40,7 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   MotorParams rightMotorParams = {
-    speedParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
+    commandParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
     modeParameter : PARAM_MOTOR_RIGHT_MODE,
     angleParameter : PARAM_MOTOR_RIGHT_ANGLE_CMD,
     pin1 : MOTOR_RIGHT_PIN1,
@@ -55,7 +55,7 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   ControllerParams robotParams = {
-    speedParameter : PARAM_ROBOT_SPEED_CMD,
+    commandParameter : PARAM_ROBOT_SPEED_CMD,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
     wheelsParams : wheelsParams,
@@ -84,7 +84,7 @@ void taskRobotMove() {
 }
 
 void robotControl(Robot* robot) {
-  int targetSpeed = getParameter(robot->controller.speedParameter);
+  int targetSpeed = getParameter(robot->controller.commandParameter);
   int currentMode = getParameter(robot->controller.modeParameter);
 
   if (buttonFlags.robotMode) {
@@ -103,6 +103,7 @@ void robotControl(Robot* robot) {
     Serial.println(currentMode);
   }
   switch (currentMode) {
+#if 0
     case ROBOT_STOP:
       robotStop(robot);
       break;
@@ -117,14 +118,15 @@ void robotControl(Robot* robot) {
       stopWhenObstacle(robot, targetSpeed, distance);
       break;
     }
-    case ROBOT_EACH_WHEEL:
-      motorControl(&robot->leftMotor, &robot->leftEncoder);
-      motorControl(&robot->rightMotor, &robot->rightEncoder);
-      vTaskDelay(1000);
-      break;
     case ROBOT_MOVE_STRAIGHT:
       robotMoveStraight(robot, targetSpeed);
       vTaskDelay(10);
+      break;
+#endif
+    case ROBOT_EACH_WHEEL:
+      motorControl(&robot->leftMotor, &robot->leftEncoder);
+      motorControl(&robot->rightMotor, &robot->rightEncoder);
+      vTaskDelay(1);
       break;
     default:
       Serial.println("Unknown robot movement mode");

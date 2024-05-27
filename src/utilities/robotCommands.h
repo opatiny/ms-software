@@ -6,7 +6,7 @@
  * Parameters for the initialisation of the robot.
  */
 struct ControllerParams {
-  int speedParameter;
+  int commandParameter;
   int modeParameter;
   int angleParameter;
   int obstacleDistanceParameter;
