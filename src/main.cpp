@@ -5,13 +5,13 @@
 
 #include "./pinMapping.h"
 #include "./state.h"
-#include "./tasks/taskBattery.h"
 #include "./tasks/taskButton.h"
 #include "./tasks/taskBuzzer.h"
 #include "./tasks/taskEncoders.h"
 #include "./tasks/taskOdometry.h"
 #include "./tasks/taskRgbLed.h"
 #include "./tasks/taskRobotMove.h"
+#include "./tasks/taskVoltage.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
 
@@ -52,7 +52,7 @@ void setup() {
   taskRobotMove();
   taskEncodersX4();
   taskOdometry();
-  taskBattery();
+  taskVoltage();
   taskButton();
   taskBuzzer();
   taskRgbLed();

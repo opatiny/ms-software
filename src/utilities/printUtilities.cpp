@@ -66,13 +66,13 @@ void printEncoder(Encoder* encoder) {
 /**
  * @brief Print the data of the battery.
  */
-void printBattery(Battery* battery) {
+void printVoltage(VoltageMeasurement* voltageMeasurement) {
   Serial.print("\t - Pin: ");
-  Serial.println(battery->pin);
+  Serial.println(voltageMeasurement->pin);
   Serial.print("\t - Voltage [mV]: ");
-  Serial.println(getParameter(battery->voltageParameter));
+  Serial.println(getParameter(voltageMeasurement->voltageParameter));
   Serial.print("\t - Warning voltage [mV]: ");
-  Serial.println(battery->warningVoltage);
+  Serial.println(voltageMeasurement->warningVoltage);
 }
 
 void printOdometry(Odometry* odometry) {
@@ -110,7 +110,9 @@ void printState() {
   Serial.println("\nIMU data");
   printImu(&robot.imuData);
   Serial.println("\nBattery:");
-  printBattery(&robot.battery);
+  printVoltage(&robot.battery);
+  Serial.println("\nVcc:");
+  printVoltage(&robot.vcc);
 }
 
 /**

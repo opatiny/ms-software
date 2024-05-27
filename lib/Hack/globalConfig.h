@@ -92,4 +92,6 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_ROBOT_ANGLE_CMD 41    // AP
 #define PARAM_OBSTACLE_DISTANCE 42  // AQ
 
+#define PARAM_VCC_VOLTAGE 43  // AR
+
 #define PARAM_STATUS_FLAG_NO_WIFI 0

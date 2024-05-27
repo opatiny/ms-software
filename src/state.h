@@ -68,7 +68,8 @@ struct RobotController {
   int currentSpeed;
   int previousMode;
   int rampStep;
-  PidController wheelsController;
+  PidController angularPid;
+  PidController linearPid;
   WheelsCommands wheelsCommands;
 };
 
@@ -102,7 +103,7 @@ struct Odometry {
   float rightWheelSpeed;
 };
 
-struct Battery {
+struct VoltageMeasurement {
   int voltageParameter;
   int pin;
   int warningVoltage;
@@ -121,7 +122,8 @@ struct Robot {
   ImuData imuData;
   RobotController controller;
   Odometry odometry;
-  Battery battery;
+  VoltageMeasurement battery;
+  VoltageMeasurement vcc;
 };
 
 extern Robot robot;

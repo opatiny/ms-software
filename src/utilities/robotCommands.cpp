@@ -25,7 +25,7 @@ void initialiseController(RobotController* controller,
   controller->rampStep = 1;  // 1ms delay between each speed increment
 
   // initialize PID
-  initialisePidController(&controller->wheelsController, &params->wheelsParams);
+  initialisePidController(&controller->angularPid, &params->wheelsParams);
 
   // initally stop the robot
   setParameter(controller->modeParameter, ROBOT_STOP);
@@ -97,8 +97,7 @@ void robotMoveStraight(Robot* robot, int speed) {
     // speed difference between the two wheels in rpm
     double errorRpm =
         robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
-    double correction =
-        getNewPidValue(&robot->controller.wheelsController, errorRpm);
+    double correction = getNewPidValue(&robot->controller.angularPid, errorRpm);
 
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
         millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {

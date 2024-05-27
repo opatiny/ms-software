@@ -11,27 +11,30 @@
 #include <utilities/params.h>
 #include "../pinMapping.h"
 #include "../state.h"
-#include "./taskBattery.h"
+#include "./taskVoltage.h"
 
 #define DELAY 1000
 
-void initializeBattery(Battery* battery);
+void initializeVoltage(VoltageMeasurement* voltageMesurement);
 
-void TaskBattery(void* pvParameters) {
-  uint32_t batteryTime = 0;  // in ms
+void TaskVoltage(void* pvParameters) {
+  uint32_t time = millis();  // in ms
 
-  initializeBattery(&robot.battery);
+  initializeVoltage(&robot.battery);
+  initializeVoltage(&robot.vcc);
 
   while (true) {
-    Battery battery = robot.battery;
-    int measuredVoltage = analogReadMilliVolts(BATTERY_PIN);
-    int batteryLevel = measuredVoltage * (BATTERY_R1 + BATTERY_R2) / BATTERY_R2;
+    int batteryLevel = analogReadMilliVolts(BATTERY_PIN) *
+                       (BATTERY_R1 + BATTERY_R2) / BATTERY_R2;
+    int vccLevel = analogReadMilliVolts(VCC_PIN) * (VCC_R1 + VCC_R2) / VCC_R2;
     // to access this debug mode: U4
     if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY_LOG_DATA) {
-      Serial.print(batteryTime);
+      Serial.print(time);
       Serial.print(", \t");
-      batteryTime += DELAY;
+      time += DELAY;
       Serial.print(batteryLevel);
+      Serial.print(", \t");
+      Serial.print(vccLevel);
       Serial.print(", \t");
       Serial.print(getParameter(PARAM_MOTOR_LEFT_MODE));
       Serial.print(", \t");
@@ -41,20 +44,28 @@ void TaskBattery(void* pvParameters) {
     if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY) {
       Serial.print("Battery voltage: ");
       Serial.print(batteryLevel / 1000.0, 2);
+      Serial.print(" V | Vcc voltage: ");
+      Serial.print(vccLevel / 1000.0, 2);
       Serial.println(" V");
     }
-    if (batteryLevel <= BATTERY_EMPTY &&
-        getParameter(PARAM_BATTERY) == DEBUG_BATTERY) {
-      Serial.println("Warning: battery is empty!");
+    if (getParameter(PARAM_BATTERY) == DEBUG_BATTERY) {
+      if (batteryLevel <= BATTERY_EMPTY) {
+        Serial.println("Warning: battery voltage is too low!");
+      }
+      if (getParameter(PARAM_VCC_VOLTAGE) == DEBUG_BATTERY) {
+        if (vccLevel <= VCC_WARNING) {
+          Serial.println("Warning: Vcc voltage is too low!");
+        }
+      }
     }
     setParameter(PARAM_BATTERY, batteryLevel);
     vTaskDelay(DELAY);
   }
 }
 
-void taskBattery() {
+void taskVoltage() {
   // Now set up two tasks to run independently.
-  xTaskCreatePinnedToCore(TaskBattery, "TaskBattery",
+  xTaskCreatePinnedToCore(TaskVoltage, "TaskVoltage",
                           2048,  // Crashes if less than 1024 !!!!
                                  // This stack size can be checked & adjusted by
                                  // reading the Stack Highwater
@@ -64,10 +75,10 @@ void taskBattery() {
                           NULL, 1);  // 1 specifies the core
 }
 
-void initializeBattery(Battery* battery) {
-  battery->pin = BATTERY_PIN;
-  battery->voltageParameter = PARAM_BATTERY;
-  battery->warningVoltage = BATTERY_EMPTY;
+void initializeVoltage(VoltageMeasurement* voltageMeasurement) {
+  voltageMeasurement->pin = BATTERY_PIN;
+  voltageMeasurement->voltageParameter = PARAM_BATTERY;
+  voltageMeasurement->warningVoltage = BATTERY_EMPTY;
 
-  pinMode(battery->pin, INPUT);
+  pinMode(voltageMeasurement->pin, INPUT);
 }

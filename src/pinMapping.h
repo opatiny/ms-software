@@ -76,7 +76,7 @@
 #elif BOARD == ALGERNON_V1_1_0
 
 #define BATTERY_PIN 3  // battery voltage
-#define VCC_PIN 48     // 3.3 V
+#define VCC_PIN 7      // 3.3 V
 #define BUTTON_PIN 17
 #define BUZZER_PIN 6
 #define BLINK_LED_PIN 2
