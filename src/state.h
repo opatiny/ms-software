@@ -44,6 +44,7 @@ struct Motor {
   int commandParameter;  // target command
   int modeParameter;
   int angleParameter;
+  int accDurationParameter;
   int previousMode;
   int currentCommand;
   int previousTargetCommand;

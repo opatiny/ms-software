@@ -35,6 +35,7 @@ void TaskRobotMove(void* pvParameters) {
     commandParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
     modeParameter : PARAM_MOTOR_LEFT_MODE,
     angleParameter : PARAM_MOTOR_LEFT_ANGLE_CMD,
+    accDurationParameter : PARAM_MOTOR_ACC_DURATION,
     pin1 : MOTOR_LEFT_PIN1,
     pin2 : MOTOR_LEFT_PIN2
   };
@@ -43,6 +44,7 @@ void TaskRobotMove(void* pvParameters) {
     commandParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
     modeParameter : PARAM_MOTOR_RIGHT_MODE,
     angleParameter : PARAM_MOTOR_RIGHT_ANGLE_CMD,
+    accDurationParameter : PARAM_MOTOR_ACC_DURATION,
     pin1 : MOTOR_RIGHT_PIN1,
     pin2 : MOTOR_RIGHT_PIN2
   };
@@ -69,7 +71,8 @@ void TaskRobotMove(void* pvParameters) {
 
   while (true) {
     robotControl(&robot);
-    vTaskDelay(10);
+    vTaskDelay(1);  // smallest delay possible -> there should be no other
+                    // delays in this task!!
   }
 }
 
@@ -78,7 +81,7 @@ void taskRobotMove() {
                           4096,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
-                          2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
+                          3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 1);
 }
@@ -103,10 +106,10 @@ void robotControl(Robot* robot) {
     Serial.println(currentMode);
   }
   switch (currentMode) {
-#if 0
     case ROBOT_STOP:
-      robotStop(robot);
+      stopMotors(robot);
       break;
+#if 0
     case ROBOT_MOVE:
       robotMove(robot, targetSpeed);
       break;
@@ -126,7 +129,6 @@ void robotControl(Robot* robot) {
     case ROBOT_EACH_WHEEL:
       motorControl(&robot->leftMotor, &robot->leftEncoder);
       motorControl(&robot->rightMotor, &robot->rightEncoder);
-      vTaskDelay(1);
       break;
     default:
       Serial.println("Unknown robot movement mode");

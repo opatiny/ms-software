@@ -5,7 +5,8 @@
 #include "../tasks/taskEncoders.h"
 #include "motorCommands.h"
 
-#define DEFAULT_RAMP_DELAY 1  // delay between each speed increment for ramps
+#define DEFAULT_ACC_DURATION \
+  100  // default duration of the acceleration phase [ms]
 #define MAX_SPEED_COMMAND 255
 #define MIN_SPEED_COMMAND -256
 
@@ -16,6 +17,7 @@ struct MotorParams {
   int commandParameter;
   int modeParameter;
   int angleParameter;
+  int accDurationParameter;
   int pin1;
   int pin2;
 };
@@ -32,4 +34,6 @@ void initialiseMotor(Motor* motor, MotorParams* params);
 
 void updateMotors(Robot* robot, int leftTarget, int rightTarget, int duration);
 
-void motorControl(Motor* motor, Encoder* encoder, int rampStep = 1);
+void stopMotors(Robot* robot);
+
+void motorControl(Motor* motor, Encoder* encoder);

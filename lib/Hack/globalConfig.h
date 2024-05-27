@@ -75,7 +75,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_BUTTON 32  // AG
 
 #define PARAM_DISTANCE_DEBUG_MODE 33  // AH
-#define PARAM_MOTOR_RAMP_STEP 34      // AI
+#define PARAM_MOTOR_ACC_DURATION 34   // AI
 
 /**
  * Angle in degrees the motors should move if MOVE_DEGREES mode is on.

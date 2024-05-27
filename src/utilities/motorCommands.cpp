@@ -1,3 +1,19 @@
+/**
+ * Motors can be controlled independently when the robot is in mode AO6
+ *
+ * Use the serial parameters to act on the motors.
+ *
+ *   - motor mode: commands AC (left) and AD (right)
+ *   - motor speed: commands AA (left) and AB (right)
+ *     - speed is in range [-255,255]
+ *     - 0 means stop
+ *     - positive values means forward
+ *     - negative values means backward
+ *  - motor angle: commands AJ (left) and AK (right)
+ *
+ * Debug: U7
+ */
+
 #include <utilities/params.h>
 
 #include "../pinMapping.h"
@@ -6,13 +22,15 @@
 #include "kinematics.h"
 #include "motorCommands.h"
 
-#define MOTOR_ACC_DURATION 100
+// todo: handle if this is a big value, like 1000
+#define MOTOR_STOP_DURATION 10  // time to stop [ms]
 
 void initialiseMotor(Motor* motor, MotorParams* params) {
   // setup the motor parameters
   motor->commandParameter = params->commandParameter;
   motor->modeParameter = params->modeParameter;
   motor->angleParameter = params->angleParameter;
+  motor->accDurationParameter = params->accDurationParameter;
   motor->pin1 = params->pin1;
   motor->pin2 = params->pin2;
   motor->previousMode = MOTOR_STOP;
@@ -28,11 +46,12 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
 
   // initialise motor parameters
   setParameter(motor->commandParameter, 100);
-  setParameter(motor->angleParameter, 90);  // degrees
+  setParameter(motor->angleParameter, 90);                          // degrees
+  setParameter(motor->accDurationParameter, DEFAULT_ACC_DURATION);  // ms
 }
 
 /**
- * @Brief Update the motor speed in a non-blocking way. We use the processor
+ * @brief Update the motor speed in a non-blocking way. We use the processor
  * time to estimate how much the speed should be increased.
  * @param motor - Struct of the motor to update.
  * @param duration - Total desired duration of the movement.
@@ -41,15 +60,27 @@ void updateMotor(Motor* motor, int target, int duration) {
   if (target == motor->currentCommand) {
     return;
   }
+  int dt = 1;
+  int newTime = millis();
+  if (motor->previousTargetCommand == target) {
+    dt = newTime - motor->previousTime;
+  }
+  motor->previousTime = newTime;
 
   if (target != motor->previousTargetCommand) {
-    // increment necessary per ms
-    motor->step = (target - motor->currentCommand) / duration;
+    // increment necessary per ms: if duration is too big, step would be 0, so
+    // we set the min step to be 1 or -1
+    int diff = target - motor->currentCommand;
+    int idealStep = diff / duration;
+    Serial.print("Ideal step: ");
+    Serial.println(idealStep);
+    int defaultStep = diff > 0 ? 1 : -1;
+    motor->step =
+        diff > 0 ? max(idealStep, defaultStep) : min(idealStep, defaultStep);
     motor->previousTargetCommand = target;
+    Serial.print("step: ");
+    Serial.println(motor->step);
   }
-
-  int dt = millis() - motor->previousTime;
-  motor->previousTime = millis();
 
   if (dt == 0) {
     return;
@@ -78,13 +109,24 @@ void updateMotor(Motor* motor, int target, int duration) {
     Serial.print(", Step: ");
     Serial.print(motor->step);
     Serial.print(", Duration: ");
-    Serial.println(duration);
+    Serial.print(duration);
+    Serial.print(", dt: ");
+    Serial.println(dt);
   }
 }
 
 void updateMotors(Robot* robot, int leftTarget, int rightTarget, int duration) {
   updateMotor(&robot->leftMotor, leftTarget, duration);
   updateMotor(&robot->rightMotor, rightTarget, duration);
+}
+
+void stopMotor(Motor* motor) {
+  updateMotor(motor, 0, MOTOR_STOP_DURATION);
+}
+
+void stopMotors(Robot* robot) {
+  stopMotor(&robot->leftMotor);
+  stopMotor(&robot->rightMotor);
 }
 
 /**
@@ -104,18 +146,23 @@ void shortFullSpeed(Motor* motor, int speed, int delaySec) {
 }
 
 /**
- * Control the motor based on the current mode and target speed.
- * @param motor - Motor to control
- * @param encoder - Encoder of the motor
- * @param rampStep (opt) - Speed ramp step in ms (default: 1)
+ * @brief Control the motor based on the current mode and target speed command.
+ * These two variables are defined in the serial parameters.
+ * @param motor - Motor to control.
+ * @param encoder - Encoder of the motor. // todo: remove this parameter if
+ * useless
  */
-void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
+void motorControl(Motor* motor, Encoder* encoder) {
   int targetCommand = getParameter(motor->commandParameter);
   int currentMode = getParameter(motor->modeParameter);
 
   switch (currentMode) {
     case MOTOR_STOP:
-      updateMotor(motor, 0, 10);
+      if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS &&
+          motor->previousMode != currentMode) {
+        Serial.println("Stopping motor");
+      }
+      stopMotor(motor);
       break;
     case MOTOR_CONSTANT_SPEED:
       if (motor->previousMode != currentMode ||
@@ -123,8 +170,8 @@ void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
         if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
           Serial.println("Motor constant speed mode");
         }
-        updateMotor(motor, targetCommand, MOTOR_ACC_DURATION);
       }
+      updateMotor(motor, targetCommand, getParameter(PARAM_MOTOR_ACC_DURATION));
       break;
     case MOTOR_SHORT: {
       if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
@@ -144,6 +191,5 @@ void motorControl(Motor* motor, Encoder* encoder, int rampStep) {
       setParameter(motor->modeParameter, MOTOR_STOP);
       break;
   }
-  vTaskDelay(1);  // smallest delay possible
   motor->previousMode = currentMode;
 }

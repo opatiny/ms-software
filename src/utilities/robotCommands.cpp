@@ -21,7 +21,8 @@ void initialiseController(RobotController* controller,
   controller->modeParameter = params->modeParameter;
   controller->angleParameter = params->angleParameter;
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
-  controller->previousMode = ROBOT_STOP;
+  controller->previousMode =
+      ROBOT_EACH_WHEEL;      // todo: change back to ROBOT_STOP
   controller->rampStep = 1;  // 1ms delay between each speed increment
 
   // initialize PID
