@@ -74,9 +74,14 @@ void updateMotor(Motor* motor, int target, int duration) {
     int idealStep = diff / duration;
     Serial.print("Ideal step: ");
     Serial.println(idealStep);
-    int defaultStep = diff > 0 ? 1 : -1;
-    motor->step =
-        diff > 0 ? max(idealStep, defaultStep) : min(idealStep, defaultStep);
+
+    if (idealStep == 0 && diff > 0) {
+      motor->step = 1;
+    } else if (idealStep == 0 && diff <= 0) {
+      motor->step = -1;
+    } else {
+      motor->step = idealStep;
+    }
     motor->previousTargetCommand = target;
     Serial.print("step: ");
     Serial.println(motor->step);
