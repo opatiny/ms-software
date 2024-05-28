@@ -91,49 +91,14 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
   robotMove(robot, speed);
 }
 
-#if 0
-void robotMoveStraight(Robot* robot, int speed) {
-  if (speed != robot->controller.currentCommand) {
-    speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
-    speedRamp(&robot->rightMotor, speed, robot->controller.rampStep);
-    robot->controller.currentCommand = speed;
-    robot->controller.wheelsCommands.leftSpeed = speed;
-    robot->controller.wheelsCommands.rightSpeed = speed;
-  } else {
-    // speed difference between the two wheels in rpm
-    double errorRpm =
-        robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
-    double correction = getNewPidValue(&robot->controller.angularPid, errorRpm);
-
-    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-        millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
-      Serial.print("Error: ");
-      Serial.print(errorRpm);
-      Serial.print(", Correction: ");
-      Serial.print(correction);
-      Serial.print(", Left speed rpm: ");
-      Serial.print(robot->odometry.leftWheelSpeed);
-      Serial.print(", Right speed rpm: ");
-      Serial.print(robot->odometry.rightWheelSpeed);
-      Serial.print(", Left cmd: ");
-      Serial.print(robot->controller.wheelsCommands.leftSpeed);
-      Serial.print(", Right speed cmd: ");
-      Serial.println(robot->controller.wheelsCommands.rightSpeed);
-      moveStraightDebugTime = millis();
-    }
-
-    int newLeftCmd = getClampedSpeed(
-        robot->controller.wheelsCommands.leftSpeed - correction);
-    int newRightCmd = getClampedSpeed(
-        robot->controller.wheelsCommands.rightSpeed + correction);
-    speedRamp(&robot->leftMotor, newLeftCmd, robot->controller.rampStep);
-    speedRamp(&robot->rightMotor, newRightCmd, robot->controller.rampStep);
-
-    robot->controller.wheelsCommands.leftSpeed = newLeftCmd;
-    robot->controller.wheelsCommands.rightSpeed = newRightCmd;
-  }
-}
-#endif
+/**
+ * @brief Move the robot in a straight line at a given speed in rpm.
+ * This function doesn't use a PID controller, but linearizes the speed based on
+ * the calibration between rpm speed and command.
+ * @param robot The robot structure.
+ * @param speed Desired linear speed in rpm.
+ */
+void robotMoveStraight(Robot* robot, int speed) {}
 
 /**
  * @brief Get the clamped speed value between the minimum and maximum speed
