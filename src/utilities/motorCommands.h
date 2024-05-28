@@ -32,6 +32,8 @@ enum Direction { BACKWARD, FORWARD };
 
 void initialiseMotor(Motor* motor, MotorParams* params);
 
+void updateMotor(Motor* motor, int target, int duration);
+
 void updateMotors(Robot* robot, int leftTarget, int rightTarget, int duration);
 
 void stopMotors(Robot* robot);

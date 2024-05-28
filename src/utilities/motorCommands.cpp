@@ -22,6 +22,10 @@
 #include "kinematics.h"
 #include "motorCommands.h"
 
+// logging all of the variables adds some unnexpected delays
+// when we only log dt, we see that it works as expected
+#define DT_DEBUG 1
+
 // todo: handle if this is a big value, like 1000
 #define MOTOR_STOP_DURATION 10  // time to stop [ms]
 
@@ -72,8 +76,6 @@ void updateMotor(Motor* motor, int target, int duration) {
     // we set the min step to be 1 or -1
     int diff = target - motor->currentCommand;
     int idealStep = diff / duration;
-    Serial.print("Ideal step: ");
-    Serial.println(idealStep);
 
     if (idealStep == 0 && diff > 0) {
       motor->step = 1;
@@ -83,8 +85,6 @@ void updateMotor(Motor* motor, int target, int duration) {
       motor->step = idealStep;
     }
     motor->previousTargetCommand = target;
-    Serial.print("step: ");
-    Serial.println(motor->step);
   }
 
   if (dt == 0) {
@@ -104,6 +104,11 @@ void updateMotor(Motor* motor, int target, int duration) {
   } else {
     analogWrite(motor->pin1, 0);
     analogWrite(motor->pin2, -motor->currentCommand);
+  }
+
+  if (DT_DEBUG) {
+    Serial.print("dt: ");
+    Serial.println(dt);
   }
 
   if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {

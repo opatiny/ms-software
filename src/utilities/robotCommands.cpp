@@ -21,15 +21,15 @@ void initialiseController(RobotController* controller,
   controller->modeParameter = params->modeParameter;
   controller->angleParameter = params->angleParameter;
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
-  controller->previousMode =
-      ROBOT_EACH_WHEEL;      // todo: change back to ROBOT_STOP
+  controller->previousMode = ROBOT_STOP;
   controller->rampStep = 1;  // 1ms delay between each speed increment
 
   // initialize PID
   initialisePidController(&controller->angularPid, &params->wheelsParams);
 
   // initally stop the robot
-  setParameter(controller->modeParameter, ROBOT_STOP);
+  setParameter(controller->modeParameter,
+               ROBOT_EACH_WHEEL);  // todo: change back to ROBOT_STOP
 
   // initialise robot parameters
   // setParameter(controller->commandParameter, 70);
@@ -39,7 +39,6 @@ void initialiseController(RobotController* controller,
   controller->rampStep = 1;
 }
 
-#if 0
 /**
  * @brief Move the robot at a given speed by applying the same command on both
  * wheels. There is no regulation of the speed.
@@ -48,26 +47,31 @@ void initialiseController(RobotController* controller,
  */
 void robotMove(Robot* robot, int speed) {
   if (speed != robot->controller.currentCommand) {
-    speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
-    speedRamp(&robot->rightMotor, speed, robot->controller.rampStep);
     robot->controller.currentCommand = speed;
   }
+  updateMotors(robot, speed, speed, getParameter(PARAM_MOTOR_ACC_DURATION));
 }
 
 /**
  * @brief Stop the robot.
  */
 void robotStop(Robot* robot) {
-  updateMotors(robot, 0, 0, 10);
+  stopMotors(robot);
   robot->controller.currentCommand = 0;
 }
 
 /**
  * @brief Turn the robot in place by applying opposite commands on the wheels.
+ * @param robot The robot structure.
+ * @param speed The speed command that defines how fast the robot should turn.
+ * Positive values turn the robot clockwise, negative values turn the robot
+ * counter-clockwise.
  */
 void robotTurnInPlace(Robot* robot, int speed) {
-  speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);
-  speedRamp(&robot->rightMotor, -speed, robot->controller.rampStep);
+  if (speed != robot->controller.currentCommand) {
+    robot->controller.currentCommand = 0;
+  }
+  updateMotors(robot, speed, -speed, getParameter(PARAM_MOTOR_ACC_DURATION));
 }
 
 /**
@@ -87,6 +91,7 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
   robotMove(robot, speed);
 }
 
+#if 0
 void robotMoveStraight(Robot* robot, int speed) {
   if (speed != robot->controller.currentCommand) {
     speedRamp(&robot->leftMotor, speed, robot->controller.rampStep);

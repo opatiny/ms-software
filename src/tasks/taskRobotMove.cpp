@@ -71,6 +71,10 @@ void TaskRobotMove(void* pvParameters) {
 
   while (true) {
     robotControl(&robot);
+
+    // updateMotor(&robot.leftMotor,
+    //             getParameter(robot.leftMotor.commandParameter),
+    //             getParameter(PARAM_MOTOR_ACC_DURATION));
     vTaskDelay(1);  // smallest delay possible -> there should be no other
                     // delays in this task!!
   }
@@ -109,7 +113,6 @@ void robotControl(Robot* robot) {
     case ROBOT_STOP:
       stopMotors(robot);
       break;
-#if 0
     case ROBOT_MOVE:
       robotMove(robot, targetSpeed);
       break;
@@ -121,6 +124,7 @@ void robotControl(Robot* robot) {
       stopWhenObstacle(robot, targetSpeed, distance);
       break;
     }
+#if 0
     case ROBOT_MOVE_STRAIGHT:
       robotMoveStraight(robot, targetSpeed);
       vTaskDelay(10);
