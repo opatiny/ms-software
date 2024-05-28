@@ -71,23 +71,14 @@ void TaskRobotMove(void* pvParameters) {
 
   while (true) {
     robotControl(&robot);
-
-    // updateMotor(&robot.leftMotor,
-    //             getParameter(robot.leftMotor.commandParameter),
-    //             getParameter(PARAM_MOTOR_ACC_DURATION));
     vTaskDelay(1);  // smallest delay possible -> there should be no other
                     // delays in this task!!
   }
 }
 
 void taskRobotMove() {
-  xTaskCreatePinnedToCore(TaskRobotMove, "TaskRobotMove",
-                          4096,  // This stack size can be checked & adjusted
-                                 // by reading the Stack Highwater
-                          NULL,
-                          3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
-                              // being the highest, and 0 being the lowest.
-                          NULL, 1);
+  xTaskCreatePinnedToCore(TaskRobotMove, "TaskRobotMove", 4096, NULL, 2, NULL,
+                          0);  // attached on core 0!!
 }
 
 void robotControl(Robot* robot) {

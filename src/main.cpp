@@ -44,20 +44,20 @@ void setup() {
 
   setupParameters();
   taskSerial();
-  // taskWifi();
-  // taskWebserver();
-  // taskWire();
-  // taskGY521();
+  taskWifi();
+  taskWebserver();
+  taskWire();
+  taskGY521();
   // taskVL53L1X();
   taskRobotMove();
-  // taskEncodersX4();
-  // taskOdometry();
-  // taskVoltage();
-  // taskButton();
-  // taskBuzzer();
-  // taskRgbLed();
-  // taskEventSourceSender();
-  // taskBlink();
+  taskEncodersX4();
+  taskOdometry();
+  taskVoltage();
+  taskButton();
+  taskBuzzer();
+  taskRgbLed();
+  taskEventSourceSender();
+  taskBlink();
 }
 
 void loop() {

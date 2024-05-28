@@ -46,13 +46,10 @@ void TaskOdometry(void* pvParameters) {
 }
 
 void taskOdometry() {
-  xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry",
-                          8192,  // This stack size can be checked & adjusted
-                                 // by reading the Stack Highwater
-                          NULL,
+  xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry", 4096, NULL,
                           3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
-                          NULL, 1);  // attached on core 2!!
+                          NULL, 0);  // attached on core 0!!
 }
 
 void updateOdometry(Robot* robot) {

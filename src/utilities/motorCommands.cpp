@@ -22,10 +22,6 @@
 #include "kinematics.h"
 #include "motorCommands.h"
 
-// logging all of the variables adds some unnexpected delays
-// when we only log dt, we see that it works as expected
-#define DT_DEBUG 1
-
 // todo: handle if this is a big value, like 1000
 #define MOTOR_STOP_DURATION 10  // time to stop [ms]
 
@@ -58,6 +54,7 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
  * @brief Update the motor speed in a non-blocking way. We use the processor
  * time to estimate how much the speed should be increased.
  * @param motor - Struct of the motor to update.
+ * @param target - Desired speed command of the motor.
  * @param duration - Total desired duration of the movement.
  */
 void updateMotor(Motor* motor, int target, int duration) {
@@ -106,7 +103,9 @@ void updateMotor(Motor* motor, int target, int duration) {
     analogWrite(motor->pin2, -motor->currentCommand);
   }
 
-  if (DT_DEBUG) {
+  // logging all of the variables adds some unnexpected delays
+  // when we only log dt, we see that it works as expected
+  if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS_DT) {
     Serial.print("dt: ");
     Serial.println(dt);
   }
