@@ -131,6 +131,9 @@ void printDebug() {
   Serial.println("\t8) RGB LED");
   Serial.println("\t9) Buzzer");
   Serial.println("\t10) Odometry");
+  Serial.println("\t11) Speed calibration");
+  Serial.println("\t12) Robot control");
+  Serial.println("\t13) Motors (only time interval since last call)");
 
   Serial.print("\nCurrent debug mode: U");
   Serial.println(getParameter(PARAM_DEBUG));

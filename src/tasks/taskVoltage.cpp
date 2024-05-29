@@ -11,14 +11,17 @@
 #include <utilities/params.h>
 #include "../pinMapping.h"
 #include "../state.h"
-#include "./taskVoltage.h"
+#include "taskRgbLed.h"
+#include "taskVoltage.h"
 
 #define DELAY 1000
+#define WARNING_DELAY 10000
 
 void initializeVoltage(VoltageMeasurement* voltageMesurement);
 
 void TaskVoltage(void* pvParameters) {
-  uint32_t time = millis();  // in ms
+  int previousBatteryState = 1;  // 0: empty, 1: full
+  uint32_t time = millis();      // in ms
 
   initializeVoltage(&robot.battery);
   initializeVoltage(&robot.vcc);
@@ -29,9 +32,8 @@ void TaskVoltage(void* pvParameters) {
     int vccLevel = analogReadMilliVolts(VCC_PIN) * (VCC_R1 + VCC_R2) / VCC_R2;
     // to access this debug mode: U4
     if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY_LOG_DATA) {
-      Serial.print(time);
+      Serial.print(millis());
       Serial.print(", \t");
-      time += DELAY;
       Serial.print(batteryLevel);
       Serial.print(", \t");
       Serial.print(vccLevel);
@@ -41,22 +43,37 @@ void TaskVoltage(void* pvParameters) {
       Serial.println(getParameter(PARAM_MOTOR_RIGHT_MODE));
     }
 
-    if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY) {
+    if (getParameter(PARAM_DEBUG) == DEBUG_VOLTAGES) {
       Serial.print("Battery voltage: ");
       Serial.print(batteryLevel / 1000.0, 2);
       Serial.print(" V | Vcc voltage: ");
       Serial.print(vccLevel / 1000.0, 2);
       Serial.println(" V");
     }
-    if (getParameter(PARAM_BATTERY) == DEBUG_BATTERY) {
-      if (batteryLevel <= BATTERY_EMPTY) {
-        Serial.println("Warning: battery voltage is too low!");
+
+    // blink RGB LED if battery is empty
+    if (batteryLevel <= BATTERY_EMPTY) {
+      if (previousBatteryState == 1) {
+        setParameter(PARAM_RGB_LED_MODE, LED_BLINK);
+        previousBatteryState = 0;
       }
-      if (getParameter(PARAM_VCC_VOLTAGE) == DEBUG_BATTERY) {
+    } else {
+      if (previousBatteryState == 0) {
+        setParameter(PARAM_RGB_LED_MODE, LED_OFF);
+        previousBatteryState = 1;
+      }
+    }
+
+    if (millis() - time > WARNING_DELAY) {
+      if (batteryLevel <= BATTERY_EMPTY) {
+        Serial.println("Warning: battery is empty!");
+      }
+      if (getParameter(PARAM_VCC_VOLTAGE) == DEBUG_VOLTAGES) {
         if (vccLevel <= VCC_WARNING) {
           Serial.println("Warning: Vcc voltage is too low!");
         }
       }
+      time = millis();
     }
     setParameter(PARAM_BATTERY, batteryLevel);
     vTaskDelay(DELAY);

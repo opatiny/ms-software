@@ -2,6 +2,7 @@
  * Task for the control of the on board RGB LED.
  *   - color: AL
  *   - brightness: AM (0-255)
+ *   - mode: AS
  * Debug: U8
  */
 
@@ -15,36 +16,69 @@
 #include "taskButton.h"
 #include "taskRgbLed.h"
 
+const char colorNames[NB_RGB_COLORS][10] = {
+    "black", "red", "green", "blue", "yellow", "cyan", "magenta", "white"};
+
 #define BUTTON_PRESSED_COLOR 1
 
 uint32_t getColorFromIndex(int colorIndex);
+uint32_t getColorFromName(char const* colorName);
 
 Adafruit_NeoPixel pixels(NUMPIXELS, RGB_LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void TaskRgbLed(void* pvParameters) {
   pixels.begin();
   pixels.clear();  // turn all pixels off
+
+  setParameter(PARAM_RGB_LED_MODE, LED_OFF);
+
   while (true) {
+    int ledMode = getParameter(PARAM_RGB_LED_MODE);
     int colorIndex = getParameter(PARAM_RGB_LED_COLOR);
-
-    if (buttonFlags.rgbLed == BUTTON_PRESSED) {
-      colorIndex = BUTTON_PRESSED_COLOR;
-      buttonFlags.rgbLed = BUTTON_RELEASED;
-    }
-
     int brightness = getParameter(PARAM_RGB_LED_BRIGHTNESS);
     if (getParameter(PARAM_DEBUG) == DEBUG_RGB_LED) {
-      Serial.print("Color index: ");
+      Serial.print("RGB LED mode: ");
+      Serial.print(ledMode);
+      Serial.print(", Color index: ");
       Serial.print(colorIndex);
-      Serial.print(", brightness: ");
+      Serial.print(", Brightness: ");
       Serial.println(brightness);
     }
+    switch (ledMode) {
+      case LED_OFF:
+        pixels.setBrightness(0);
+        pixels.setPixelColor(0, pixels.Color(0, 0, 0));
+        pixels.show();  // todo: go check the doc, there's something about
+                        // interrupts being disabled for a short time!!
+        vTaskDelay(100);
+        break;
+      case LED_ON: {
+        if (buttonFlags.rgbLed == BUTTON_PRESSED) {
+          colorIndex = BUTTON_PRESSED_COLOR;
+          buttonFlags.rgbLed = BUTTON_RELEASED;
+        }
 
-    pixels.setBrightness(brightness);
-    pixels.setPixelColor(0, getColorFromIndex(colorIndex));
-    pixels.show();  // todo: go check the doc, there's something about
-                    // interrupts being disabled for a short time!!
-    vTaskDelay(200);
+        pixels.setBrightness(brightness);
+        pixels.setPixelColor(0, getColorFromIndex(colorIndex));
+        pixels.show();  // todo: go check the doc, there's something about
+                        // interrupts being disabled for a short time!!
+        vTaskDelay(200);
+        break;
+      }
+      case LED_BLINK: {
+        pixels.setBrightness(brightness);
+        pixels.setPixelColor(0, getColorFromName("red"));
+        pixels.show();
+        vTaskDelay(200);
+        pixels.setPixelColor(0, getColorFromName("black"));
+        pixels.show();
+        vTaskDelay(200);
+        break;
+      };
+      default:
+        Serial.println("Error: unknown RGB LED mode");
+        break;
+    }
   }
 }
 
@@ -67,4 +101,26 @@ uint32_t getColorFromIndex(int colorIndex) {
   }
   return pixels.Color(colors[colorIndex].r, colors[colorIndex].g,
                       colors[colorIndex].b);
+}
+
+/**
+ * @brief Find the index of the color in the colorNames array.
+ */
+int findColorIndex(const char* colorName) {
+  for (int i = 0; i < NB_RGB_COLORS; i++) {
+    if (strcmp(colorName, colorNames[i]) == 0) {
+      return i;
+    }
+  }
+  Serial.print("Error: unknown color name: ");
+  Serial.println(colorName);
+  return 0;
+}
+
+/**
+ * @brief Get RGB color from the color name.
+ */
+uint32_t getColorFromName(char const* colorName) {
+  int colorIndex = findColorIndex(colorName);
+  return getColorFromIndex(colorIndex);
 }

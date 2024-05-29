@@ -11,7 +11,7 @@ enum DebugMode {
   NO_DEBUG,                 // 0
   DEBUG_DISTANCE,           // 1
   DEBUG_IMU,                // 2
-  DEBUG_BATTERY,            // 3
+  DEBUG_VOLTAGES,           // 3
   DEBUG_BATTERY_LOG_DATA,   // 4
   DEBUG_ENCODERS,           // 5
   DEBUG_BUTTON,             // 6
@@ -95,4 +95,5 @@ extern int16_t parameters[MAX_PARAM];
 
 #define PARAM_VCC_VOLTAGE 43  // AR
 
+#define PARAM_RGB_LED_MODE 44  // AS
 #define PARAM_STATUS_FLAG_NO_WIFI 0
