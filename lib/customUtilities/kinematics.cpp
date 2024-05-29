@@ -21,15 +21,19 @@ int angleToCounts(int angle) {
 UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed) {
   int L = WHEEL_BASE;
   double v = (diffSpeed.left + diffSpeed.right) / 2;
-  double rho = L * v / (diffSpeed.right - diffSpeed.left);
-  return {v, rho};
+  double omega = (diffSpeed.right - diffSpeed.left) / L;
+  return {v, omega};
 }
 
 DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed) {
   int L = WHEEL_BASE;
-  double vl = unicycleSpeed.v * (1 - L / (4 * unicycleSpeed.rho));
-  double vr = unicycleSpeed.v * (1 + L / (4 * unicycleSpeed.rho));
+  double vl = unicycleSpeed.v - L * unicycleSpeed.omega / 2;
+  double vr = unicycleSpeed.v + L * unicycleSpeed.omega / 2;
   return {vl, vr};
+}
+
+double computeCurvature(UnicycleSpeed unicycleSpeed) {
+  return unicycleSpeed.v / unicycleSpeed.omega;
 }
 
 /**

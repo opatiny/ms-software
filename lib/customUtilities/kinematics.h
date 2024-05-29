@@ -7,7 +7,7 @@
  */
 struct UnicycleSpeed {
   double v;
-  double rho;
+  double omega;
 };
 
 /**
@@ -22,4 +22,5 @@ float countsToAngle(int counts);
 int angleToCounts(int angle);
 UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed);
 DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed);
+double computeCurvature(UnicycleSpeed unicycleSpeed);
 float computeWheelRpm(int counts, float dt);
