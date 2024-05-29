@@ -17,14 +17,26 @@
 #define DELAY 1000
 #define WARNING_DELAY 10000
 
-void initializeVoltage(VoltageMeasurement* voltageMesurement);
+void initializeVoltage(VoltageMeasurement* voltageMeasurement,
+                       VoltageMeasurement* params);
 
 void TaskVoltage(void* pvParameters) {
   int previousBatteryState = 1;  // 0: empty, 1: full
   uint32_t time = millis();      // in ms
 
-  initializeVoltage(&robot.battery);
-  initializeVoltage(&robot.vcc);
+  VoltageMeasurement battery = {
+    voltageParameter : PARAM_BATTERY_VOLTAGE,
+    pin : BATTERY_PIN,
+    warningVoltage : BATTERY_EMPTY,
+  };
+  VoltageMeasurement vcc = {
+    voltageParameter : PARAM_VCC_VOLTAGE,
+    pin : VCC_PIN,
+    warningVoltage : VCC_WARNING,
+  };
+
+  initializeVoltage(&robot.battery, &battery);
+  initializeVoltage(&robot.vcc, &vcc);
 
   while (true) {
     int batteryLevel = analogReadMilliVolts(BATTERY_PIN) *
@@ -75,7 +87,7 @@ void TaskVoltage(void* pvParameters) {
       }
       time = millis();
     }
-    setParameter(PARAM_BATTERY, batteryLevel);
+    setParameter(PARAM_BATTERY_VOLTAGE, batteryLevel);
     vTaskDelay(DELAY);
   }
 }
@@ -92,10 +104,11 @@ void taskVoltage() {
                           NULL, 1);  // 1 specifies the core
 }
 
-void initializeVoltage(VoltageMeasurement* voltageMeasurement) {
-  voltageMeasurement->pin = BATTERY_PIN;
-  voltageMeasurement->voltageParameter = PARAM_BATTERY;
-  voltageMeasurement->warningVoltage = BATTERY_EMPTY;
+void initializeVoltage(VoltageMeasurement* voltageMeasurement,
+                       VoltageMeasurement* params) {
+  voltageMeasurement->pin = params->pin;
+  voltageMeasurement->voltageParameter = params->voltageParameter;
+  voltageMeasurement->warningVoltage = params->warningVoltage;
 
   pinMode(voltageMeasurement->pin, INPUT);
 }

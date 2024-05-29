@@ -57,8 +57,9 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_DEBUG 20            // U, 0 = no debug, 1 = debug (serial)
 
 // other parameters
-#define PARAM_STATUS 21     // V
-#define PARAM_BATTERY 22    // W
+#define PARAM_STATUS \
+  21                        // V
+                            // W
 #define PARAM_CHARGING 23   // X
 #define PARAM_WIFI_RSSI 24  // Y
 #define PARAM_ERROR 25      // Z

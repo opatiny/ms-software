@@ -48,7 +48,7 @@ struct Motor {
   int previousMode;
   int currentCommand;
   int previousTargetCommand;
-  int step; // command step variation per ms
+  int step;  // command step variation per ms
   int pin1;
   int pin2;
   int previousTime;
@@ -110,7 +110,7 @@ struct Odometry {
 struct VoltageMeasurement {
   int voltageParameter;
   int pin;
-  int warningVoltage;
+  double warningVoltage;
 };
 
 /**

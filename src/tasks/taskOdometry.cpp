@@ -6,8 +6,8 @@
 #include "../state.h"
 #include "taskRobotMove.h"
 
-#define SPEED_CALIBRATION_DELAY 2000
-#define SPEED_STEP 5
+#define SPEED_CALIBRATION_DELAY 1000
+#define SPEED_STEP 1
 #define MIN_MOTOR_SPEED -255
 #define MAX_MOTOR_SPEED 255
 
@@ -131,6 +131,8 @@ void wheelSpeedCalibration(int* speed, int* previousTime) {
       setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
     }
     Serial.print(currentTime);
+    Serial.print(", ");
+    Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
     Serial.print(", ");
     Serial.print(*speed);
     Serial.print(", ");
