@@ -1,15 +1,11 @@
 #include <globalConfig.h>
+#include <kinematics.h>
 #include <utilities/params.h>
 
-#include <kinematics.h>
 #include "../hardwareProperties.h"
 #include "../state.h"
 #include "taskRobotMove.h"
-
-#define SPEED_CALIBRATION_DELAY 1000
-#define SPEED_STEP 1
-#define MIN_MOTOR_SPEED -255
-#define MAX_MOTOR_SPEED 255
+#include "utilities/speedCalibration.h"
 
 // delay between each time the debug information is printed
 #define DEBUG_DELAY 250
@@ -21,7 +17,7 @@ void wheelSpeedCalibration(int* speed, int* previousTime);
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
   robot.odometry.time = previousTime;
-  int speed = MIN_MOTOR_SPEED;
+  int speed = MIN_MOTOR_COMMAND;
   while (true) {
     updateOdometry(&robot);
 
@@ -36,12 +32,12 @@ void TaskOdometry(void* pvParameters) {
     }
     // handle case where user changes debug mode before calibration is finished
     if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION &&
-        speed != MIN_MOTOR_SPEED) {
-      speed = MIN_MOTOR_SPEED;
+        speed != MIN_MOTOR_COMMAND) {
+      speed = MIN_MOTOR_COMMAND;
       setParameter(PARAM_ROBOT_SPEED_CMD, 0);
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     }
-    vTaskDelay(100);
+    vTaskDelay(1);
   }
 }
 
@@ -121,34 +117,4 @@ void printOdometry(Robot* robot) {
   Serial.print(robot->odometry.speed.v);
   Serial.print(", ");
   Serial.println(robot->odometry.speed.omega);
-}
-
-void wheelSpeedCalibration(int* speed, int* previousTime) {
-  int currentTime = millis();
-  if (currentTime - *previousTime > SPEED_CALIBRATION_DELAY) {
-    if (*speed == MIN_MOTOR_SPEED) {
-      Serial.println("Speed calibration started...\n");
-      setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
-    }
-    Serial.print(currentTime);
-    Serial.print(", ");
-    Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
-    Serial.print(", ");
-    Serial.print(*speed);
-    Serial.print(", ");
-    Serial.print(robot.odometry.leftWheelSpeed);
-    Serial.print(", ");
-    Serial.println(robot.odometry.rightWheelSpeed);
-
-    *speed += SPEED_STEP;
-    if (*speed > MAX_MOTOR_SPEED) {
-      Serial.println("Speed calibration finished.");
-      setParameter(PARAM_DEBUG, NO_DEBUG);
-      *speed = -MIN_MOTOR_SPEED;
-      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
-      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
-    }
-    setParameter(PARAM_ROBOT_SPEED_CMD, *speed);
-    *previousTime = currentTime;
-  }
 }
