@@ -51,11 +51,11 @@ void setupParameters() {
   checkParameters();
 }
 
-void setParameter(char* key, char* value) {
+void setParameter(const char* key, char* value) {
   NVS.setString(key, value);
 }
 
-void getParameter(char* key, char* value) {
+void getParameter(const char* key, char* value) {
   strcpy(value, NVS.getString(key).c_str());
 }
 

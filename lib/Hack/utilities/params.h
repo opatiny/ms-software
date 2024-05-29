@@ -38,8 +38,8 @@ void printCompactParameters(Print* output);
 void getFunction(char* string);
 void setFunction(const char* string);
 
-void setParameter(char* key, char* value);
-void getParameter(char* key, char* value);
+void setParameter(const char* key, char* value);
+void getParameter(const char* key, char* value);
 
 void setQualifier(int16_t value);
 

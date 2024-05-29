@@ -9,9 +9,8 @@
 #include <WiFi.h>
 
 #include "./globalConfig.h"
+#include "./taskWebserver.h"
 #include "./utilities/params.h"
-
-void sendEventSource(char* event, char* data);
 
 char* tempString = new char[50];
 

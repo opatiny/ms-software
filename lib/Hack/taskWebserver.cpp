@@ -68,7 +68,7 @@ void TaskWebserver(void* pvParameters) {
   }
 }
 
-void sendEventSource(char* event, char* data) {
+void sendEventSource(const char* event, char* data) {
   events.send(data, event, millis());
 }
 
