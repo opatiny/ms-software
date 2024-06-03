@@ -14,3 +14,5 @@ struct CalibrationData {
   int index;
   int previousTime;
 };
+
+void wheelSpeedCalibration(int* command, CalibrationData* data);

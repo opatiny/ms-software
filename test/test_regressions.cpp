@@ -39,4 +39,6 @@ void test_curveFitting(void) {
 void test_polyVal(void) {
   double polynom[2] = {0, 1};
   TEST_ASSERT_EQUAL_DOUBLE(1, polyVal(polynom, 1, 1));
+  double p2[3] = {1, 2, 3};
+  TEST_ASSERT_EQUAL_DOUBLE(6, polyVal(p2, 2, 1));
 }

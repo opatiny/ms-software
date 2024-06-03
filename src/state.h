@@ -55,8 +55,8 @@ struct Motor {
 };
 
 struct WheelsCommands {
-  int leftSpeed;
-  int rightSpeed;
+  int leftCommand;
+  int rightCommand;
 };
 
 /**

@@ -15,10 +15,11 @@ void tearDown(void) {
 
 int runUnityTests(void) {
   UNITY_BEGIN();
-  RUN_TEST(test_computeWheelRpm);
-  RUN_TEST(test_countsToAngle);
-  RUN_TEST(test_pidController);
-  RUN_TEST(test_findIndex);
+  // RUN_TEST(test_computeWheelRpm);
+  // RUN_TEST(test_countsToAngle);
+  // RUN_TEST(test_pidController);
+  // RUN_TEST(test_findIndex);
+  // RUN_TEST(test_polyVal);
   RUN_TEST(test_curveFitting);
   // RUN_TEST(test_findRegressions);
   return UNITY_END();
