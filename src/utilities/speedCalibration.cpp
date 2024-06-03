@@ -49,33 +49,3 @@ void wheelSpeedCalibration(int* command, CalibrationData* data) {
     data->index++;
   }
 }
-
-Regressions getRegressions(Regressions* regessions,
-                           CalibrationArray speeds,
-                           CalibrationArray commands,
-                           double speedLimit) {
-  int minIndex = findMinIndex(speeds, -speedLimit);
-  int maxIndex = findMaxIndex(speeds, speedLimit);
-}
-
-int findMinIndex(CalibrationArray speeds, double minValue) {
-  int index = 0;
-  for (int i = 0; i < CALIBRATION_MAX_NB_VALUES; i++) {
-    if (speeds[i] >= minValue) {
-      index = i;
-      break;
-    }
-  }
-  return index;
-}
-
-int findMaxIndex(CalibrationArray speeds, double maxValue) {
-  int index = 0;
-  for (int i = CALIBRATION_MAX_NB_VALUES - 1; i >= 0; i--) {
-    if (speeds[i] >= maxValue) {
-      index = i;
-      break;
-    }
-  }
-  return index;
-}
