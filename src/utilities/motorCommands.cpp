@@ -16,8 +16,8 @@
 
 #include <utilities/params.h>
 
-#include "../pinMapping.h"
-#include "../state.h"
+#include <pinMapping.h>
+#include <state.h>
 #include "../tasks/taskRobotMove.h"
 #include "kinematics.h"
 #include "motorCommands.h"

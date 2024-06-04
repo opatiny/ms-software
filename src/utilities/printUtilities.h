@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../src/state.h"
+#include <state.h>
 
 void printDebug();
 void printState();
+void printArray(double* array, int size);

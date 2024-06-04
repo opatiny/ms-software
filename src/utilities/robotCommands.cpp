@@ -1,6 +1,5 @@
 #include <utilities/params.h>
 
-#include "../state.h"
 #include "../tasks/taskRobotMove.h"
 #include "motorCommands.h"
 #include "robotCommands.h"

@@ -8,9 +8,10 @@
 #include <Arduino.h>
 
 #include <globalConfig.h>
+#include <pinMapping.h>
+#include <state.h>
 #include <utilities/params.h>
-#include "../pinMapping.h"
-#include "../state.h"
+
 #include "taskRgbLed.h"
 #include "taskVoltage.h"
 

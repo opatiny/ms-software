@@ -11,7 +11,7 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-#include "../../src/state.h"
+#include "../customUtilities/state.h"
 #include "./taskGY521.h"
 #include "./utilities/params.h"
 

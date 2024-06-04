@@ -10,9 +10,9 @@
 #include <Arduino.h>
 
 #include <globalConfig.h>
+#include <pinMapping.h>
 #include <utilities/params.h>
 
-#include "../pinMapping.h"
 #include "taskButton.h"
 #include "taskRgbLed.h"
 

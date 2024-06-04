@@ -1,9 +1,10 @@
 #pragma once
 
 #define POLYNOM_DEGREE 4
+#define NB_COEFF POLYNOM_DEGREE + 1
 #define CALIBRATION_MAX_NB_VALUES 512
 
-typedef double Polynom[POLYNOM_DEGREE + 1];
+typedef double Polynom[NB_COEFF];
 
 struct Regressions {
   Polynom pNeg;

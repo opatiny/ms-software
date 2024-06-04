@@ -9,10 +9,10 @@
 #include <VL53L1X.h>
 
 #include <globalConfig.h>
+#include <pinMapping.h>
+#include <state.h>
 #include <utilities/params.h>
 
-#include "../pinMapping.h"
-#include "../state.h"
 #include "./taskButton.h"
 #include "./taskVl53L1X.h"
 

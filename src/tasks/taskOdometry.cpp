@@ -1,9 +1,13 @@
+#include <curveFitting.h>
+
 #include <globalConfig.h>
 #include <kinematics.h>
+#include <state.h>
 #include <utilities/params.h>
+#include <utilities/printUtilities.h>
+#include <utilities/speedCalibration.h>
 
 #include "../hardwareProperties.h"
-#include "../state.h"
 #include "taskRobotMove.h"
 #include "utilities/speedCalibration.h"
 
@@ -12,17 +16,29 @@
 
 void updateOdometry(Robot* robot);
 void printOdometry(Robot* robot);
-void wheelSpeedCalibration(int* speed, int* previousTime);
 
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
-  robot.odometry.time = previousTime;
-  int speed = MIN_MOTOR_COMMAND;
+  robot.odometry.time = millis();
+  CalibrationData calibrationData;
+  initialiseCalibrationData(&calibrationData);
   while (true) {
     updateOdometry(&robot);
 
     if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
-      wheelSpeedCalibration(&speed, &previousTime);
+      // wheelSpeedCalibration(&calibrationData);
+      Serial.println("Speed calibration\n");
+      Regressions reg;
+      DataArray x = {-5, -4, -3, -2, -1, 0, 0, 0, 1, 2, 3, 4, 5};
+      DataArray y = {-25, -16, -9, -4, -1, 0, 0, 0, 1, 4, 9, 16, 25};
+      Serial.println("test_findRegressions");
+      getRegressions(&reg, x, y, 3);
+      Serial.println("after getRegressions");
+
+      printArray(reg.pNeg, NB_COEFF);
+      printArray(reg.pPos, NB_COEFF);
+
+      setParameter(PARAM_DEBUG, NO_DEBUG);
     }
 
     if (millis() - previousTime > DEBUG_DELAY &&
@@ -32,8 +48,8 @@ void TaskOdometry(void* pvParameters) {
     }
     // handle case where user changes debug mode before calibration is finished
     if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION &&
-        speed != MIN_MOTOR_COMMAND) {
-      speed = MIN_MOTOR_COMMAND;
+        calibrationData.command != MIN_MOTOR_COMMAND) {
+      clearCalibrationData(&calibrationData);
       setParameter(PARAM_ROBOT_SPEED_CMD, 0);
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     }
@@ -42,7 +58,7 @@ void TaskOdometry(void* pvParameters) {
 }
 
 void taskOdometry() {
-  xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry", 4096, NULL,
+  xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry", 65536, NULL,
                           3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 0);  // attached on core 0!!

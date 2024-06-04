@@ -7,10 +7,9 @@
  */
 
 #include <globalConfig.h>
+#include <pinMapping.h>
+#include <state.h>
 #include <utilities/params.h>
-
-#include "../pinMapping.h"
-#include "../state.h"
 
 #include "taskEncoders.h"
 

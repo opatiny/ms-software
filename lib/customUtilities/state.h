@@ -2,18 +2,12 @@
 
 #include <stdint.h>
 
-#include <taskGY521.h>
-#include "../lib/customUtilities/pidController.h"  // todo: why does #include <pidController.h> not work?
-
-#include "./tasks/taskVl53L1X.h"
+#include "../Hack/taskGY521.h"
+#include "pidController.h"
 #include "pinMapping.h"
+#include "regressions.h"
 
 typedef int64_t EncoderCounter;
-
-struct EncoderParams {
-  int pin1;
-  int pin2;
-};
 
 /**
  * Structure containing all the encoder data.
@@ -34,11 +28,19 @@ struct Encoder {
  * Motor structure.
  *  - commandParameter: Serial parameter for the target speed of the motor.
  *  - modeParameter: Serial parameter for the mode of the motor.
- *  - previousMode: Previous mode of the motor.
  *  - angleParameter: Serial parameter for the angle of the motor.
- *  - encoderCounts: Number of counts of the encoder since the robot was turned
- *     on.
+ *  - accDurationParameter: Serial parameter defining the duration of
+ * accelerations.
+ *  - previousMode: Previous mode of the motor.
  *  - currentCommand: Current speed command of the motor.
+ * - previousTargetCommand: Previous target command of the motor.
+ * - step: Variation of the command required per ms for when motor is
+ * accelerating. Example: 1 step/ms.
+ * - pin1: Pin 1 of the motor.
+ * - pin2: Pin 2 of the motor.
+ * - previousTime: Time of the previous update of the motor.
+ * - regressions: Structure containing the coefficients of the polynomial
+ * regressions to convert desired motor speed in rpm to command.
  */
 struct Motor {
   int commandParameter;  // target command
@@ -52,6 +54,7 @@ struct Motor {
   int pin1;
   int pin2;
   int previousTime;
+  Regressions regressions;
 };
 
 struct WheelsCommands {

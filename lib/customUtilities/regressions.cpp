@@ -24,6 +24,15 @@ void getRegressions(Regressions* regessions,
   int minZero = findMinIndex(x, 0);
   int maxZero = findMaxIndex(x, 0);
 
+  Serial.print("start: ");
+  Serial.print(start);
+  Serial.print(", end: ");
+  Serial.print(end);
+  Serial.print(", minZero: ");
+  Serial.print(minZero);
+  Serial.print(", maxZero: ");
+  Serial.println(maxZero);
+
   int negLength = minZero - start;
   int posLength = end - maxZero;
 
@@ -33,15 +42,16 @@ void getRegressions(Regressions* regessions,
   double* xPos = x + maxZero;
   double* yPos = y + maxZero;
 
-  int negError = fitCurve(POLYNOM_DEGREE, negLength, xNeg, yNeg,
-                          POLYNOM_DEGREE + 1, regessions->pNeg);
-  int posError = fitCurve(POLYNOM_DEGREE, posLength, xPos, yPos,
-                          POLYNOM_DEGREE + 1, regessions->pPos);
+  int negError = fitCurve(POLYNOM_DEGREE, negLength, xNeg, yNeg, NB_COEFF,
+                          regessions->pNeg);
+  int posError = fitCurve(POLYNOM_DEGREE, posLength, xPos, yPos, NB_COEFF,
+                          regessions->pPos);
 }
 
 /**
  * @brief Find the index of the first value in the array that is greater or
  * equal to the given value.
+ * This function only works when data contains negative values at the beginning.
  */
 int findMinIndex(DataArray dataArray, double minValue) {
   int index = 0;
@@ -60,11 +70,11 @@ int findMinIndex(DataArray dataArray, double minValue) {
  */
 int findMaxIndex(DataArray dataArray, double maxValue) {
   int index = 0;
-  for (int i = CALIBRATION_MAX_NB_VALUES - 1; i >= 0; i--) {
-    if (dataArray[i] >= maxValue) {
-      index = i;
+  for (int i = 0; i < CALIBRATION_MAX_NB_VALUES; i++) {
+    if (dataArray[i] > maxValue) {
       break;
     }
+    index = i;
   }
   return index;
 }

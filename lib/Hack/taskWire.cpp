@@ -5,7 +5,7 @@
 
 #include <Wire.h>
 
-#include "../../src/pinMapping.h"
+#include "../customUtilities/state.h"
 #include "./globalConfig.h"
 #include "./taskWire.h"
 #include "./utilities/params.h"

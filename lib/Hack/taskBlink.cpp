@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "../../src/pinMapping.h"
+#include "../customUtilities/pinMapping.h"
 
 void TaskBlink(void* pvParameters) {
   (void)pvParameters;

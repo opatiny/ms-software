@@ -19,8 +19,8 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
-#include "../pinMapping.h"
-#include "../state.h"
+#include <pinMapping.h>
+#include <state.h>
 #include "../utilities/motorCommands.h"
 #include "../utilities/robotCommands.h"
 #include "taskButton.h"

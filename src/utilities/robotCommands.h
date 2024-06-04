@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../state.h"
+#include <state.h>
 
 /**
  * Parameters for the initialisation of the robot.

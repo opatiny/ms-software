@@ -138,3 +138,11 @@ void printDebug() {
   Serial.print("\nCurrent debug mode: U");
   Serial.println(getParameter(PARAM_DEBUG));
 }
+
+void printArray(double* array, int size) {
+  for (int i = 0; i < size; i++) {
+    Serial.print(array[i]);
+    Serial.print(", ");
+  }
+  Serial.println();
+}

@@ -5,10 +5,11 @@
  * Debug: U9
  */
 
-#include "./taskBuzzer.h"
 #include <globalConfig.h>
+#include <pinMapping.h>
 #include <utilities/params.h>
-#include "../pinMapping.h"
+
+#include "./taskBuzzer.h"
 
 Pwm buzzer = Pwm();  // constructor
 
