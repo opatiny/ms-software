@@ -19,8 +19,10 @@ int runUnityTests(void) {
   RUN_TEST(test_countsToAngle);
   RUN_TEST(test_pidController);
   RUN_TEST(test_findIndex);
+  RUN_TEST(test_findIndex2);
+  RUN_TEST(test_findZeros);
   // RUN_TEST(test_curveFitting);
-  //  RUN_TEST(test_polyVal);
+  RUN_TEST(test_polyVal);
   //  RUN_TEST(test_findRegressions);
   return UNITY_END();
 }

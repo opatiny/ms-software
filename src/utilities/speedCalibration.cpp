@@ -1,9 +1,10 @@
 #include <globalConfig.h>
 #include <kinematics.h>
+#include <state.h>
 #include <utilities/params.h>
 
-#include <state.h>
 #include "../tasks/taskRobotMove.h"
+#include "printUtilities.h"
 
 #include "speedCalibration.h"
 
@@ -15,7 +16,11 @@ void initialiseCalibrationData(CalibrationData* data) {
 /**
  * Non-blocking calibration function (can be stopped at any time).
  * Allows to find the polynomial relationship between the motor command and the
- * wheel speed for both wheels
+ * wheel speed for both wheels.
+ * @param data: calibration data structure. Contains the commands as well as the
+ * left and right measured speeds in rpm.
+ * @param leftRegressions: regressions for the left wheel
+ * @param rightRegressions: regressions for the right wheel
  */
 void wheelSpeedCalibration(CalibrationData* data,
                            Regressions* leftRegressions,
@@ -43,11 +48,14 @@ void wheelSpeedCalibration(CalibrationData* data,
     data->command += COMMAND_STEP;
     // end condition for the calibration
     if (data->command > MAX_MOTOR_COMMAND) {
-      Serial.println("Speed calibration finished.");
-      setParameter(PARAM_DEBUG, NO_DEBUG);
-      clearCalibrationData(data);
-      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
-      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
+      // print the data
+      Serial.print("\ncommands: ");
+      printArray(data->commands, data->index);
+      Serial.print("left speeds: ");
+      printArray(data->leftSpeeds, data->index);
+      Serial.print("right speeds: ");
+      printArray(data->rightSpeeds, data->index);
+      Serial.println("");
 
       // find the regressions
       double* x = data->commands;
@@ -57,6 +65,16 @@ void wheelSpeedCalibration(CalibrationData* data,
       y = data->rightSpeeds;
       getRegressions(rightRegressions, x, y, CALIBRATION_SPEED_LIMIT);
 
+      Serial.println("\nLeft wheel regressions:");
+      printRegressions(leftRegressions, 5);
+      Serial.println("Right wheel regressions:");
+      printRegressions(rightRegressions, 5);
+
+      Serial.println("Speed calibration finished.");
+      setParameter(PARAM_DEBUG, NO_DEBUG);
+      clearCalibrationData(data);
+      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
+      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
       return;
     }
     setParameter(PARAM_ROBOT_SPEED_CMD, data->command);

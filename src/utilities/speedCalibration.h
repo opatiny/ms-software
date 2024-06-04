@@ -3,7 +3,7 @@
 #include <regressions.h>
 
 #define SPEED_CALIBRATION_DELAY 1000
-#define COMMAND_STEP 1
+#define COMMAND_STEP 15
 #define MIN_MOTOR_COMMAND -255
 #define MAX_MOTOR_COMMAND 255
 #define CALIBRATION_SPEED_LIMIT 550  // rpm
@@ -27,5 +27,7 @@ struct CalibrationData {
 };
 
 void initialiseCalibrationData(CalibrationData* data);
-void wheelSpeedCalibration(CalibrationData* data);
+void wheelSpeedCalibration(CalibrationData* data,
+                           Regressions* leftRegressions,
+                           Regressions* rightRegressions);
 void clearCalibrationData(CalibrationData* data);

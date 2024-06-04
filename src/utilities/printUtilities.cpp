@@ -139,10 +139,25 @@ void printDebug() {
   Serial.println(getParameter(PARAM_DEBUG));
 }
 
-void printArray(double* array, int size) {
+/**
+ * @brief Print an array of doubles.
+ */
+void printArray(double* array, int size, int nbDigits) {
   for (int i = 0; i < size; i++) {
-    Serial.print(array[i]);
+    Serial.print(array[i], nbDigits);
     Serial.print(", ");
   }
   Serial.println();
+}
+
+/**
+ * @brief Print the positive and negative regressions of a wheel.
+ * @param regressions The regressions to print.
+ * @param nbDigits The number of decimal digits to print (default is 2).
+ */
+void printRegressions(Regressions* regressions, int nbDigits) {
+  Serial.print("\t- Negative part: ");
+  printArray(regressions->pNeg, NB_COEFF, nbDigits);
+  Serial.print("\t- Positive part: ");
+  printArray(regressions->pPos, NB_COEFF, nbDigits);
 }

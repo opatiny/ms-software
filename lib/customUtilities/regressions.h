@@ -15,6 +15,9 @@ typedef double DataArray[CALIBRATION_MAX_NB_VALUES];
 
 int findMinIndex(DataArray speeds, double minValue);
 int findMaxIndex(DataArray speeds, double maxValue);
+int findMinZero(DataArray speeds);
+int findMaxZero(DataArray speeds);
+
 void getRegressions(Regressions* regessions,
                     DataArray x,
                     DataArray y,

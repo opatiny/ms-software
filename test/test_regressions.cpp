@@ -5,9 +5,25 @@
 #include "unity.h"
 
 void test_findIndex(void) {
-  DataArray x = {1, 2, 3, 2, 1};
-  TEST_ASSERT_EQUAL_INT(1, findMinIndex(x, 2));
+  DataArray x = {-4, -2, 0, 2, 4};
+  TEST_ASSERT_EQUAL_INT(1, findMinIndex(x, -2));
   TEST_ASSERT_EQUAL_INT(3, findMaxIndex(x, 2));
+}
+
+void test_findIndex2(void) {
+  DataArray x = {0.00,  -500.00, -500.00, -500.00, -333.33, 0.00,   0.00,
+                 0.00,  0.00,    333.33,  500.00,  500.00,  500.00, -0.00,
+                 -0.00, -0.00,   -0.00,   -0.00,   -0.00,   -0.00,  -0.00};
+  TEST_ASSERT_EQUAL_INT(1, findMinIndex(x, -550));
+  TEST_ASSERT_EQUAL_INT(12, findMaxIndex(x, 550));
+}
+
+void test_findZeros(void) {
+  DataArray x = {0.00,  -500.00, -500.00, -500.00, -333.33, 0.00,   0.00,
+                 0.00,  0.00,    333.33,  500.00,  500.00,  500.00, -0.00,
+                 -0.00, -0.00,   -0.00,   -0.00,   -0.00,   -0.00,  -0.00};
+  TEST_ASSERT_EQUAL_INT(5, findMinZero(x));
+  TEST_ASSERT_EQUAL_INT(8, findMaxZero(x));
 }
 
 void test_getRegressions(void) {

@@ -2,9 +2,6 @@
 
 #include <state.h>
 
-#include "../tasks/taskEncoders.h"
-#include "motorCommands.h"
-
 #define DEFAULT_ACC_DURATION \
   100  // default duration of the acceleration phase [ms]
 #define MAX_SPEED_COMMAND 255

@@ -49,13 +49,13 @@ void setup() {
   // taskWire();
   // taskGY521();
   // taskVL53L1X();
-  // taskRobotMove();
-  // taskEncodersX4();
+  taskRobotMove();
+  taskEncodersX4();
   taskOdometry();
-  // taskVoltage();
+  taskVoltage();
   // taskButton();
   // taskBuzzer();
-  // taskRgbLed();
+  taskRgbLed();
   // taskEventSourceSender();
   taskBlink();
 }
