@@ -161,3 +161,11 @@ void printRegressions(Regressions* regressions, int nbDigits) {
   Serial.print("\t- Positive part: ");
   printArray(regressions->pPos, NB_COEFF, nbDigits);
 }
+
+void printRegressionsForMatlab(Regressions* regressions, int nbDigits) {
+  for (int i = 0; i < NB_COEFF; i++) {
+    Serial.print(regressions->pNeg[i], nbDigits);
+    Serial.print(", ");
+    Serial.println(regressions->pPos[i], nbDigits);
+  }
+}

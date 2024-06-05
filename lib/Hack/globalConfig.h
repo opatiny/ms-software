@@ -96,5 +96,7 @@ extern int16_t parameters[MAX_PARAM];
 
 #define PARAM_VCC_VOLTAGE 43  // AR
 
-#define PARAM_RGB_LED_MODE 44  // AS
+#define PARAM_RGB_LED_MODE 44     // AS
+#define PARAM_CALIBRATE_SPEED 45  // AT
+
 #define PARAM_STATUS_FLAG_NO_WIFI 0

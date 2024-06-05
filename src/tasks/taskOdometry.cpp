@@ -1,3 +1,9 @@
+/**
+ * Odometry task: computes the position and the speed of the robot.
+ *
+ * Debug: U10
+ */
+
 #include <curveFitting.h>
 
 #include <globalConfig.h>
@@ -5,11 +11,9 @@
 #include <state.h>
 #include <utilities/params.h>
 #include <utilities/printUtilities.h>
-#include <utilities/speedCalibration.h>
 
 #include "../hardwareProperties.h"
 #include "taskRobotMove.h"
-#include "utilities/speedCalibration.h"
 
 // delay between each time the debug information is printed
 #define DEBUG_DELAY 250
@@ -20,34 +24,20 @@ void printOdometry(Robot* robot);
 void TaskOdometry(void* pvParameters) {
   int previousTime = millis();
   robot.odometry.time = millis();
-  CalibrationData calibrationData;
-  initialiseCalibrationData(&calibrationData);
   while (true) {
     updateOdometry(&robot);
-
-    if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
-      wheelSpeedCalibration(&calibrationData, &robot.leftMotor.regressions,
-                            &robot.rightMotor.regressions);
-    }
 
     if (millis() - previousTime > DEBUG_DELAY &&
         getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
       printOdometry(&robot);
       previousTime = millis();
     }
-    // handle case where user changes debug mode before calibration is finished
-    if (getParameter(PARAM_DEBUG) != DEBUG_SPEED_CALIBRATION &&
-        calibrationData.command != MIN_MOTOR_COMMAND) {
-      clearCalibrationData(&calibrationData);
-      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
-      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
-    }
     vTaskDelay(1);
   }
 }
 
 void taskOdometry() {
-  xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry", 65536, NULL,
+  xTaskCreatePinnedToCore(TaskOdometry, "TaskOdometry", 4096, NULL,
                           3,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 0);  // attached on core 0!!

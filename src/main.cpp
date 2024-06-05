@@ -7,6 +7,7 @@
 #include "./state.h"
 #include "./tasks/taskButton.h"
 #include "./tasks/taskBuzzer.h"
+#include "./tasks/taskCalibrateSpeed.h"
 #include "./tasks/taskEncoders.h"
 #include "./tasks/taskOdometry.h"
 #include "./tasks/taskRgbLed.h"
@@ -32,7 +33,6 @@ void setup() {
   Serial.begin(SERIAL_SPEED);  // only for debug purpose
 
   // start I2C communication
-  // todo: define pins as SDA SCL
   xSemaphoreGive(xSemaphoreWire);
 
   Wire.setClock(I2C_SPEED);
@@ -52,6 +52,7 @@ void setup() {
   taskRobotMove();
   taskEncodersX4();
   taskOdometry();
+  taskCalibrateSpeed();
   taskVoltage();
   // taskButton();
   // taskBuzzer();
