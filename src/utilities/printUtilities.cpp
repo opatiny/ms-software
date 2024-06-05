@@ -4,6 +4,8 @@
 #include "motorCommands.h"
 #include "printUtilities.h"
 
+void printRegressions(Regressions* regressions, int nbDigits);
+
 /**
  * @brief Print the accelerometer's data.
  */
@@ -49,6 +51,8 @@ void printMotor(Motor* motor) {
   Serial.println(getParameter(motor->commandParameter));
   Serial.print("\t - Target angle: ");
   Serial.println(getParameter(motor->angleParameter));
+  Serial.println("Speed calibration regressions: ");
+  printRegressions(&motor->regressions, 5);
 }
 
 /**
@@ -162,10 +166,36 @@ void printRegressions(Regressions* regressions, int nbDigits) {
   printArray(regressions->pPos, NB_COEFF, nbDigits);
 }
 
-void printRegressionsForMatlab(Regressions* regressions, int nbDigits) {
+void printRegressionsForMatlab(Robot* robot, int nbDigits) {
+  Serial.println("\n pNegLeft, pPosLeft, pNegRight, pPosRight");
   for (int i = 0; i < NB_COEFF; i++) {
-    Serial.print(regressions->pNeg[i], nbDigits);
+    Serial.print(robot->leftMotor.regressions.pNeg[i], nbDigits);
     Serial.print(", ");
-    Serial.println(regressions->pPos[i], nbDigits);
+    Serial.print(robot->leftMotor.regressions.pPos[i], nbDigits);
+    Serial.print(", ");
+    Serial.print(robot->rightMotor.regressions.pNeg[i], nbDigits);
+    Serial.print(", ");
+    Serial.println(robot->rightMotor.regressions.pPos[i], nbDigits);
+  }
+  Serial.println();
+}
+
+void showPrintHelp(Print* output) {
+  output->println(F("(ps) Print state"));
+  output->println(F("(pr) Print regressions (for speed calibration)"));
+}
+
+void processPrintCommand(char command,
+                         char* paramValue,
+                         Print* output) {  // char and char* ??
+  switch (command) {
+    case 's':
+      printState();
+      break;
+    case 'r':
+      printRegressionsForMatlab(&robot, 10);
+      break;
+    default:
+      showPrintHelp(output);
   }
 }

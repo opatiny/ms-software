@@ -1,5 +1,6 @@
 #include <Wire.h>
 
+#include <eeprom.h>
 #include <globalConfig.h>
 #include <utilities/params.h>
 
@@ -42,11 +43,15 @@ void setup() {
   // todo: this doesn't work -> setAndSave? doesn't work either
   setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
 
+  // load data from EEPROM
+  loadWheelsRegressions(&robot.leftMotor.regressions,
+                        &robot.rightMotor.regressions);
+
   setupParameters();
   taskSerial();
   // taskWifi();
   // taskWebserver();
-  // taskWire();
+  taskWire();
   // taskGY521();
   // taskVL53L1X();
   taskRobotMove();

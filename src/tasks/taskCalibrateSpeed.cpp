@@ -8,7 +8,7 @@
 #include "../hardwareProperties.h"
 #include "taskRobotMove.h"
 
-void TaskCalibrateSpeed(void* pvParameters) {
+void TaskCalibration(void* pvParameters) {
   CalibrationData calibrationData;
   initialiseCalibrationData(&calibrationData);
 
@@ -31,8 +31,8 @@ void TaskCalibrateSpeed(void* pvParameters) {
 }
 
 void taskCalibrateSpeed() {
-  xTaskCreatePinnedToCore(TaskCalibrateSpeed, "TaskCalibrateSpeed", 65536, NULL,
+  xTaskCreatePinnedToCore(TaskCalibration, "TaskCalibration", 65536, NULL,
                           2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
-                          NULL, 0);  // attached on core 0!!
+                          NULL, 1);  // on core 1
 }

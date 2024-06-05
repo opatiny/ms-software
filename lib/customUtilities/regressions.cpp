@@ -1,5 +1,7 @@
 #include "regressions.h"
 #include <curveFitting.h>
+#include <globalConfig.h>
+#include <utilities/params.h>
 
 /**
  * @brief Find the coefficients of the polynomial regressions for the negative
@@ -24,22 +26,24 @@ void getRegressions(Regressions* regessions,
   int minZero = findMinZero(speeds);
   int maxZero = findMaxZero(speeds);
 
-  Serial.print("start: ");
-  Serial.print(start);
-  Serial.print(", end: ");
-  Serial.print(end);
-  Serial.print(", minZero: ");
-  Serial.print(minZero);
-  Serial.print(", maxZero: ");
-  Serial.println(maxZero);
-
   int negLength = minZero - start + 1;
   int posLength = end - maxZero + 1;
+  
+  if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
+    Serial.print("\nstart: ");
+    Serial.print(start);
+    Serial.print(", end: ");
+    Serial.print(end);
+    Serial.print(", minZero: ");
+    Serial.print(minZero);
+    Serial.print(", maxZero: ");
+    Serial.println(maxZero);
 
-  Serial.print("negLength: ");
-  Serial.print(negLength);
-  Serial.print(", posLength: ");
-  Serial.println(posLength);
+    Serial.print("negLength: ");
+    Serial.print(negLength);
+    Serial.print(", posLength: ");
+    Serial.println(posLength);
+  }
 
   // find arrays for the polynomial regressions
   double* commandsNeg = commands + start;

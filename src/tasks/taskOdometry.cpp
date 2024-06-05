@@ -32,7 +32,11 @@ void TaskOdometry(void* pvParameters) {
       printOdometry(&robot);
       previousTime = millis();
     }
-    vTaskDelay(1);
+    // problem: what is the optimal delay?
+    // if delay is too small, there can be not a single interrupt on the motors
+    // pins and the speeds are nonsense if delay is too big, the odometry will
+    // have a big error
+    vTaskDelay(100);
   }
 }
 

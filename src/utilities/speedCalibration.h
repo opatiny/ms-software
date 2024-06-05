@@ -3,7 +3,7 @@
 #include <regressions.h>
 
 #define SPEED_CALIBRATION_DELAY 1000
-#define COMMAND_STEP 15
+#define COMMAND_STEP 30
 #define MIN_MOTOR_COMMAND -255
 #define MAX_MOTOR_COMMAND 255
 #define CALIBRATION_SPEED_LIMIT 550  // rpm

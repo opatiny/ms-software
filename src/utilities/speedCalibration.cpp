@@ -1,3 +1,4 @@
+#include <eeprom.h>
 #include <globalConfig.h>
 #include <kinematics.h>
 #include <state.h>
@@ -10,6 +11,7 @@
 
 void initialiseCalibrationData(CalibrationData* data) {
   data->command = MIN_MOTOR_COMMAND;
+  setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
 }
 
 /**
@@ -29,15 +31,18 @@ void wheelSpeedCalibration(CalibrationData* data,
     Serial.println("Speed calibration started...\n");
     setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
   }
-  Serial.print(currentTime);
-  Serial.print(", ");
-  Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
-  Serial.print(", ");
-  Serial.print(data->command);
-  Serial.print(", ");
-  Serial.print(robot.odometry.leftWheelSpeed);
-  Serial.print(", ");
-  Serial.println(robot.odometry.rightWheelSpeed);
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
+    Serial.print(currentTime);
+    Serial.print(", ");
+    Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
+    Serial.print(", ");
+    Serial.print(data->command);
+    Serial.print(", ");
+    Serial.print(robot.odometry.leftWheelSpeed);
+    Serial.print(", ");
+    Serial.println(robot.odometry.rightWheelSpeed);
+  }
 
   data->commands[data->index] = data->command;
   data->leftSpeeds[data->index] = robot.odometry.leftWheelSpeed;
@@ -54,14 +59,13 @@ void wheelSpeedCalibration(CalibrationData* data,
     y = data->rightSpeeds;
     getRegressions(rightRegressions, x, y, CALIBRATION_SPEED_LIMIT);
 
-    printRegressionsForMatlab(leftRegressions, 10);
-    Serial.println("");
-    printRegressionsForMatlab(rightRegressions, 10);
+    Serial.println("Saving regressions to EEPROM...");
+    saveWheelsRegressions(leftRegressions, rightRegressions);
 
     Serial.println("\nLeft wheel regressions:");
-    printRegressions(leftRegressions, 5);
+    printRegressions(leftRegressions, 10);
     Serial.println("Right wheel regressions:");
-    printRegressions(rightRegressions, 5);
+    printRegressions(rightRegressions, 10);
 
     Serial.println("Speed calibration finished.");
     setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);

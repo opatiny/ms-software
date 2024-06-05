@@ -178,7 +178,7 @@ void printResult(char* data, Print* output) {
       break;
 #endif
     case 'p':
-      printState();
+      processPrintCommand(data[1], paramValue, output);
       break;
     case 's':
       printParameters(output);

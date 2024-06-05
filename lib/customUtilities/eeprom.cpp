@@ -16,6 +16,7 @@ Preferences preferences;
  */
 void savePolynom(Polynom* polynom, PolynomKeys keys) {
   for (int i = 0; i < NB_COEFF; i++) {
+    Serial.println((*polynom)[i]);
     preferences.putDouble(keys[i], (*polynom)[i]);
   }
 }

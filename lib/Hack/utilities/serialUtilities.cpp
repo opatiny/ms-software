@@ -85,7 +85,7 @@ void printHelp(Print* output) {
 #ifdef THR_EEPROM_LOGGER
   output->println(F("(l)og"));
 #endif
-  output->println(F("(p)rint state"));
+  output->println(F("(p)rint variables"));
   output->println(F("(s)ettings"));
   output->println(F("(u)tilities"));
   output->println(F("(w)ifi"));
@@ -111,9 +111,15 @@ static void printFreeMemory(Print* output) {
   TaskHandle_t taskBlinkHandle = xTaskGetHandle("TaskBlink");
   output->print("- blink: ");
   output->println(uxTaskGetStackHighWaterMark(taskBlinkHandle));
+
   TaskHandle_t taskOdometryHandle = xTaskGetHandle("TaskOdometry");
   output->print("- Odometry: ");
   output->println(uxTaskGetStackHighWaterMark(taskOdometryHandle));
+
+  TaskHandle_t taskCalibrationHandle = xTaskGetHandle("TaskCalibration");
+  output->print("- Speed calibration: ");
+  output->println(uxTaskGetStackHighWaterMark(taskCalibrationHandle));
+
   TaskHandle_t taskRobotControlHandle = xTaskGetHandle("TaskRobotMove");
   output->print("- Robot control: ");
   output->println(uxTaskGetStackHighWaterMark(taskRobotControlHandle));
