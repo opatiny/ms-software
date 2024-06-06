@@ -84,7 +84,7 @@ void TaskRgbLed(void* pvParameters) {
 
 void taskRgbLed() {
   xTaskCreatePinnedToCore(TaskRgbLed, "TaskRgbLed",
-                          2048,  // This stack size can be checked & adjusted
+                          4096,  // This stack size can be checked & adjusted
                                  // by reading the Stack Highwater
                           NULL,
                           1,  // Priority, with 3 (configMAX_PRIORITIES - 1)

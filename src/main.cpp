@@ -53,7 +53,7 @@ void setup() {
   taskSerial();
   // taskWifi();
   // taskWebserver();
-  taskWire();
+  taskWire();  // stack size problem?
   // taskGY521();
   // taskVL53L1X();
   taskRobotMove();
@@ -63,7 +63,7 @@ void setup() {
   taskVoltage();
   // taskButton();
   // taskBuzzer();
-  taskRgbLed();
+  taskRgbLed();  // stack size problem?
   // taskEventSourceSender();
   taskBlink();
 }
