@@ -79,17 +79,21 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_DISTANCE_DEBUG_MODE 33  // AH
 #define PARAM_MOTOR_ACC_DURATION 34   // AI
 
-/**
- * Angle in degrees the motors should move if MOVE_DEGREES mode is on.
- */
-#define PARAM_MOTOR_LEFT_ANGLE_CMD 35   // AJ
-#define PARAM_MOTOR_RIGHT_ANGLE_CMD 36  // AK
+#define PARAM_RGB_LED_COLOR 35       // AJ
+#define PARAM_RGB_LED_BRIGHTNESS 36  // AK
 
-#define PARAM_RGB_LED_COLOR 37       // AL
-#define PARAM_RGB_LED_BRIGHTNESS 38  // AM
+// AL
 
 // robot control parameters
-#define PARAM_ROBOT_SPEED_CMD 39    // AN
+/**
+ * Command for both wheels of the robot, when the mode is
+ * ROBOT_MOVE_SAME_COMMAND.
+ */
+#define PARAM_ROBOT_COMMAND 38  // AM
+/**
+ * Target speed for the robot in rpm, used in ROBOT_MOVE mode.
+ */
+#define PARAM_ROBOT_SPEED 39        // AN
 #define PARAM_ROBOT_MODE 40         // AO
 #define PARAM_ROBOT_ANGLE_CMD 41    // AP
 #define PARAM_OBSTACLE_DISTANCE 42  // AQ

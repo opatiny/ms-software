@@ -68,13 +68,14 @@ struct WheelsCommands {
  */
 struct RobotController {
   int commandParameter;
+  int speedParameter;
   int angleParameter;
   int distanceParameter;
   int obstacleDistanceParameter;
   int modeParameter;
   int currentCommand;
+  int currentSpeed;
   int previousMode;
-  int rampStep;
   PidController angularPid;
   PidController linearPid;
   WheelsCommands wheelsCommands;

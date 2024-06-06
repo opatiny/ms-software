@@ -121,7 +121,6 @@ static void printFreeMemory(Print* output) {
   printStack(output, "TaskWire", "- Wire: ");
   printStack(output, "TaskGY521", "- GY521: ");
   printStack(output, "TaskVL53L1X", "- VL53L1X: ");
-  printStack(output, "TaskDcMotorTest", "- DC motor test: ");
   printStack(output, "TaskBlink", "- Blink: ");
   printStack(output, "TaskOdometry", "- Odometry: ");
   printStack(output, "TaskCalibration", "- Speed calibration: ");

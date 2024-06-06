@@ -13,10 +13,22 @@ void TaskCalibration(void* pvParameters) {
   CalibrationData calibrationData;
   initialiseCalibrationData(&calibrationData);
 
+  TestCalibrationData testData;
+  initialiseTestCalibrationData(&testData);
+
   while (true) {
-    if (getParameter(PARAM_CALIBRATE_SPEED) == CALIBRATION_ON) {
-      wheelSpeedCalibration(&calibrationData, &robot.leftMotor.regressions,
-                            &robot.rightMotor.regressions);
+    switch (getParameter(PARAM_CALIBRATE_SPEED)) {
+      case CALIBRATION_ON:
+        wheelSpeedCalibration(&calibrationData, &robot.leftMotor.regressions,
+                              &robot.rightMotor.regressions);
+        break;
+      case CALIBRATION_TEST:
+        testCalibration(&robot, &testData);
+        break;
+      case CALIBRATION_OFF:
+        break;
+      default:
+        break;
     }
 
     // handle case where user changes debug mode before calibration is finished
@@ -24,7 +36,14 @@ void TaskCalibration(void* pvParameters) {
         calibrationData.command != MIN_MOTOR_COMMAND) {
       Serial.println("Warning: Speed calibration stopped before finishing.");
       clearCalibrationData(&calibrationData);
-      setParameter(PARAM_ROBOT_SPEED_CMD, 0);
+      setParameter(PARAM_ROBOT_COMMAND, 0);
+      setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
+    }
+
+    if (getParameter(PARAM_CALIBRATE_SPEED) == CALIBRATION_OFF &&
+        testData.speed != -CALIBRATION_SPEED_LIMIT) {
+      clearTestCalibrationData(&testData);
+      setParameter(PARAM_ROBOT_SPEED, 0);
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     }
     vTaskDelay(SPEED_CALIBRATION_DELAY);

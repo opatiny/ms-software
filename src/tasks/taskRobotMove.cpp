@@ -35,7 +35,6 @@ void TaskRobotMove(void* pvParameters) {
   MotorParams leftMotorParams = {
     commandParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
     modeParameter : PARAM_MOTOR_LEFT_MODE,
-    angleParameter : PARAM_MOTOR_LEFT_ANGLE_CMD,
     accDurationParameter : PARAM_MOTOR_ACC_DURATION,
     pin1 : MOTOR_LEFT_PIN1,
     pin2 : MOTOR_LEFT_PIN2
@@ -44,7 +43,6 @@ void TaskRobotMove(void* pvParameters) {
   MotorParams rightMotorParams = {
     commandParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
     modeParameter : PARAM_MOTOR_RIGHT_MODE,
-    angleParameter : PARAM_MOTOR_RIGHT_ANGLE_CMD,
     accDurationParameter : PARAM_MOTOR_ACC_DURATION,
     pin1 : MOTOR_RIGHT_PIN1,
     pin2 : MOTOR_RIGHT_PIN2
@@ -58,7 +56,8 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   ControllerParams robotParams = {
-    commandParameter : PARAM_ROBOT_SPEED_CMD,
+    commandParameter : PARAM_ROBOT_COMMAND,
+    speedParameter : PARAM_ROBOT_SPEED,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
     wheelsParams : wheelsParams,
@@ -106,8 +105,8 @@ void robotControl(Robot* robot) {
     case ROBOT_STOP:
       stopMotors(robot);
       break;
-    case ROBOT_MOVE:
-      robotMove(robot, targetSpeed);
+    case ROBOT_MOVE_SAME_COMMAND:
+      robotMoveSameCommand(robot, targetSpeed);
       break;
     case ROBOT_TURN_IN_PLACE:
       robotTurnInPlace(robot, targetSpeed);

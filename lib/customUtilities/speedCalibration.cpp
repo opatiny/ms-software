@@ -8,6 +8,10 @@
 #include "robotModes.h"
 #include "speedCalibration.h"
 
+/**
+ * Initialise the calibration data structure.
+ * @param data: calibration data structure to initialise.
+ */
 void initialiseCalibrationData(CalibrationData* data) {
   data->command = MIN_MOTOR_COMMAND;
   setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
@@ -31,7 +35,7 @@ void wheelSpeedCalibration(CalibrationData* data,
     Serial.println("Speed calibration started...\n");
     Serial.print("Calibration command step: ");
     Serial.println(getParameter(PARAM_CALIBRATION_STEP));
-    setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
+    setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE_SAME_COMMAND);
   }
 
   if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
@@ -73,13 +77,17 @@ void wheelSpeedCalibration(CalibrationData* data,
     setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
     clearCalibrationData(data);
     setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
-    setParameter(PARAM_ROBOT_SPEED_CMD, 0);
+    setParameter(PARAM_ROBOT_COMMAND, 0);
     return;
   }
-  setParameter(PARAM_ROBOT_SPEED_CMD, data->command);
+  setParameter(PARAM_ROBOT_COMMAND, data->command);
   data->index++;
 }
 
+/**
+ * Clear the calibration data.
+ * @param data: calibration data structure to clear.
+ */
 void clearCalibrationData(CalibrationData* data) {
   for (int i = 0; i < CALIBRATION_MAX_NB_VALUES; i++) {
     data->commands[i] = 0;
@@ -88,4 +96,45 @@ void clearCalibrationData(CalibrationData* data) {
   }
   data->index = 0;
   data->command = MIN_MOTOR_COMMAND;
+}
+
+void initialiseTestCalibrationData(TestCalibrationData* data) {
+  data->speedStep = CALIBRATION_TEST_SPEED_STEP;
+  data->speed = -CALIBRATION_SPEED_LIMIT;
+}
+
+void testCalibration(Robot* robot, TestCalibrationData* data) {
+  int currentTime = millis();
+  if (data->speed == -CALIBRATION_SPEED_LIMIT) {
+    Serial.println("Speed calibration test started...\n");
+    Serial.print("Speed step: ");
+    Serial.println(data->speedStep);
+    setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
+    setParameter(PARAM_ROBOT_SPEED, data->speed);
+    Serial.println("\ntime, batteryVoltage, speed, leftSpeed, rightSpeed");
+  }
+
+  Serial.print(currentTime);
+  Serial.print(", ");
+  Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
+  Serial.print(", ");
+  Serial.print(data->speed);
+  Serial.print(", ");
+  Serial.print(robot->odometry.leftWheelSpeed);
+  Serial.print(", ");
+  Serial.println(robot->odometry.rightWheelSpeed);
+
+  data->speed += data->speedStep;
+  if (data->speed > CALIBRATION_SPEED_LIMIT) {
+    Serial.println("Speed calibration test finished.");
+    setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
+    setParameter(PARAM_ROBOT_SPEED, 0);
+    clearTestCalibrationData(data);
+    return;
+  }
+  setParameter(PARAM_ROBOT_SPEED, data->speed);
+}
+
+void clearTestCalibrationData(TestCalibrationData* data) {
+  data->speed = -CALIBRATION_SPEED_LIMIT;
 }

@@ -1,12 +1,13 @@
 #pragma once
 
 enum RobotMode {
-  ROBOT_STOP,              // 0
-  ROBOT_MOVE,              // 1
-  ROBOT_TURN_IN_PLACE,     // 2
-  ROBOT_TURN_WITH_RADIUS,  // 3
-  ROBOT_MOVE_DISTANCE,     // 4
-  ROBOT_STOP_OBSTACLE,     // 5
+  ROBOT_STOP,               // 0
+  ROBOT_MOVE_SAME_COMMAND,  // 1
+  ROBOT_MOVE,               // 2
+  ROBOT_TURN_IN_PLACE,      // 3
+  ROBOT_TURN_WITH_RADIUS,   // 4
+  ROBOT_MOVE_DISTANCE,      // 5
+  ROBOT_STOP_OBSTACLE,      // 6
   /**
    * Control each wheel separately instead of the robot as a whole.
    */

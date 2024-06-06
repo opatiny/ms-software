@@ -7,6 +7,7 @@
  */
 struct ControllerParams {
   int commandParameter;
+  int speedParameter;
   int modeParameter;
   int angleParameter;
   int obstacleDistanceParameter;
@@ -16,7 +17,7 @@ struct ControllerParams {
 int getClampedSpeed(int speed);
 void initialiseController(RobotController* controller,
                           ControllerParams* params);
-void robotMove(Robot* robot, int speed);
+void robotMoveSameCommand(Robot* robot, int speed);
 void robotStop(Robot* robot);
 void robotTurnInPlace(Robot* robot, int speed);
 void stopWhenObstacle(Robot* robot, int speed, int distance);

@@ -17,11 +17,11 @@ void initialiseController(RobotController* controller,
                           ControllerParams* params) {
   // setup the motor parameters
   controller->commandParameter = params->commandParameter;
+  controller->speedParameter = params->speedParameter;
   controller->modeParameter = params->modeParameter;
   controller->angleParameter = params->angleParameter;
   controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
   controller->previousMode = ROBOT_STOP;
-  controller->rampStep = 1;  // 1ms delay between each speed increment
 
   // initialize PID
   initialisePidController(&controller->angularPid, &params->wheelsParams);
@@ -35,20 +35,35 @@ void initialiseController(RobotController* controller,
   setParameter(controller->angleParameter, 90);  // degrees
   setParameter(controller->obstacleDistanceParameter,
                150);  // distance in mm
-  controller->rampStep = 1;
 }
 
 /**
- * @brief Move the robot at a given speed by applying the same command on both
- * wheels. There is no regulation of the speed.
+ * @brief Move the robot by applying the same command on both
+ * wheels. There is no regulation or correction of the speed.
  * @param robot The robot structure.
- * @param speed The speed command for the wheels
+ * @param command The speed command for the wheels
+ */
+void robotMoveSameCommand(Robot* robot, int command) {
+  if (command != robot->controller.currentCommand) {
+    robot->controller.currentCommand = command;
+  }
+  updateMotors(robot, command, command, getParameter(PARAM_MOTOR_ACC_DURATION));
+}
+
+/**
+ * @brief Move the robot at a given speed in rpm. The command of each wheel is
+ * computed based on the regressions of the speed calibration.
+ * @param robot The robot structure.
+ * @param speed The desired speed for the wheels.
  */
 void robotMove(Robot* robot, int speed) {
-  if (speed != robot->controller.currentCommand) {
-    robot->controller.currentCommand = speed;
+  if (speed != robot->controller.currentSpeed) {
+    robot->controller.currentSpeed = speed;
   }
-  updateMotors(robot, speed, speed, getParameter(PARAM_MOTOR_ACC_DURATION));
+  int leftCommand = getCommand(&robot->leftMotor.regressions, speed);
+  int rightCommand = getCommand(&robot->rightMotor.regressions, speed);
+  updateMotors(robot, leftCommand, rightCommand,
+               getParameter(PARAM_MOTOR_ACC_DURATION));
 }
 
 /**
@@ -60,17 +75,20 @@ void robotStop(Robot* robot) {
 }
 
 /**
- * @brief Turn the robot in place by applying opposite commands on the wheels.
+ * @brief Turn the robot in place by applying opposite speeds on the wheels.
  * @param robot The robot structure.
- * @param speed The speed command that defines how fast the robot should turn.
- * Positive values turn the robot clockwise, negative values turn the robot
- * counter-clockwise.
+ * @param speed The speed of the wheels in rpm, defines how fast the robot wil
+ * turn. Positive values turn the robot clockwise, negative values turn the
+ * robot counter-clockwise.
  */
 void robotTurnInPlace(Robot* robot, int speed) {
-  if (speed != robot->controller.currentCommand) {
-    robot->controller.currentCommand = 0;
+  if (speed != robot->controller.currentSpeed) {
+    robot->controller.currentSpeed = 0;
   }
-  updateMotors(robot, speed, -speed, getParameter(PARAM_MOTOR_ACC_DURATION));
+  int leftCommand = getCommand(&robot->leftMotor.regressions, speed);
+  int rightCommand = getCommand(&robot->rightMotor.regressions, -speed);
+  updateMotors(robot, leftCommand, rightCommand,
+               getParameter(PARAM_MOTOR_ACC_DURATION));
 }
 
 /**
@@ -87,7 +105,7 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
       return;
     }
   }
-  robotMove(robot, speed);
+  robotMoveSameCommand(robot, speed);
 }
 
 /**
