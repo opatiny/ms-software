@@ -97,7 +97,8 @@ void robotControl(Robot* robot) {
     buttonFlags.robotMode = false;
   }
 
-  if (robot->controller.previousMode != currentMode) {
+  if (robot->controller.previousMode != currentMode &&
+      getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
     Serial.print("New robot mode: ");
     Serial.println(currentMode);
   }

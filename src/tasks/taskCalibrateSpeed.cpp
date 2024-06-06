@@ -32,7 +32,7 @@ void TaskCalibration(void* pvParameters) {
 }
 
 void taskCalibrateSpeed() {
-  xTaskCreatePinnedToCore(TaskCalibration, "TaskCalibration", 65536, NULL,
+  xTaskCreatePinnedToCore(TaskCalibration, "TaskCalibration", 131072, NULL,
                           2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 1);  // on core 1

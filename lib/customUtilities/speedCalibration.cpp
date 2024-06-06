@@ -11,6 +11,7 @@
 void initialiseCalibrationData(CalibrationData* data) {
   data->command = MIN_MOTOR_COMMAND;
   setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
+  setParameter(PARAM_CALIBRATION_STEP, 5);
 }
 
 /**
@@ -28,6 +29,8 @@ void wheelSpeedCalibration(CalibrationData* data,
   int currentTime = millis();
   if (data->command == MIN_MOTOR_COMMAND) {
     Serial.println("Speed calibration started...\n");
+    Serial.print("Calibration command step: ");
+    Serial.println(getParameter(PARAM_CALIBRATION_STEP));
     setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
   }
 
@@ -47,7 +50,7 @@ void wheelSpeedCalibration(CalibrationData* data,
   data->leftSpeeds[data->index] = robot.odometry.leftWheelSpeed;
   data->rightSpeeds[data->index] = robot.odometry.rightWheelSpeed;
 
-  data->command += COMMAND_STEP;
+  data->command += getParameter(PARAM_CALIBRATION_STEP);
   // end condition for the calibration
   if (data->command > MAX_MOTOR_COMMAND) {
     // find the regressions

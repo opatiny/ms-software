@@ -32,6 +32,8 @@ void taskDcMotorTest();
 void setup() {
   // start serial communication
   Serial.begin(SERIAL_SPEED);  // only for debug purpose
+  delay(2000);                 // wait for serial connection to open
+  Serial.println("Device is up");
 
   // start I2C communication
   xSemaphoreGive(xSemaphoreWire);

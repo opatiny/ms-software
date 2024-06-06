@@ -95,6 +95,12 @@ void printHelp(Print* output) {
 
 char ptrTaskList[600];
 
+void printStack(Print* output, char const* taskName, char const* message) {
+  TaskHandle_t handle = xTaskGetHandle(taskName);
+  output->print(message);
+  output->println(uxTaskGetStackHighWaterMark(handle));
+}
+
 static void printFreeMemory(Print* output) {
   output->printf("Number of tasks: %u\n", uxTaskGetNumberOfTasks());
 
@@ -108,21 +114,23 @@ static void printFreeMemory(Print* output) {
   output->printf("Minimum free heap size during uptime was: %u KB\n", min);
 
   output->println("Minimum free process stack space:");
-  TaskHandle_t taskBlinkHandle = xTaskGetHandle("TaskBlink");
-  output->print("- blink: ");
-  output->println(uxTaskGetStackHighWaterMark(taskBlinkHandle));
 
-  TaskHandle_t taskOdometryHandle = xTaskGetHandle("TaskOdometry");
-  output->print("- Odometry: ");
-  output->println(uxTaskGetStackHighWaterMark(taskOdometryHandle));
-
-  TaskHandle_t taskCalibrationHandle = xTaskGetHandle("TaskCalibration");
-  output->print("- Speed calibration: ");
-  output->println(uxTaskGetStackHighWaterMark(taskCalibrationHandle));
-
-  TaskHandle_t taskRobotControlHandle = xTaskGetHandle("TaskRobotMove");
-  output->print("- Robot control: ");
-  output->println(uxTaskGetStackHighWaterMark(taskRobotControlHandle));
+  printStack(output, "TaskSerial", "- Serial: ");
+  printStack(output, "TaskWifi", "- Wifi: ");
+  printStack(output, "TaskWebserver", "- Webserver: ");
+  printStack(output, "TaskWire", "- Wire: ");
+  printStack(output, "TaskGY521", "- GY521: ");
+  printStack(output, "TaskVL53L1X", "- VL53L1X: ");
+  printStack(output, "TaskDcMotorTest", "- DC motor test: ");
+  printStack(output, "TaskBlink", "- Blink: ");
+  printStack(output, "TaskOdometry", "- Odometry: ");
+  printStack(output, "TaskCalibration", "- Speed calibration: ");
+  printStack(output, "TaskRobotMove", "- Robot control: ");
+  printStack(output, "TaskVoltage", "- Voltage measurement: ");
+  printStack(output, "TaskButton", "- Button: ");
+  printStack(output, "TaskBuzzer", "- Buzzer: ");
+  printStack(output, "TaskRgbLed", "- RGB LED: ");
+  printStack(output, "TaskEvent", "- Event source sender: ");
 }
 
 static void printInfo(Print* output) {
