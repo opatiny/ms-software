@@ -1,6 +1,6 @@
 #include <Arduino.h>
+#include <motorProperties.h>
 #include <regressions.h>
-#include "../src/hardwareProperties.h"
 #include "curveFitting.h"
 #include "unity.h"
 

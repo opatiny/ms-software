@@ -4,9 +4,8 @@
 #include <state.h>
 #include <utilities/params.h>
 
-#include "../tasks/taskRobotMove.h"
 #include "printUtilities.h"
-
+#include "robotModes.h"
 #include "speedCalibration.h"
 
 void initialiseCalibrationData(CalibrationData* data) {

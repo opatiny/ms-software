@@ -1,8 +1,8 @@
 #include <utilities/params.h>
 
-#include "../tasks/taskRobotMove.h"
 #include "motorCommands.h"
 #include "robotCommands.h"
+#include "robotModes.h"
 
 #define MOVE_STRAIGHT_DEBUG_DELAY 500
 int moveStraightDebugTime = millis();

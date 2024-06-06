@@ -8,11 +8,11 @@
 
 #include <globalConfig.h>
 #include <kinematics.h>
+#include <motorProperties.h>
+#include <printUtilities.h>
 #include <state.h>
 #include <utilities/params.h>
-#include <utilities/printUtilities.h>
 
-#include "../hardwareProperties.h"
 #include "taskRobotMove.h"
 
 // delay between each time the debug information is printed

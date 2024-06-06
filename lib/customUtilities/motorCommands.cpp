@@ -18,11 +18,10 @@
 
 #include <pinMapping.h>
 #include <state.h>
-#include "../tasks/taskRobotMove.h"
 #include "kinematics.h"
 #include "motorCommands.h"
+#include "robotModes.h"
 
-// todo: handle if this is a big value, like 1000
 #define MOTOR_STOP_DURATION 10  // time to stop [ms]
 
 void initialiseMotor(Motor* motor, MotorParams* params) {

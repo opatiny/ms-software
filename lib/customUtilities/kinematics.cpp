@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-#include "../../src/hardwareProperties.h"
 #include "kinematics.h"
+#include "motorProperties.h"
 
 /**
  * @brief Convert nb of encoder counts to an angle in degrees.

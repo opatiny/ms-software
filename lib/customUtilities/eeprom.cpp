@@ -1,4 +1,5 @@
 #include "eeprom.h"
+#include <printUtilities.h>
 
 PolynomKeys negLeftKeys = {"negLeft0", "negLeft1", "negLeft2", "negLeft3",
                            "negLeft4"};
@@ -42,4 +43,7 @@ void loadWheelsRegressions(Regressions* left, Regressions* right) {
   loadPolynom(&left->pPos, posLeftKeys);
   loadPolynom(&right->pNeg, negRightKeys);
   loadPolynom(&right->pPos, posRightKeys);
+
+  printRegressions(left, 10);
+  printRegressions(right, 10);
 }

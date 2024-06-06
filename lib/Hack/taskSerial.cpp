@@ -5,7 +5,8 @@
 
 #include <FS.h>
 
-#include "../../src/utilities/printUtilities.h"  // todo: change this, lib should not depend on src....
+#include <printUtilities.h>  // todo: change this, lib should not depend on src....
+
 #include "./globalConfig.h"
 #include "./taskWire.h"
 #include "./utilities/fileUtilities.h"

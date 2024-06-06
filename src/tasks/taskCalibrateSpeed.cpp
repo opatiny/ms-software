@@ -1,11 +1,12 @@
 #include <globalConfig.h>
 #include <kinematics.h>
+#include <motorProperties.h>
+#include <printUtilities.h>
+#include <robotModes.h>
+#include <speedCalibration.h>
 #include <state.h>
 #include <utilities/params.h>
-#include <utilities/printUtilities.h>
-#include <utilities/speedCalibration.h>
 
-#include "../hardwareProperties.h"
 #include "taskRobotMove.h"
 
 void TaskCalibration(void* pvParameters) {

@@ -19,10 +19,11 @@
 #include <globalConfig.h>
 #include <utilities/params.h>
 
+#include <motorCommands.h>
 #include <pinMapping.h>
+#include <robotCommands.h>
+#include <robotModes.h>
 #include <state.h>
-#include "../utilities/motorCommands.h"
-#include "../utilities/robotCommands.h"
 #include "taskButton.h"
 #include "taskRobotMove.h"
 

@@ -1,5 +1,5 @@
 #include <kinematics.h>
-#include "../src/hardwareProperties.h"
+#include <motorProperties.h>
 #include "unity.h"
 
 void test_countsToAngle(void) {
