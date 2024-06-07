@@ -128,7 +128,7 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
   if (data->speed > CALIBRATION_SPEED_LIMIT) {
     Serial.println("Speed calibration test finished.");
     setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
-    setParameter(PARAM_ROBOT_SPEED, 0);
+    setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
     clearTestCalibrationData(data);
     return;
   }

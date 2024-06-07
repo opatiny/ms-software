@@ -18,6 +18,7 @@ int getClampedSpeed(int speed);
 void initialiseController(RobotController* controller,
                           ControllerParams* params);
 void robotMoveSameCommand(Robot* robot, int speed);
+void robotMove(Robot* robot, int speed);
 void robotStop(Robot* robot);
 void robotTurnInPlace(Robot* robot, int speed);
 void stopWhenObstacle(Robot* robot, int speed, int distance);

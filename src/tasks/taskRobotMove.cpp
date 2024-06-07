@@ -3,15 +3,16 @@
  *
  * Use the serial parameters.
  *
- *   - robot mode: commands AO
- *   - robot speed: commands AN
+ *   - robot mode: AO
+ *   - robot speed in rpm: AN
+ *   - robot command: AM
  *     - speed is in range [-255,255]
  *     - 0 means stop
  *     - positive values means forward
  *     - negative values means backward
- *  - robot angle: commands AP (used for rotation modes)
- *  - robot distance: commands A
- *  - robot radius: commands A (used for arc mode)
+ *  - robot angle: AP (used for rotation modes)
+ *  - robot distance: A...
+ *  - robot radius: commands A... (used for arc mode)
  *
  * Debug: U7
  */
@@ -82,7 +83,8 @@ void taskRobotMove() {
 }
 
 void robotControl(Robot* robot) {
-  int targetSpeed = getParameter(robot->controller.commandParameter);
+  int targetCommand = getParameter(robot->controller.commandParameter);
+  int targetSpeed = getParameter(robot->controller.speedParameter);
   int currentMode = getParameter(robot->controller.modeParameter);
 
   if (buttonFlags.robotMode) {
@@ -106,14 +108,17 @@ void robotControl(Robot* robot) {
       stopMotors(robot);
       break;
     case ROBOT_MOVE_SAME_COMMAND:
-      robotMoveSameCommand(robot, targetSpeed);
+      robotMoveSameCommand(robot, targetCommand);
+      break;
+    case ROBOT_MOVE:
+      robotMove(robot, targetSpeed);
       break;
     case ROBOT_TURN_IN_PLACE:
       robotTurnInPlace(robot, targetSpeed);
       break;
     case ROBOT_STOP_OBSTACLE: {
       int distance = getParameter(PARAM_OBSTACLE_DISTANCE);
-      stopWhenObstacle(robot, targetSpeed, distance);
+      stopWhenObstacle(robot, targetCommand, distance);
       break;
     }
 #if 0

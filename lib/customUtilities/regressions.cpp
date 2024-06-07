@@ -28,7 +28,7 @@ void getRegressions(Regressions* regessions,
 
   int negLength = minZero - start + 1;
   int posLength = end - maxZero + 1;
-  
+
   if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
     Serial.print("\nstart: ");
     Serial.print(start);
@@ -119,17 +119,17 @@ int findMaxZero(DataArray dataArray) {
 int getCommand(Regressions* reg, double speed) {
   double command = 0;
   if (speed < 0) {
-    polyVal(reg->pNeg, POLYNOM_DEGREE, speed);
+    command = polyVal(reg->pNeg, POLYNOM_DEGREE, speed);
   } else if (speed > 0) {
-    polyVal(reg->pPos, POLYNOM_DEGREE, speed);
+    command = polyVal(reg->pPos, POLYNOM_DEGREE, speed);
   }
-  return abs(command);
+  return round(command);
 }
 
-double polyVal(double* polynom, int degree, double commands) {
+double polyVal(double* polynom, int degree, double speed) {
   double result = 0;
   for (int i = 0; i < degree + 1; i++) {
-    result += polynom[i] * pow(commands, i);
+    result += polynom[i] * pow(speed, degree - i);
   }
   return result;
 }

@@ -1,5 +1,5 @@
+#include <motorProperties.h>
 #include <pidController.h>
-#include "../src/hardwareProperties.h"
 #include "unity.h"
 
 void test_pidController(void) {

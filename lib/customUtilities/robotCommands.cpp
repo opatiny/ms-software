@@ -31,17 +31,18 @@ void initialiseController(RobotController* controller,
                ROBOT_EACH_WHEEL);  // todo: change back to ROBOT_STOP
 
   // initialise robot parameters
-  // setParameter(controller->commandParameter, 70);
+  setParameter(controller->commandParameter, 110);
+  setParameter(controller->speedParameter, 400);
   setParameter(controller->angleParameter, 90);  // degrees
   setParameter(controller->obstacleDistanceParameter,
                150);  // distance in mm
 }
 
 /**
- * @brief Move the robot by applying the same command on both
+ * Move the robot by applying the same command on both
  * wheels. There is no regulation or correction of the speed.
  * @param robot The robot structure.
- * @param command The speed command for the wheels
+ * @param command The speed command for the wheels.
  */
 void robotMoveSameCommand(Robot* robot, int command) {
   if (command != robot->controller.currentCommand) {
@@ -51,10 +52,11 @@ void robotMoveSameCommand(Robot* robot, int command) {
 }
 
 /**
- * @brief Move the robot at a given speed in rpm. The command of each wheel is
- * computed based on the regressions of the speed calibration.
+ * Move the robot in a straight line at a given speed in rpm.
+ * This function doesn't use a PID controller, but linearizes the speed based on
+ * the calibration between rpm speed and command.
  * @param robot The robot structure.
- * @param speed The desired speed for the wheels.
+ * @param speed The desired speed for the wheels in rpm.
  */
 void robotMove(Robot* robot, int speed) {
   if (speed != robot->controller.currentSpeed) {
@@ -75,7 +77,7 @@ void robotStop(Robot* robot) {
 }
 
 /**
- * @brief Turn the robot in place by applying opposite speeds on the wheels.
+ * Turn the robot in place by applying opposite speeds on the wheels.
  * @param robot The robot structure.
  * @param speed The speed of the wheels in rpm, defines how fast the robot wil
  * turn. Positive values turn the robot clockwise, negative values turn the
@@ -92,10 +94,10 @@ void robotTurnInPlace(Robot* robot, int speed) {
 }
 
 /**
- * @brief Stop the robot when an obstacle is detected and make it move again
+ * Stop the robot when an obstacle is detected and make it move again
  * when obsacle is removed.
  * @param robot The robot structure.
- * @param speed The speed at which the robot should move.
+ * @param speed The speed at which the robot should move in rpm.
  * @param distance The minimum distance to the obstacle before stopping.
  */
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
@@ -105,20 +107,11 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
       return;
     }
   }
-  robotMoveSameCommand(robot, speed);
+  robotMove(robot, speed);
 }
 
 /**
- * @brief Move the robot in a straight line at a given speed in rpm.
- * This function doesn't use a PID controller, but linearizes the speed based on
- * the calibration between rpm speed and command.
- * @param robot The robot structure.
- * @param speed Desired linear speed in rpm.
- */
-void robotMoveStraight(Robot* robot, int speed) {}
-
-/**
- * @brief Get the clamped speed value between the minimum and maximum speed
+ * Get the clamped speed value between the minimum and maximum speed
  * values.
  * @param speed The speed to clamp.
  * @return The clamped speed value.
