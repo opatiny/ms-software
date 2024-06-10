@@ -13,6 +13,7 @@
 #include "./tasks/taskOdometry.h"
 #include "./tasks/taskRgbLed.h"
 #include "./tasks/taskRobotMove.h"
+#include "./tasks/taskVL53L1X.h"
 #include "./tasks/taskVoltage.h"
 
 SemaphoreHandle_t xSemaphoreWire = xSemaphoreCreateBinary();
@@ -28,6 +29,8 @@ void taskWire();
 void taskGY521();
 void taskEventSourceSender();
 void taskDcMotorTest();
+
+void debugTask(char const* taskName);
 
 void setup() {
   // start serial communication
@@ -51,21 +54,50 @@ void setup() {
 
   setupParameters();
   taskSerial();
-  // taskWifi();
-  // taskWebserver();
+  debugTask("TaskSerial");
+
+  taskWifi();
+  debugTask("TaskWifi");
+
+  taskWebserver();
+  debugTask("TaskWebserver");
+
   taskWire();  // stack size problem?
-  // taskGY521();
-  // taskVL53L1X();
+  debugTask("TaskWire");
+
+  taskGY521();
+  debugTask("TaskGY521");
+
+  taskVL53L1X();
+  debugTask("TaskVL53L1X");
+
   taskRobotMove();
+  debugTask("TaskRobotMove");
+
   taskEncodersX4();
+  debugTask("TaskEncodersX4");
+
   taskOdometry();
+  debugTask("TaskOdometry");
+
   taskCalibrateSpeed();
+  debugTask("TaskCalibration");
+
   taskVoltage();
-  // taskButton();
+  debugTask("TaskVoltage");
+
+  taskButton();
+  debugTask("TaskButton");
+
   // taskBuzzer();
+
   taskRgbLed();  // stack size problem?
+  debugTask("TaskRgbLed");
+
   // taskEventSourceSender();
+
   taskBlink();
+  debugTask("TaskBlink");
 }
 
 void loop() {
@@ -76,4 +108,12 @@ void resetParameters() {
   for (byte i = 0; i < MAX_PARAM; i++) {
     setAndSaveParameter(i, ERROR_VALUE);
   }
+}
+
+void debugTask(char const* taskName) {
+  Serial.print("Task ");
+  Serial.print(taskName);
+  Serial.print(" running, remaining stack: ");
+  TaskHandle_t handle = xTaskGetHandle(taskName);
+  Serial.println(uxTaskGetStackHighWaterMark(handle));
 }

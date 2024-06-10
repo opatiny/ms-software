@@ -57,11 +57,6 @@ struct Motor {
   Regressions regressions;
 };
 
-struct WheelsCommands {
-  int leftCommand;
-  int rightCommand;
-};
-
 /**
  * The structure for the control of the robot movement. Allows to set the
  * movement mode, speed, etc
@@ -76,9 +71,8 @@ struct RobotController {
   int currentCommand;
   int currentSpeed;
   int previousMode;
-  PidController angularPid;
-  PidController linearPid;
-  WheelsCommands wheelsCommands;
+  PidController leftSpeedController;
+  PidController rightSpeedController;
 };
 
 /**

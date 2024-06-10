@@ -110,6 +110,41 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
   robotMove(robot, speed);
 }
 
+void robotMoveStraight(Robot* robot, int speed) {
+  // speed difference between the two wheels in rpm
+  double errorRpm =
+      robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
+  double correction =
+      getNewPidValue(&robot->controller.wheelsController, errorRpm);
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+      millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
+    Serial.print("Error: ");
+    Serial.print(errorRpm);
+    Serial.print(", Correction: ");
+    Serial.print(correction);
+    Serial.print(", Left speed rpm: ");
+    Serial.print(robot->odometry.leftWheelSpeed);
+    Serial.print(", Right speed rpm: ");
+    Serial.print(robot->odometry.rightWheelSpeed);
+    Serial.print(", Left cmd: ");
+    Serial.print(robot->controller.wheelsCommands.leftSpeed);
+    Serial.print(", Right speed cmd: ");
+    Serial.println(robot->controller.wheelsCommands.rightSpeed);
+    moveStraightDebugTime = millis();
+  }
+
+  int newLeftCmd =
+      getClampedSpeed(robot->controller.wheelsCommands.leftSpeed - correction);
+  int newRightCmd =
+      getClampedSpeed(robot->controller.wheelsCommands.rightSpeed + correction);
+  speedRamp(&robot->leftMotor, newLeftCmd, robot->controller.rampStep);
+  speedRamp(&robot->rightMotor, newRightCmd, robot->controller.rampStep);
+
+  robot->controller.wheelsCommands.leftSpeed = newLeftCmd;
+  robot->controller.wheelsCommands.rightSpeed = newRightCmd;
+}
+
 /**
  * Get the clamped speed value between the minimum and maximum speed
  * values.
@@ -124,4 +159,11 @@ int getClampedSpeed(int speed) {
     return MIN_SPEED_COMMAND;
   }
   return speed;
+}
+
+void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
+  double errorRpm =
+      robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
+  double correction =
+      getNewPidValue(&robot->controller.wheelsController, errorRpm);
 }

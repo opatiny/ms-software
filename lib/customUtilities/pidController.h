@@ -7,6 +7,8 @@ typedef struct {
   double integral;
   double previousError;
   double previousTime;
+  double previousValue;
+  double targetValue;
 } PidController;
 
 struct PidParams {

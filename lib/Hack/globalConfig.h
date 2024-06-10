@@ -22,6 +22,7 @@ enum DebugMode {
   DEBUG_SPEED_CALIBRATION,  // 11
   DEBUG_ROBOT_CONTROL,      // 12
   DEBUG_MOTORS_DT,          // 13
+  DEBUG_MAIN,               // 14
 };
 
 // SERIAL PARAMETERS

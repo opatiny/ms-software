@@ -93,7 +93,9 @@ void robotControl(Robot* robot) {
     } else {
       currentMode = ROBOT_STOP_OBSTACLE;
     }
-    Serial.println("Button pressed!");
+    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      Serial.println("Button pressed!");
+    }
     setParameter(robot->controller.modeParameter, currentMode);
     buttonFlags.robotMode = false;
   }
@@ -118,15 +120,13 @@ void robotControl(Robot* robot) {
       break;
     case ROBOT_STOP_OBSTACLE: {
       int distance = getParameter(PARAM_OBSTACLE_DISTANCE);
-      stopWhenObstacle(robot, targetCommand, distance);
+      stopWhenObstacle(robot, targetSpeed, distance);
       break;
     }
-#if 0
     case ROBOT_MOVE_STRAIGHT:
       robotMoveStraight(robot, targetSpeed);
       vTaskDelay(10);
       break;
-#endif
     case ROBOT_EACH_WHEEL:
       motorControl(&robot->leftMotor, &robot->leftEncoder);
       motorControl(&robot->rightMotor, &robot->rightEncoder);
