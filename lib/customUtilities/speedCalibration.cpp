@@ -45,14 +45,14 @@ void wheelSpeedCalibration(CalibrationData* data,
     Serial.print(", ");
     Serial.print(data->command);
     Serial.print(", ");
-    Serial.print(robot.odometry.leftWheelSpeed);
+    Serial.print(robot.leftMotor.wheelSpeed);
     Serial.print(", ");
-    Serial.println(robot.odometry.rightWheelSpeed);
+    Serial.println(robot.rightMotor.wheelSpeed);
   }
 
   data->commands[data->index] = data->command;
-  data->leftSpeeds[data->index] = robot.odometry.leftWheelSpeed;
-  data->rightSpeeds[data->index] = robot.odometry.rightWheelSpeed;
+  data->leftSpeeds[data->index] = robot.leftMotor.wheelSpeed;
+  data->rightSpeeds[data->index] = robot.rightMotor.wheelSpeed;
 
   data->command += getParameter(PARAM_CALIBRATION_STEP);
   // end condition for the calibration
@@ -120,9 +120,9 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
   Serial.print(", ");
   Serial.print(data->speed);
   Serial.print(", ");
-  Serial.print(robot->odometry.leftWheelSpeed);
+  Serial.print(robot->leftMotor.wheelSpeed);
   Serial.print(", ");
-  Serial.println(robot->odometry.rightWheelSpeed);
+  Serial.println(robot->rightMotor.wheelSpeed);
 
   data->speed += data->speedStep;
   if (data->speed > CALIBRATION_SPEED_LIMIT) {

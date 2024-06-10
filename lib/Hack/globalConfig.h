@@ -65,7 +65,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_WIFI_RSSI 24  // Y
 #define PARAM_ERROR 25      // Z
 
-// motors parameters -> read only!!
+// motors parameters
 /**
  * Desired speed for when the motors are moving. This is not the current speed
  * of the motors.
@@ -101,8 +101,15 @@ extern int16_t parameters[MAX_PARAM];
 
 #define PARAM_VCC_VOLTAGE 43  // AR
 
+/**
+ * choose RGB LED mode (constant, blink, ...)
+ */
 #define PARAM_RGB_LED_MODE 44      // AS
 #define PARAM_CALIBRATE_SPEED 45   // AT
 #define PARAM_CALIBRATION_STEP 46  // AU
+
+#define PARAM_CONTROLLER_KP 47  // AV
+#define PARAM_CONTROLLER_KI 48  // AW
+#define PARAM_CONTROLLER_KD 49  // AX
 
 #define PARAM_STATUS_FLAG_NO_WIFI 0

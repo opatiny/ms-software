@@ -8,6 +8,8 @@
 int moveStraightDebugTime = millis();
 
 int getClampedSpeed(int speed);
+void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid);
+void printPidDebug(PidController* pid, Motor* motor);
 
 /**
  * @brief Initialise the robot controller by giving the desired default values
@@ -24,15 +26,18 @@ void initialiseController(RobotController* controller,
   controller->previousMode = ROBOT_STOP;
 
   // initialize PID
-  initialisePidController(&controller->angularPid, &params->wheelsParams);
+  initialisePidController(&controller->leftSpeedController,
+                          &params->wheelsParams);
+  initialisePidController(&controller->rightSpeedController,
+                          &params->wheelsParams);
 
   // initally stop the robot
   setParameter(controller->modeParameter,
                ROBOT_EACH_WHEEL);  // todo: change back to ROBOT_STOP
 
   // initialise robot parameters
-  setParameter(controller->commandParameter, 110);
-  setParameter(controller->speedParameter, 400);
+  setParameter(controller->commandParameter, 150);
+  setParameter(controller->speedParameter, 300);
   setParameter(controller->angleParameter, 90);  // degrees
   setParameter(controller->obstacleDistanceParameter,
                150);  // distance in mm
@@ -111,38 +116,26 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
 }
 
 void robotMoveStraight(Robot* robot, int speed) {
-  // speed difference between the two wheels in rpm
-  double errorRpm =
-      robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
-  double correction =
-      getNewPidValue(&robot->controller.wheelsController, errorRpm);
+  robot->controller.leftSpeedController.targetValue = speed;
+  robot->controller.rightSpeedController.targetValue = speed;
+
+  wheeSpeedController(&robot->leftMotor, &robot->leftEncoder,
+                      &robot->controller.leftSpeedController);
+  wheeSpeedController(&robot->rightMotor, &robot->rightEncoder,
+                      &robot->controller.rightSpeedController);
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
-    Serial.print("Error: ");
-    Serial.print(errorRpm);
-    Serial.print(", Correction: ");
-    Serial.print(correction);
-    Serial.print(", Left speed rpm: ");
-    Serial.print(robot->odometry.leftWheelSpeed);
-    Serial.print(", Right speed rpm: ");
-    Serial.print(robot->odometry.rightWheelSpeed);
-    Serial.print(", Left cmd: ");
-    Serial.print(robot->controller.wheelsCommands.leftSpeed);
-    Serial.print(", Right speed cmd: ");
-    Serial.println(robot->controller.wheelsCommands.rightSpeed);
+    Serial.print("Target speed: ");
+    Serial.print(speed);
+
+    Serial.print("Left -> ");
+    printPidDebug(&robot->controller.leftSpeedController, &robot->leftMotor);
+    Serial.print("Right -> ");
+    printPidDebug(&robot->controller.rightSpeedController, &robot->rightMotor);
+
     moveStraightDebugTime = millis();
   }
-
-  int newLeftCmd =
-      getClampedSpeed(robot->controller.wheelsCommands.leftSpeed - correction);
-  int newRightCmd =
-      getClampedSpeed(robot->controller.wheelsCommands.rightSpeed + correction);
-  speedRamp(&robot->leftMotor, newLeftCmd, robot->controller.rampStep);
-  speedRamp(&robot->rightMotor, newRightCmd, robot->controller.rampStep);
-
-  robot->controller.wheelsCommands.leftSpeed = newLeftCmd;
-  robot->controller.wheelsCommands.rightSpeed = newRightCmd;
 }
 
 /**
@@ -161,9 +154,30 @@ int getClampedSpeed(int speed) {
   return speed;
 }
 
+/**
+ * @brief Control the speed of a wheel using a PID controller. The desired
+ target speed in rpm is in the pid structure..
+ * @param motor The motor structure.
+ * @param encoder The encoder structure.
+ * @param pid The PID controller structure.
+
+*/
 void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
-  double errorRpm =
-      robot->odometry.leftWheelSpeed - robot->odometry.rightWheelSpeed;
-  double correction =
-      getNewPidValue(&robot->controller.wheelsController, errorRpm);
+  double errorRpm = motor->wheelSpeed - pid->targetValue;
+  double correction = getNewPidValue(pid, errorRpm);
+  int newCmd = getClampedSpeed(motor->currentCommand - correction);
+  updateMotor(motor, newCmd, getParameter(PARAM_MOTOR_ACC_DURATION));
+}
+
+void printPidDebug(PidController* pid, Motor* motor) {
+  Serial.print("Target: ");
+  Serial.print(pid->targetValue);
+  Serial.print(", Current: ");
+  Serial.print(motor->wheelSpeed);
+  Serial.print(", Error: ");
+  Serial.print(pid->previousError);
+  Serial.print(", Correction: ");
+  Serial.print(pid->correction);
+  Serial.print(", New command value: ");
+  Serial.println(getParameter(motor->commandParameter));
 }

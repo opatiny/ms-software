@@ -11,15 +11,16 @@ enum RobotMode {
   /**
    * Control each wheel separately instead of the robot as a whole.
    */
-  ROBOT_EACH_WHEEL,  // 6
+  ROBOT_EACH_WHEEL,  // 7
   /**
    * PID on wheels speeds to move straight.
    */
-  ROBOT_MOVE_STRAIGHT  // 7
+  ROBOT_MOVE_STRAIGHT  // 8
 };
 
 enum MotorMode {
   MOTOR_STOP,            // 0
   MOTOR_CONSTANT_SPEED,  // 1
-  MOTOR_SHORT            // 2
+  MOTOR_SHORT,           // 2
+  MOTOR_SPEED_CONTROL    // 3
 };

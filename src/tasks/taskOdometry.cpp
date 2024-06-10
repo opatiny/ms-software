@@ -65,8 +65,8 @@ void updateOdometry(Robot* robot) {
   float rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
 
   // calculate speed of each wheel in rpm
-  robot->odometry.leftWheelSpeed = computeWheelRpm(leftCounts, dt);
-  robot->odometry.rightWheelSpeed = computeWheelRpm(rightCounts, dt);
+  robot->leftMotor.wheelSpeed = computeWheelRpm(leftCounts, dt);
+  robot->rightMotor.wheelSpeed = computeWheelRpm(rightCounts, dt);
 
   // calculate the distance traveled by each wheel
   float leftDistance = leftCounts * DISTANCE_PER_COUNT;

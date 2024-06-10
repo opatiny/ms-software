@@ -9,6 +9,7 @@ typedef struct {
   double previousTime;
   double previousValue;
   double targetValue;
+  double correction;
 } PidController;
 
 struct PidParams {

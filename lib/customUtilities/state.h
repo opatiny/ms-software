@@ -30,17 +30,18 @@ struct Encoder {
  *  - modeParameter: Serial parameter for the mode of the motor.
  *  - angleParameter: Serial parameter for the angle of the motor.
  *  - accDurationParameter: Serial parameter defining the duration of
- * accelerations.
+ *    accelerations.
  *  - previousMode: Previous mode of the motor.
- *  - currentCommand: Current speed command of the motor.
- * - previousTargetCommand: Previous target command of the motor.
- * - step: Variation of the command required per ms for when motor is
- * accelerating. Example: 1 step/ms.
- * - pin1: Pin 1 of the motor.
- * - pin2: Pin 2 of the motor.
- * - previousTime: Time of the previous update of the motor.
- * - regressions: Structure containing the coefficients of the polynomial
- * regressions to convert desired motor speed in rpm to command.
+ *  - currentCommand: Current speed command applied to the motor.
+ *  - previousTargetCommand: Previous target command of the motor.
+ *  - step: Variation of the command required per ms for when motor is
+ *    accelerating. Example: 1 step/ms.
+ *  - pin1: Pin 1 of the motor.
+ *  - pin2: Pin 2 of the motor.
+ *  - previousTime: Time of the previous update of the motor.
+ *  - regressions: Structure containing the coefficients of the polynomial
+ *    regressions to convert desired motor speed in rpm to command.
+ *  - wheelSpeed: Current speed of the wheel in rpm.
  */
 struct Motor {
   int commandParameter;  // target command
@@ -50,11 +51,12 @@ struct Motor {
   int previousMode;
   int currentCommand;
   int previousTargetCommand;
-  int step;  // command step variation per ms
+  int step;
   int pin1;
   int pin2;
   int previousTime;
   Regressions regressions;
+  double wheelSpeed;
 };
 
 /**
@@ -94,15 +96,11 @@ struct RobotSpeed {
  * - pose: The pose of the robot in meters and radians.
  * - speed: The speed of the robot in m/s and rad/s.
  * - time: The time at the last update of the odometry in milliseconds.
- * - leftWheelSpeed: The speed of the left wheel in rpm.
- * - rightWheelSpeed: The speed of the right wheel in rpm.
  */
 struct Odometry {
   Pose pose;
   RobotSpeed speed;
   int time;
-  float leftWheelSpeed;
-  float rightWheelSpeed;
 };
 
 struct VoltageMeasurement {

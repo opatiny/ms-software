@@ -125,7 +125,6 @@ void robotControl(Robot* robot) {
     }
     case ROBOT_MOVE_STRAIGHT:
       robotMoveStraight(robot, targetSpeed);
-      vTaskDelay(10);
       break;
     case ROBOT_EACH_WHEEL:
       motorControl(&robot->leftMotor, &robot->leftEncoder);
