@@ -111,9 +111,11 @@ void resetParameters() {
 }
 
 void debugTask(char const* taskName) {
-  Serial.print("Task ");
-  Serial.print(taskName);
-  Serial.print(" running, remaining stack: ");
-  TaskHandle_t handle = xTaskGetHandle(taskName);
-  Serial.println(uxTaskGetStackHighWaterMark(handle));
+  if (getParameter(PARAM_DEBUG) != DEBUG_MAIN) {
+    Serial.print("Task ");
+    Serial.print(taskName);
+    Serial.print(" running, remaining stack: ");
+    TaskHandle_t handle = xTaskGetHandle(taskName);
+    Serial.println(uxTaskGetStackHighWaterMark(handle));
+  }
 }

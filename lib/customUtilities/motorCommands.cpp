@@ -44,7 +44,7 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
   setParameter(motor->modeParameter, MOTOR_STOP);
 
   // initialise motor parameters
-  setParameter(motor->commandParameter, 100);
+  setParameter(motor->commandParameter, 0);
   setParameter(motor->angleParameter, 90);                          // degrees
   setParameter(motor->accDurationParameter, DEFAULT_ACC_DURATION);  // ms
 }
@@ -194,15 +194,16 @@ void motorControl(Motor* motor, Encoder* encoder) {
       setParameter(motor->modeParameter, MOTOR_STOP);
       break;
     }
-    case MOTOR_SPEED_CONTROL:
-      if (motor->previousMode != currentMode ||
-          targetCommand != motor->previousTargetCommand) {
-        if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
-          Serial.println("Motor speed control mode");
-        }
-      }
-      wheeSpeedController(motor, encoder);
-      break;
+
+    // case MOTOR_SPEED_CONTROL:  // todo: remove this case?
+    //   if (motor->previousMode != currentMode ||
+    //       targetCommand != motor->previousTargetCommand) {
+    //     if (getParameter(PARAM_DEBUG) == DEBUG_MOTORS) {
+    //       Serial.println("Motor speed control mode");
+    //     }
+    //   }
+    //   wheelSpeedController(motor, encoder);
+    //   break;
     default:
       Serial.println("Unknown motor mode");
       setParameter(motor->modeParameter, MOTOR_STOP);

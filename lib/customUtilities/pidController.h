@@ -1,9 +1,20 @@
 #pragma once
 
-typedef struct {
+struct PidParams {
   double kp;
   double ki;
   double kd;
+};
+
+struct PidSerialParameters {
+  int kp;
+  int ki;
+  int kd;
+};
+
+typedef struct {
+  PidParams params;
+  PidSerialParameters serialParams;
   double integral;
   double previousError;
   double previousTime;
@@ -12,11 +23,7 @@ typedef struct {
   double correction;
 } PidController;
 
-struct PidParams {
-  double kp;
-  double ki;
-  double kd;
-};
-
-void initialisePidController(PidController* regulator, PidParams* params);
+void initialisePidController(PidController* regulator,
+                             PidSerialParameters* params);
 double getNewPidValue(PidController* regulator, double error);
+void updatePidParameters(PidController* regulator);

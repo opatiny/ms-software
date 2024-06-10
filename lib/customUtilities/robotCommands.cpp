@@ -26,10 +26,9 @@ void initialiseController(RobotController* controller,
   controller->previousMode = ROBOT_STOP;
 
   // initialize PID
-  initialisePidController(&controller->leftSpeedController,
-                          &params->wheelsParams);
+  initialisePidController(&controller->leftSpeedController, &params->pidParams);
   initialisePidController(&controller->rightSpeedController,
-                          &params->wheelsParams);
+                          &params->pidParams);
 
   // initally stop the robot
   setParameter(controller->modeParameter,
@@ -37,7 +36,7 @@ void initialiseController(RobotController* controller,
 
   // initialise robot parameters
   setParameter(controller->commandParameter, 150);
-  setParameter(controller->speedParameter, 300);
+  // setParameter(controller->speedParameter, 300);
   setParameter(controller->angleParameter, 90);  // degrees
   setParameter(controller->obstacleDistanceParameter,
                150);  // distance in mm
@@ -112,7 +111,7 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
       return;
     }
   }
-  robotMove(robot, speed);
+  robotMoveStraight(robot, speed);
 }
 
 void robotMoveStraight(Robot* robot, int speed) {
@@ -127,7 +126,7 @@ void robotMoveStraight(Robot* robot, int speed) {
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
     Serial.print("Target speed: ");
-    Serial.print(speed);
+    Serial.println(speed);
 
     Serial.print("Left -> ");
     printPidDebug(&robot->controller.leftSpeedController, &robot->leftMotor);
@@ -170,14 +169,12 @@ void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
 }
 
 void printPidDebug(PidController* pid, Motor* motor) {
-  Serial.print("Target: ");
-  Serial.print(pid->targetValue);
-  Serial.print(", Current: ");
+  Serial.print("Current: ");
   Serial.print(motor->wheelSpeed);
   Serial.print(", Error: ");
   Serial.print(pid->previousError);
   Serial.print(", Correction: ");
   Serial.print(pid->correction);
   Serial.print(", New command value: ");
-  Serial.println(getParameter(motor->commandParameter));
+  Serial.println(motor->currentCommand);
 }

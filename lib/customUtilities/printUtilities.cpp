@@ -2,6 +2,7 @@
 #include <utilities/params.h>
 
 #include "motorCommands.h"
+#include "pidController.h"
 #include "printUtilities.h"
 
 void printRegressions(Regressions* regressions, int nbDigits);
@@ -180,7 +181,18 @@ void printRegressionsForMatlab(Robot* robot, int nbDigits) {
   Serial.println();
 }
 
+void printControllerParameters(Print* output, PidController* controller) {
+  updatePidParameters(controller);
+  output->print("\t- Kp: ");
+  output->println(controller->params.kp);
+  output->print("\t- Ki: ");
+  output->println(controller->params.ki);
+  output->print("\t- Kd: ");
+  output->println(controller->params.kd);
+}
+
 void showPrintHelp(Print* output) {
+  output->println(F("(pc) Print controller parameters"));
   output->println(F("(ps) Print state"));
   output->println(F("(pr) Print regressions (for speed calibration)"));
 }
@@ -194,6 +206,12 @@ void processPrintCommand(char command,
       break;
     case 'r':
       printRegressionsForMatlab(&robot, 10);
+      break;
+    case 'c':
+      output->println(F("Left motor:"));
+      printControllerParameters(output, &robot.controller.leftSpeedController);
+      output->println(F("Right motor:"));
+      printControllerParameters(output, &robot.controller.rightSpeedController);
       break;
     default:
       showPrintHelp(output);

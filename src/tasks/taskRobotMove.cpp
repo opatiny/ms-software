@@ -50,10 +50,10 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   // pid control to ensure both wheels go at same speed
-  PidParams wheelsParams = {
-    kp : 0.05,
-    ki : 0,
-    kd : 0,
+  PidSerialParameters serialParamsPid = {
+    kp : PARAM_CONTROLLER_KP,
+    ki : PARAM_CONTROLLER_KI,
+    kd : PARAM_CONTROLLER_KD,
   };
 
   ControllerParams robotParams = {
@@ -61,7 +61,7 @@ void TaskRobotMove(void* pvParameters) {
     speedParameter : PARAM_ROBOT_SPEED,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
-    wheelsParams : wheelsParams,
+    pidParams : serialParamsPid,
   };
 
   initialiseController(&robot.controller, &robotParams);
@@ -125,6 +125,7 @@ void robotControl(Robot* robot) {
     }
     case ROBOT_MOVE_STRAIGHT:
       robotMoveStraight(robot, targetSpeed);
+      vTaskDelay(100);  // todo: remove this delay?
       break;
     case ROBOT_EACH_WHEEL:
       motorControl(&robot->leftMotor, &robot->leftEncoder);
