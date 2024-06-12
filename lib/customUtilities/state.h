@@ -54,7 +54,7 @@ struct Motor {
   int step;
   int pin1;
   int pin2;
-  int previousTime;
+  uint32_t previousTime;
   Regressions regressions;
   double wheelSpeed;
 };
@@ -100,7 +100,7 @@ struct RobotSpeed {
 struct Odometry {
   Pose pose;
   RobotSpeed speed;
-  int time;
+  uint32_t time;
 };
 
 struct VoltageMeasurement {

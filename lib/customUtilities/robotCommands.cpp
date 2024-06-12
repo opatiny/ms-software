@@ -123,15 +123,19 @@ void robotMoveStraight(Robot* robot, int speed) {
   wheeSpeedController(&robot->rightMotor, &robot->rightEncoder,
                       &robot->controller.rightSpeedController);
 
-  if (1 || getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-               millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
-    Serial.print("Target speed: ");
-    Serial.println(speed);
-
-    Serial.print("Left -> ");
-    printPidDebug(&robot->controller.leftSpeedController, &robot->leftMotor);
-    Serial.print("Right -> ");
-    printPidDebug(&robot->controller.rightSpeedController, &robot->rightMotor);
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+    // time, target speed, leftSpeed, leftCommand, rightSpeed, rightCommand
+    Serial.print(millis());
+    Serial.print(", ");
+    Serial.print(speed);
+    Serial.print(", ");
+    Serial.print(robot->leftMotor.wheelSpeed);
+    Serial.print(", ");
+    Serial.print(robot->leftMotor.currentCommand);
+    Serial.print(", ");
+    Serial.print(robot->rightMotor.wheelSpeed);
+    Serial.print(", ");
+    Serial.println(robot->rightMotor.currentCommand);
 
     moveStraightDebugTime = millis();
   }

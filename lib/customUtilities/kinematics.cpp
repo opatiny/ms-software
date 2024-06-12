@@ -5,10 +5,9 @@
 
 /**
  * @brief Convert nb of encoder counts to an angle in degrees.
- * todo: Is the return type int a problem?
  */
-float countsToAngle(int counts) {
-  return counts * 360 / (ENCODER_COUNTS_PER_REV * GEAR_RATIO);
+double countsToAngle(int counts) {
+  return counts * 360.0 / (ENCODER_COUNTS_PER_REV * GEAR_RATIO);
 }
 
 /**
@@ -42,8 +41,8 @@ double computeCurvature(UnicycleSpeed unicycleSpeed) {
  * @param counts The number of encoder counts since the last update.
  * @param dt The time elapsed since the last update in seconds.
  */
-float computeWheelRpm(int counts, float dt) {
-  float angle = countsToAngle(counts);
-  float degSec = angle / dt;
-  return degSec * 60 / 360;
+double computeWheelRpm(int counts, double dt) {
+  double angle = countsToAngle(counts);
+  double degSec = angle / dt;
+  return degSec / 6.0;
 }

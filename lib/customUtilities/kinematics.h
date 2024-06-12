@@ -18,9 +18,9 @@ struct DiffSpeed {
   double right;
 };
 
-float countsToAngle(int counts);
+double countsToAngle(int counts);
 int angleToCounts(int angle);
 UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed);
 DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed);
 double computeCurvature(UnicycleSpeed unicycleSpeed);
-float computeWheelRpm(int counts, float dt);
+double computeWheelRpm(int counts, double dt);

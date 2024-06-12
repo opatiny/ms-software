@@ -16,27 +16,27 @@
 #include "taskRobotMove.h"
 
 // delay between each time the debug information is printed
-#define DEBUG_DELAY 250
+#define DEBUG_DELAY 0.25  // s
 
 void updateOdometry(Robot* robot);
 void printOdometry(Robot* robot);
 
 void TaskOdometry(void* pvParameters) {
-  int previousTime = millis();
-  robot.odometry.time = millis();
+  uint32_t previousTime = micros();
+  robot.odometry.time = micros();
   while (true) {
     updateOdometry(&robot);
 
-    if (millis() - previousTime > DEBUG_DELAY &&
+    if (micros() - previousTime > DEBUG_DELAY &&
         getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
       printOdometry(&robot);
-      previousTime = millis();
+      previousTime = micros();
     }
     // problem: what is the optimal delay?
     // if delay is too small, there can be not a single interrupt on the motors
     // pins and the speeds are nonsense if delay is too big, the odometry will
     // have a big error
-    vTaskDelay(100);
+    vTaskDelay(1);
   }
 }
 
@@ -49,9 +49,9 @@ void taskOdometry() {
 
 void updateOdometry(Robot* robot) {
   // get the current time
-  uint32_t now = millis();
-  // get the time elapsed since the last update
-  float dt = (now - robot->odometry.time) / 1000.0;
+  uint32_t now = micros();
+  // get the time elapsed since the last update in seconds
+  double dt = (now - robot->odometry.time) / 1000000.0;
 
   // update the last update time
   robot->odometry.time = now;
@@ -61,26 +61,26 @@ void updateOdometry(Robot* robot) {
   int32_t rightEncoder = robot->rightEncoder.counts;
 
   // nb of counts since last update
-  float leftCounts = leftEncoder - robot->leftEncoder.previousCounts;
-  float rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
+  double leftCounts = leftEncoder - robot->leftEncoder.previousCounts;
+  double rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
 
   // calculate speed of each wheel in rpm
   robot->leftMotor.wheelSpeed = computeWheelRpm(leftCounts, dt);
   robot->rightMotor.wheelSpeed = computeWheelRpm(rightCounts, dt);
 
   // calculate the distance traveled by each wheel
-  float leftDistance = leftCounts * DISTANCE_PER_COUNT;
-  float rightDistance = rightCounts * DISTANCE_PER_COUNT;
+  double leftDistance = leftCounts * DISTANCE_PER_COUNT;
+  double rightDistance = rightCounts * DISTANCE_PER_COUNT;
 
   // update the last encoder values
   robot->leftEncoder.previousCounts = leftEncoder;
   robot->rightEncoder.previousCounts = rightEncoder;
 
   // calculate the distance traveled by the robot
-  float distance = (leftDistance + rightDistance) / 2.0;
+  double distance = (leftDistance + rightDistance) / 2.0;
 
   // calculate the change in orientation of the robot
-  float dTheta = (rightDistance - leftDistance) / WHEEL_BASE;
+  double dTheta = (rightDistance - leftDistance) / WHEEL_BASE;
 
   // update the orientation of the robot
   robot->odometry.pose.theta += dTheta;
@@ -94,8 +94,8 @@ void updateOdometry(Robot* robot) {
   }
 
   // calculate the change in x and y position of the robot
-  float dx = distance * cos(robot->odometry.pose.theta);
-  float dy = distance * sin(robot->odometry.pose.theta);
+  double dx = distance * cos(robot->odometry.pose.theta);
+  double dy = distance * sin(robot->odometry.pose.theta);
 
   // update the x and y position of the robot
   robot->odometry.pose.x += dx;
@@ -115,5 +115,13 @@ void printOdometry(Robot* robot) {
   Serial.print(", ");
   Serial.print(robot->odometry.speed.v);
   Serial.print(", ");
-  Serial.println(robot->odometry.speed.omega);
+  Serial.print(robot->odometry.speed.omega);
+  Serial.print(", ");
+  Serial.print(robot->leftMotor.wheelSpeed);
+  Serial.print(", ");
+  Serial.println(robot->rightMotor.wheelSpeed);
+}
+
+double microsToSeconds(uint32_t micros) {
+  return micros / 1000000.0;
 }

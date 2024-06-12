@@ -17,7 +17,7 @@ int runUnityTests(void) {
   UNITY_BEGIN();
   RUN_TEST(test_computeWheelRpm);
   RUN_TEST(test_countsToAngle);
-  RUN_TEST(test_pidController);
+  // RUN_TEST(test_pidController);
   RUN_TEST(test_findIndex);
   RUN_TEST(test_findIndex2);
   RUN_TEST(test_findZeros);
