@@ -95,7 +95,7 @@ struct RobotSpeed {
  * Structure for the odometry data.
  * - pose: The pose of the robot in meters and radians.
  * - speed: The speed of the robot in m/s and rad/s.
- * - time: The time at the last update of the odometry in milliseconds.
+ * - time: The time at the last update of the odometry in microseconds.
  */
 struct Odometry {
   Pose pose;

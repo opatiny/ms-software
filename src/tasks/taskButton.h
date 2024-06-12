@@ -1,7 +1,7 @@
 #pragma once
 
 // button debounce time in ms
-#define DEBOUNCE_TIME 50
+#define DEBOUNCE_TIME 50  // ms
 
 enum ButtonState { BUTTON_RELEASED, BUTTON_PRESSED };
 

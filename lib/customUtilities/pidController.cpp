@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 
+#include <timeUtilities.h>
+
 #define PID_FACTOR 1000.0
 
 void updatePidParameters(PidController* regulator);
@@ -15,7 +17,7 @@ void initialisePidController(PidController* regulator,
   regulator->serialParams.kp = params->kp;
   regulator->serialParams.ki = params->ki;
   regulator->serialParams.kd = params->kd;
-  regulator->previousTime = millis() / 1000.0;
+  regulator->previousTime = getSeconds();
 }
 
 /**
@@ -27,7 +29,7 @@ void initialisePidController(PidController* regulator,
  */
 double getNewPidValue(PidController* regulator, double error) {
   updatePidParameters(regulator);
-  double time = millis() / 1000.0;
+  double time = getSeconds();
   double dt = time - regulator->previousTime;
   regulator->integral += error * dt;
   double derivative = (error - regulator->previousError) / dt;

@@ -9,6 +9,7 @@
 #include <globalConfig.h>
 #include <pinMapping.h>
 #include <state.h>
+#include <timeUtilities.h>
 #include <utilities/params.h>
 
 #include "taskEncoders.h"
@@ -55,8 +56,7 @@ void TaskEncodersX4(void* pvParameters) {
   while (true) {
     vTaskDelay(DEBUG_DELAY);
     if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
-      int time = millis();
-      Serial.print(time);
+      Serial.print(getSeconds(), 3);
       Serial.print(", \t");
       Serial.print(robot.leftEncoder.counts);
       Serial.print(", \t");

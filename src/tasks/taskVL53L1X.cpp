@@ -11,6 +11,7 @@
 #include <globalConfig.h>
 #include <pinMapping.h>
 #include <state.h>
+#include <timeUtilities.h>
 #include <utilities/params.h>
 
 #include "./taskButton.h"
@@ -127,7 +128,7 @@ void distanceSensorsDebug(int* distancesParameters) {
   if (getParameter(PARAM_DEBUG) == DEBUG_DISTANCE) {
     switch (getParameter(PARAM_DISTANCE_DEBUG_MODE)) {
       case CONSTANT:
-        Serial.print(millis());
+        Serial.print(getSeconds(), 3);
         for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
           Serial.print(F(",\t"));
           Serial.print(getParameter(distancesParameters[i]));

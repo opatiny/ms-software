@@ -2,6 +2,7 @@
 #include <globalConfig.h>
 #include <kinematics.h>
 #include <state.h>
+#include <timeUtilities.h>
 #include <utilities/params.h>
 
 #include "printUtilities.h"
@@ -30,7 +31,7 @@ void initialiseCalibrationData(CalibrationData* data) {
 void wheelSpeedCalibration(CalibrationData* data,
                            Regressions* leftRegressions,
                            Regressions* rightRegressions) {
-  int currentTime = millis();
+  double currentTime = getSeconds();
   if (data->command == MIN_MOTOR_COMMAND) {
     Serial.println("Speed calibration started...\n");
     Serial.print("Calibration command step: ");
@@ -39,7 +40,7 @@ void wheelSpeedCalibration(CalibrationData* data,
   }
 
   if (getParameter(PARAM_DEBUG) == DEBUG_SPEED_CALIBRATION) {
-    Serial.print(currentTime);
+    Serial.print(currentTime, 3);
     Serial.print(", ");
     Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
     Serial.print(", ");
@@ -104,7 +105,7 @@ void initialiseTestCalibrationData(TestCalibrationData* data) {
 }
 
 void testCalibration(Robot* robot, TestCalibrationData* data) {
-  int currentTime = millis();
+  double currentTime = getSeconds();
   if (data->speed == -CALIBRATION_SPEED_LIMIT) {
     Serial.println("Speed calibration test started...\n");
     Serial.print("Speed step: ");
@@ -114,7 +115,7 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
     Serial.println("\ntime, batteryVoltage, speed, leftSpeed, rightSpeed");
   }
 
-  Serial.print(currentTime);
+  Serial.print(currentTime, 3);
   Serial.print(", ");
   Serial.print(getParameter(PARAM_BATTERY_VOLTAGE));
   Serial.print(", ");

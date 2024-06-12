@@ -18,11 +18,12 @@
 
 #include <pinMapping.h>
 #include <state.h>
+#include <timeUtilities.h>
 #include "kinematics.h"
 #include "motorCommands.h"
 #include "robotModes.h"
 
-#define MOTOR_STOP_DURATION 10  // time to stop [ms]
+#define MOTOR_STOP_DURATION 0.01  // time to stop [s]
 
 void initialiseMotor(Motor* motor, MotorParams* params) {
   // setup the motor parameters
@@ -54,21 +55,22 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
  * time to estimate how much the speed should be increased.
  * @param motor - Struct of the motor to update.
  * @param target - Desired speed command of the motor.
- * @param duration - Total desired duration of the movement.
+ * @param duration - Total desired duration of the movement in seconds
  */
 void updateMotor(Motor* motor, int target, int duration) {
+  duration = secToMicros(duration);
   if (target == motor->currentCommand) {
     return;
   }
   int dt = 1;
-  int newTime = millis();
+  uint32_t newTime = micros();
   if (motor->previousTargetCommand == target) {
     dt = newTime - motor->previousTime;
   }
   motor->previousTime = newTime;
 
   if (target != motor->previousTargetCommand) {
-    // increment necessary per ms: if duration is too big, step would be 0, so
+    // increment necessary per us: if duration is too big, step would be 0, so
     // we set the min step to be 1 or -1
     int diff = target - motor->currentCommand;
     int idealStep = diff / duration;

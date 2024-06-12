@@ -10,13 +10,14 @@
 #include <globalConfig.h>
 #include <pinMapping.h>
 #include <state.h>
+#include <timeUtilities.h>
 #include <utilities/params.h>
 
 #include "taskRgbLed.h"
 #include "taskVoltage.h"
 
-#define DELAY 1000
-#define WARNING_DELAY 10000
+#define DELAY 1000           // ms
+#define WARNING_DELAY 10000  // ms
 
 void initializeVoltage(VoltageMeasurement* voltageMeasurement,
                        VoltageMeasurement* params);
@@ -45,7 +46,7 @@ void TaskVoltage(void* pvParameters) {
     int vccLevel = analogReadMilliVolts(VCC_PIN) * (VCC_R1 + VCC_R2) / VCC_R2;
     // to access this debug mode: U4
     if (getParameter(PARAM_DEBUG) == DEBUG_BATTERY_LOG_DATA) {
-      Serial.print(millis());
+      Serial.print(getSeconds(), 3);
       Serial.print(", \t");
       Serial.print(batteryLevel);
       Serial.print(", \t");
