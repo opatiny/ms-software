@@ -89,7 +89,8 @@ void setup() {
   taskButton();
   debugTask("TaskButton");
 
-  // taskBuzzer();
+  taskBuzzer();
+  debugTask("TaskBuzzer");
 
   taskRgbLed();  // stack size problem?
   debugTask("TaskRgbLed");

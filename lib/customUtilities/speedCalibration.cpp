@@ -14,7 +14,7 @@
  */
 void initialiseCalibrationData(CalibrationData* data) {
   data->command = MIN_MOTOR_COMMAND;
-  setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
+  setParameter(PARAM_CALIBRATION_MODE, CALIBRATION_OFF);
   setParameter(PARAM_CALIBRATION_STEP, 5);
 }
 
@@ -74,7 +74,7 @@ void wheelSpeedCalibration(CalibrationData* data,
     printRegressions(rightRegressions, 10);
 
     Serial.println("Speed calibration finished.");
-    setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
+    setParameter(PARAM_CALIBRATION_MODE, CALIBRATION_OFF);
     clearCalibrationData(data);
     setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     setParameter(PARAM_ROBOT_COMMAND, 0);
@@ -128,7 +128,7 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
   if (data->speed > CALIBRATION_SPEED_LIMIT) {
     Serial.println("Speed calibration test finished.");
     setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
-    setParameter(PARAM_CALIBRATE_SPEED, CALIBRATION_OFF);
+    setParameter(PARAM_CALIBRATION_MODE, CALIBRATION_OFF);
     clearTestCalibrationData(data);
     return;
   }

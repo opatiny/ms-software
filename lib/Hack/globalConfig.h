@@ -104,8 +104,9 @@ extern int16_t parameters[MAX_PARAM];
 /**
  * choose RGB LED mode (constant, blink, ...)
  */
-#define PARAM_RGB_LED_MODE 44      // AS
-#define PARAM_CALIBRATE_SPEED 45   // AT
+#define PARAM_RGB_LED_MODE 44  // AS
+
+#define PARAM_CALIBRATION_MODE 45  // AT
 #define PARAM_CALIBRATION_STEP 46  // AU
 
 #define PARAM_CONTROLLER_KP 47  // AV

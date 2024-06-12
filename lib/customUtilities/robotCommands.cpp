@@ -4,7 +4,7 @@
 #include "robotCommands.h"
 #include "robotModes.h"
 
-#define MOVE_STRAIGHT_DEBUG_DELAY 500
+#define MOVE_STRAIGHT_DEBUG_DELAY 100
 int moveStraightDebugTime = millis();
 
 int getClampedSpeed(int speed);
@@ -123,8 +123,8 @@ void robotMoveStraight(Robot* robot, int speed) {
   wheeSpeedController(&robot->rightMotor, &robot->rightEncoder,
                       &robot->controller.rightSpeedController);
 
-  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
+  if (1 || getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+               millis() - moveStraightDebugTime > MOVE_STRAIGHT_DEBUG_DELAY) {
     Serial.print("Target speed: ");
     Serial.println(speed);
 

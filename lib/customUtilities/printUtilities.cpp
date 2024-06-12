@@ -183,12 +183,13 @@ void printRegressionsForMatlab(Robot* robot, int nbDigits) {
 
 void printControllerParameters(Print* output, PidController* controller) {
   updatePidParameters(controller);
+  int nbDigits = 3;
   output->print("\t- Kp: ");
-  output->println(controller->params.kp);
+  output->println(controller->params.kp, nbDigits);
   output->print("\t- Ki: ");
-  output->println(controller->params.ki);
+  output->println(controller->params.ki, nbDigits);
   output->print("\t- Kd: ");
-  output->println(controller->params.kd);
+  output->println(controller->params.kd, nbDigits);
 }
 
 void showPrintHelp(Print* output) {
@@ -208,10 +209,8 @@ void processPrintCommand(char command,
       printRegressionsForMatlab(&robot, 10);
       break;
     case 'c':
-      output->println(F("Left motor:"));
+      output->println(F("PID speed controller parameters:"));
       printControllerParameters(output, &robot.controller.leftSpeedController);
-      output->println(F("Right motor:"));
-      printControllerParameters(output, &robot.controller.rightSpeedController);
       break;
     default:
       showPrintHelp(output);
