@@ -53,47 +53,48 @@ void setup() {
                         &robot.rightMotor.regressions);
 
   setupParameters();
+
   taskSerial();
   debugTask("TaskSerial");
 
-  taskWifi();
-  debugTask("TaskWifi");
+  // taskWifi();
+  // debugTask("TaskWifi");
 
-  taskWebserver();
-  debugTask("TaskWebserver");
+  // taskWebserver();
+  // debugTask("TaskWebserver");
 
-  taskWire();  // stack size problem?
-  debugTask("TaskWire");
+  // taskWire();  // stack size problem?
+  // debugTask("TaskWire");
 
-  taskGY521();
-  debugTask("TaskGY521");
+  // taskGY521();
+  // debugTask("TaskGY521");
 
-  taskVL53L1X();
-  debugTask("TaskVL53L1X");
+  // taskVL53L1X();
+  // debugTask("TaskVL53L1X");
 
   taskRobotMove();
   debugTask("TaskRobotMove");
 
-  taskEncodersX4();
-  debugTask("TaskEncodersX4");
+  // taskEncodersX4();
+  // debugTask("TaskEncodersX4");
 
   taskOdometry();
   debugTask("TaskOdometry");
 
-  taskCalibrateSpeed();
-  debugTask("TaskCalibration");
+  // taskCalibrateSpeed();
+  // debugTask("TaskCalibration");
 
-  taskVoltage();
-  debugTask("TaskVoltage");
+  // taskVoltage();
+  // debugTask("TaskVoltage");
 
-  taskButton();
-  debugTask("TaskButton");
+  // taskButton();
+  // debugTask("TaskButton");
 
-  taskBuzzer();
-  debugTask("TaskBuzzer");
+  // taskBuzzer();
+  // debugTask("TaskBuzzer");
 
-  taskRgbLed();  // stack size problem?
-  debugTask("TaskRgbLed");
+  // taskRgbLed();
+  // debugTask("TaskRgbLed");
 
   // taskEventSourceSender();
 
@@ -112,7 +113,7 @@ void resetParameters() {
 }
 
 void debugTask(char const* taskName) {
-  if (getParameter(PARAM_DEBUG) != DEBUG_MAIN) {
+  if (getParameter(PARAM_DEBUG) == DEBUG_MAIN) {
     Serial.print("Task ");
     Serial.print(taskName);
     Serial.print(" running, remaining stack: ");

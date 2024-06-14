@@ -23,8 +23,6 @@
 #include "motorCommands.h"
 #include "robotModes.h"
 
-#define MOTOR_STOP_DURATION 0.01  // time to stop [s]
-
 void initialiseMotor(Motor* motor, MotorParams* params) {
   // setup the motor parameters
   motor->commandParameter = params->commandParameter;
@@ -55,15 +53,15 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
  * time to estimate how much the speed should be increased.
  * @param motor - Struct of the motor to update.
  * @param target - Desired speed command of the motor.
- * @param duration - Total desired duration of the movement in seconds
+ * @param duration - Total desired duration of the movement in ms
+ * In this function, all times are in ms.
  */
-void updateMotor(Motor* motor, int target, int duration) {
-  duration = secToMicros(duration);
+void updateMotor(Motor* motor, int target, uint32_t duration) {
   if (target == motor->currentCommand) {
     return;
   }
   int dt = 1;
-  uint32_t newTime = micros();
+  uint32_t newTime = millis();
   if (motor->previousTargetCommand == target) {
     dt = newTime - motor->previousTime;
   }
@@ -125,15 +123,31 @@ void updateMotor(Motor* motor, int target, int duration) {
   }
 }
 
-void updateMotors(Robot* robot, int leftTarget, int rightTarget, int duration) {
+/**
+ * Update the command of both motors.
+ * @param robot - Robot to control.
+ * @param leftTarget - Desired speed command of the left motor.
+ * @param rightTarget - Desired speed command of the right motor.
+ * @param duration - Total desired duration of the movement in ms.
+ */
+void updateMotors(Robot* robot,
+                  int leftTarget,
+                  int rightTarget,
+                  uint32_t duration) {
   updateMotor(&robot->leftMotor, leftTarget, duration);
   updateMotor(&robot->rightMotor, rightTarget, duration);
 }
 
+/**
+ * @brief Stop the motor.
+ */
 void stopMotor(Motor* motor) {
   updateMotor(motor, 0, MOTOR_STOP_DURATION);
 }
 
+/**
+ * @brief Stop both motors.
+ */
 void stopMotors(Robot* robot) {
   stopMotor(&robot->leftMotor);
   stopMotor(&robot->rightMotor);

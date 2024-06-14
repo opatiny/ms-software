@@ -71,6 +71,7 @@ void TaskRobotMove(void* pvParameters) {
   initialiseMotor(&robot.rightMotor, &rightMotorParams);
 
   while (true) {
+    Serial.println("Robot move task");
     robotControl(&robot);
     vTaskDelay(1);  // smallest delay possible -> there should be no other
                     // delays in this task!!

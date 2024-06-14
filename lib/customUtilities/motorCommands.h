@@ -2,8 +2,9 @@
 
 #include <state.h>
 
-#define DEFAULT_ACC_DURATION \
-  100  // default duration of the acceleration phase [ms]
+#define DEFAULT_ACC_DURATION 100  // default duration of the acceleration [ms]
+#define MOTOR_STOP_DURATION 10    // time to stop [ms]
+
 #define MAX_SPEED_COMMAND 255
 #define MIN_SPEED_COMMAND -256
 
@@ -29,9 +30,12 @@ enum Direction { BACKWARD, FORWARD };
 
 void initialiseMotor(Motor* motor, MotorParams* params);
 
-void updateMotor(Motor* motor, int target, int duration);
+void updateMotor(Motor* motor, int target, uint32_t duration);
 
-void updateMotors(Robot* robot, int leftTarget, int rightTarget, int duration);
+void updateMotors(Robot* robot,
+                  int leftTarget,
+                  int rightTarget,
+                  uint32_t duration);
 
 void stopMotors(Robot* robot);
 

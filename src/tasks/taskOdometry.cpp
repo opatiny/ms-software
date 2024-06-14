@@ -16,27 +16,27 @@
 #include "taskRobotMove.h"
 
 // delay between each time the debug information is printed
-#define DEBUG_DELAY 0.25  // s
+#define DEBUG_DELAY 250  // ms
 
 void updateOdometry(Robot* robot);
 void printOdometry(Robot* robot);
 
 void TaskOdometry(void* pvParameters) {
-  uint32_t previousTime = micros();
+  uint32_t previousTime = millis();
   robot.odometry.time = micros();
   while (true) {
     updateOdometry(&robot);
 
-    if (micros() - previousTime > DEBUG_DELAY &&
+    if (millis() - previousTime > DEBUG_DELAY &&
         getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
       printOdometry(&robot);
-      previousTime = micros();
+      previousTime = millis();
     }
     // problem: what is the optimal delay?
     // if delay is too small, there can be not a single interrupt on the motors
     // pins and the speeds are nonsense if delay is too big, the odometry will
     // have a big error
-    vTaskDelay(1);
+    vTaskDelay(100);
   }
 }
 
@@ -50,6 +50,7 @@ void taskOdometry() {
 void updateOdometry(Robot* robot) {
   // get the current time
   uint32_t now = micros();
+
   // get the time elapsed since the last update in seconds
   double dt = (now - robot->odometry.time) / 1000000.0;
 
@@ -104,8 +105,12 @@ void updateOdometry(Robot* robot) {
   // update the linear and angular velocities of the robot
   robot->odometry.speed.v = distance / dt;
   robot->odometry.speed.omega = dTheta / dt;
+  Serial.println("Odometry updated");
 }
 
+/**
+ * @brief Print the odometry data of the robot (for debug)
+ */
 void printOdometry(Robot* robot) {
   Serial.print(robot->odometry.pose.x);
   Serial.print(", ");
@@ -120,8 +125,4 @@ void printOdometry(Robot* robot) {
   Serial.print(robot->leftMotor.wheelSpeed);
   Serial.print(", ");
   Serial.println(robot->rightMotor.wheelSpeed);
-}
-
-double microsToSeconds(uint32_t micros) {
-  return micros / 1000000.0;
 }

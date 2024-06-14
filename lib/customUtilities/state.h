@@ -38,7 +38,7 @@ struct Encoder {
  *    accelerating. Example: 1 step/ms.
  *  - pin1: Pin 1 of the motor.
  *  - pin2: Pin 2 of the motor.
- *  - previousTime: Time of the previous update of the motor.
+ *  - previousTime: Time of the previous update of the motor in ms.
  *  - regressions: Structure containing the coefficients of the polynomial
  *    regressions to convert desired motor speed in rpm to command.
  *  - wheelSpeed: Current speed of the wheel in rpm.
@@ -54,7 +54,7 @@ struct Motor {
   int step;
   int pin1;
   int pin2;
-  uint32_t previousTime;
+  uint32_t previousTime;  // time in ms!!
   Regressions regressions;
   double wheelSpeed;
 };
@@ -100,7 +100,7 @@ struct RobotSpeed {
 struct Odometry {
   Pose pose;
   RobotSpeed speed;
-  uint32_t time;
+  uint32_t time;  // time in us -> high precision required
 };
 
 struct VoltageMeasurement {
