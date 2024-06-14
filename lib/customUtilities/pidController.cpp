@@ -17,7 +17,7 @@ void initialisePidController(PidController* regulator,
   regulator->serialParams.kp = params->kp;
   regulator->serialParams.ki = params->ki;
   regulator->serialParams.kd = params->kd;
-  regulator->previousTime = getSeconds();
+  regulator->previousTime = micros();
 }
 
 /**
@@ -29,8 +29,8 @@ void initialisePidController(PidController* regulator,
  */
 double getNewPidValue(PidController* regulator, double error) {
   updatePidParameters(regulator);
-  double time = getSeconds();
-  double dt = time - regulator->previousTime;
+  uint32_t time = micros();
+  double dt = microsToSeconds(time - regulator->previousTime);
   regulator->integral += error * dt;
   double derivative = (error - regulator->previousError) / dt;
   double newValue = regulator->params.kp * error +

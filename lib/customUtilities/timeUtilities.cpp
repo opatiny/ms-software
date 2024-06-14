@@ -7,3 +7,7 @@ double getSeconds() {
 uint32_t secToMicros(double sec) {
   return sec * 1000000;
 }
+
+double microsToSeconds(uint32_t micros) {
+  return micros / 1000000.0;
+}

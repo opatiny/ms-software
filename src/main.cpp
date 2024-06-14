@@ -75,14 +75,14 @@ void setup() {
   taskRobotMove();
   debugTask("TaskRobotMove");
 
-  // taskEncodersX4();
-  // debugTask("TaskEncodersX4");
+  taskEncodersX4();
+  debugTask("TaskEncodersX4");
 
   taskOdometry();
   debugTask("TaskOdometry");
 
-  // taskCalibrateSpeed();
-  // debugTask("TaskCalibration");
+  taskCalibrateSpeed();
+  debugTask("TaskCalibration");
 
   // taskVoltage();
   // debugTask("TaskVoltage");

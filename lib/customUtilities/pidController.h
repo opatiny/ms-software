@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 struct PidParams {
   double kp;
   double ki;
@@ -17,7 +19,7 @@ typedef struct {
   PidSerialParameters serialParams;
   double integral;
   double previousError;
-  double previousTime;
+  uint32_t previousTime;  // in us!!
   double previousValue;
   double targetValue;
   double correction;

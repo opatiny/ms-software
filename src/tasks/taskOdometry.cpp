@@ -36,7 +36,7 @@ void TaskOdometry(void* pvParameters) {
     // if delay is too small, there can be not a single interrupt on the motors
     // pins and the speeds are nonsense if delay is too big, the odometry will
     // have a big error
-    vTaskDelay(100);
+    vTaskDelay(10);
   }
 }
 
@@ -64,6 +64,13 @@ void updateOdometry(Robot* robot) {
   // nb of counts since last update
   double leftCounts = leftEncoder - robot->leftEncoder.previousCounts;
   double rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
+
+  // Serial.print("dt: ");
+  // Serial.print(dt, 6);
+  // Serial.print(", leftCounts: ");
+  // Serial.print(leftCounts);
+  // Serial.print(", rightCounts: ");
+  // Serial.println(rightCounts);
 
   // calculate speed of each wheel in rpm
   robot->leftMotor.wheelSpeed = computeWheelRpm(leftCounts, dt);
@@ -105,7 +112,6 @@ void updateOdometry(Robot* robot) {
   // update the linear and angular velocities of the robot
   robot->odometry.speed.v = distance / dt;
   robot->odometry.speed.omega = dTheta / dt;
-  Serial.println("Odometry updated");
 }
 
 /**

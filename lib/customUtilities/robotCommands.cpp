@@ -51,6 +51,12 @@ void robotMoveSameCommand(Robot* robot, int command) {
     robot->controller.currentCommand = command;
   }
   updateMotors(robot, command, command, getParameter(PARAM_MOTOR_ACC_DURATION));
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+      robot->controller.previousMode != ROBOT_MOVE_SAME_COMMAND) {
+    Serial.println("Robot move same command");
+    robot->controller.previousMode = ROBOT_MOVE_SAME_COMMAND;
+  }
 }
 
 /**
@@ -68,6 +74,11 @@ void robotMove(Robot* robot, int speed) {
   int rightCommand = getCommand(&robot->rightMotor.regressions, speed);
   updateMotors(robot, leftCommand, rightCommand,
                getParameter(PARAM_MOTOR_ACC_DURATION));
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+      robot->controller.previousMode != ROBOT_MOVE) {
+    Serial.println("Robot move same speed on both wheels");
+    robot->controller.previousMode = ROBOT_MOVE;
+  }
 }
 
 /**
@@ -93,6 +104,12 @@ void robotTurnInPlace(Robot* robot, int speed) {
   int rightCommand = getCommand(&robot->rightMotor.regressions, -speed);
   updateMotors(robot, leftCommand, rightCommand,
                getParameter(PARAM_MOTOR_ACC_DURATION));
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+      robot->controller.previousMode != ROBOT_TURN_IN_PLACE) {
+    Serial.println("Robot turn in place");
+    robot->controller.previousMode = ROBOT_TURN_IN_PLACE;
+  }
 }
 
 /**
@@ -110,9 +127,19 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
     }
   }
   robotMoveStraight(robot, speed);
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+      robot->controller.previousMode != ROBOT_STOP_OBSTACLE) {
+    Serial.println("Robot stop obstacle");
+    robot->controller.previousMode = ROBOT_STOP_OBSTACLE;
+  }
 }
 
 void robotMoveStraight(Robot* robot, int speed) {
+  if (robot->controller.previousMode != ROBOT_MOVE_STRAIGHT) {
+    robot->controller.leftSpeedController.previousTime = micros();
+    robot->controller.rightSpeedController.previousTime = micros();
+  }
+
   robot->controller.leftSpeedController.targetValue = speed;
   robot->controller.rightSpeedController.targetValue = speed;
 
@@ -121,8 +148,16 @@ void robotMoveStraight(Robot* robot, int speed) {
   wheeSpeedController(&robot->rightMotor, &robot->rightEncoder,
                       &robot->controller.rightSpeedController);
 
+  // printPidDebug(&robot->controller.leftSpeedController, &robot->leftMotor);
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
+      robot->controller.previousMode != ROBOT_MOVE_STRAIGHT) {
+    Serial.println("Robot move straight with PID");
+    robot->controller.previousMode = ROBOT_MOVE_STRAIGHT;
+  }
+
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
-    // time, target speed, leftSpeed, leftCommand, rightSpeed, rightCommand
+    // time, targetSpeed, leftSpeed, leftCommand, rightSpeed, rightCommand
     Serial.print(getSeconds(), 3);
     Serial.print(", ");
     Serial.print(speed);
@@ -165,7 +200,9 @@ void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
   double errorRpm = motor->wheelSpeed - pid->targetValue;
   double correction = getNewPidValue(pid, errorRpm);
   int newCmd = getClampedSpeed(motor->currentCommand - correction);
-  updateMotor(motor, newCmd, getParameter(PARAM_MOTOR_ACC_DURATION));
+
+  updateMotor(motor, newCmd,
+              1);  // duration is 1 because movement must be as fast as possible
 }
 
 void printPidDebug(PidController* pid, Motor* motor) {

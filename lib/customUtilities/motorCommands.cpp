@@ -53,7 +53,7 @@ void initialiseMotor(Motor* motor, MotorParams* params) {
  * time to estimate how much the speed should be increased.
  * @param motor - Struct of the motor to update.
  * @param target - Desired speed command of the motor.
- * @param duration - Total desired duration of the movement in ms
+ * @param duration - Total desired duration of the movement in ms.
  * In this function, all times are in ms.
  */
 void updateMotor(Motor* motor, int target, uint32_t duration) {
@@ -151,6 +151,9 @@ void stopMotor(Motor* motor) {
 void stopMotors(Robot* robot) {
   stopMotor(&robot->leftMotor);
   stopMotor(&robot->rightMotor);
+  robot->controller.currentCommand = 0;
+  robot->controller.currentSpeed = 0;
+  robot->controller.previousMode = ROBOT_STOP;
 }
 
 /**
