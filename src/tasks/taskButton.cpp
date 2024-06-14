@@ -41,7 +41,7 @@ void taskButton() {
                           NULL,
                           2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
-                          NULL, 1);  // 1 specifies the core
+                          NULL, 1);  // last param specifies the core
 }
 
 uint32_t previousTime = millis();

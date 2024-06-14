@@ -29,3 +29,4 @@ void initialisePidController(PidController* regulator,
                              PidSerialParameters* params);
 double getNewPidValue(PidController* regulator, double error);
 void updatePidParameters(PidController* regulator);
+void clearController(PidController* regulator);

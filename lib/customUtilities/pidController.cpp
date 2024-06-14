@@ -50,3 +50,11 @@ void updatePidParameters(PidController* regulator) {
   regulator->params.ki = getParameter(regulator->serialParams.ki) / PID_FACTOR;
   regulator->params.kd = getParameter(regulator->serialParams.kd) / PID_FACTOR;
 }
+
+void clearController(PidController* regulator) {
+  regulator->integral = 0;
+  regulator->previousError = 0;
+  regulator->previousTime = micros();
+  regulator->previousValue = 0;
+  regulator->correction = 0;
+}

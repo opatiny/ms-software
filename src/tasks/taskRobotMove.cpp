@@ -100,11 +100,18 @@ void robotControl(Robot* robot) {
     buttonFlags.robotMode = false;
   }
 
-  if (robot->controller.previousMode != currentMode &&
-      getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
-    Serial.print("New robot mode: ");
-    Serial.println(currentMode);
+  if (robot->controller.previousMode != currentMode) {
+    // clear the controllers when changing back to a mode that uses them
+    if (currentMode == ROBOT_MOVE_STRAIGHT ||
+        currentMode == ROBOT_STOP_OBSTACLE) {
+      robot->controller.clearControllers = 1;
+    }
+    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      Serial.print("New robot mode: ");
+      Serial.println(currentMode);
+    }
   }
+
   switch (currentMode) {
     case ROBOT_STOP:
       stopMotors(robot);

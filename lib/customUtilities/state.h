@@ -75,6 +75,7 @@ struct RobotController {
   int previousMode;
   PidController leftSpeedController;
   PidController rightSpeedController;
+  bool clearControllers;
 };
 
 /**

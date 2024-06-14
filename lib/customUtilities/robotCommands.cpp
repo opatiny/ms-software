@@ -6,7 +6,7 @@
 #include "robotModes.h"
 
 int getClampedSpeed(int speed);
-void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid);
+void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid);
 void printPidDebug(PidController* pid, Motor* motor);
 
 /**
@@ -55,7 +55,6 @@ void robotMoveSameCommand(Robot* robot, int command) {
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       robot->controller.previousMode != ROBOT_MOVE_SAME_COMMAND) {
     Serial.println("Robot move same command");
-    robot->controller.previousMode = ROBOT_MOVE_SAME_COMMAND;
   }
 }
 
@@ -77,7 +76,6 @@ void robotMove(Robot* robot, int speed) {
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       robot->controller.previousMode != ROBOT_MOVE) {
     Serial.println("Robot move same speed on both wheels");
-    robot->controller.previousMode = ROBOT_MOVE;
   }
 }
 
@@ -108,7 +106,6 @@ void robotTurnInPlace(Robot* robot, int speed) {
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       robot->controller.previousMode != ROBOT_TURN_IN_PLACE) {
     Serial.println("Robot turn in place");
-    robot->controller.previousMode = ROBOT_TURN_IN_PLACE;
   }
 }
 
@@ -130,30 +127,36 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       robot->controller.previousMode != ROBOT_STOP_OBSTACLE) {
     Serial.println("Robot stop obstacle");
-    robot->controller.previousMode = ROBOT_STOP_OBSTACLE;
   }
 }
 
+/**
+ * Move the robot straight at a given speed in rpm using a PID controller.
+ * @param robot The robot structure.
+ * @param speed The desired speed for the wheels in rpm.
+
+*/
 void robotMoveStraight(Robot* robot, int speed) {
-  if (robot->controller.previousMode != ROBOT_MOVE_STRAIGHT) {
-    robot->controller.leftSpeedController.previousTime = micros();
-    robot->controller.rightSpeedController.previousTime = micros();
+  if (robot->controller.clearControllers) {  // todo: check this condition
+    clearController(&robot->controller.leftSpeedController);
+    clearController(&robot->controller.rightSpeedController);
+    robot->controller.clearControllers = 0;
   }
 
   robot->controller.leftSpeedController.targetValue = speed;
   robot->controller.rightSpeedController.targetValue = speed;
 
-  wheeSpeedController(&robot->leftMotor, &robot->leftEncoder,
-                      &robot->controller.leftSpeedController);
-  wheeSpeedController(&robot->rightMotor, &robot->rightEncoder,
-                      &robot->controller.rightSpeedController);
+  wheelSpeedController(&robot->leftMotor, &robot->leftEncoder,
+                       &robot->controller.leftSpeedController);
+  wheelSpeedController(&robot->rightMotor, &robot->rightEncoder,
+                       &robot->controller.rightSpeedController);
 
   // printPidDebug(&robot->controller.leftSpeedController, &robot->leftMotor);
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->controller.previousMode != ROBOT_MOVE_STRAIGHT) {
+      robot->controller.previousMode != ROBOT_MOVE_STRAIGHT &&
+      robot->controller.previousMode != ROBOT_STOP_OBSTACLE) {
     Serial.println("Robot move straight with PID");
-    robot->controller.previousMode = ROBOT_MOVE_STRAIGHT;
   }
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
@@ -196,7 +199,7 @@ int getClampedSpeed(int speed) {
  * @param pid The PID controller structure.
 
 */
-void wheeSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
+void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
   double errorRpm = motor->wheelSpeed - pid->targetValue;
   double correction = getNewPidValue(pid, errorRpm);
   int newCmd = getClampedSpeed(motor->currentCommand - correction);
