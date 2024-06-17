@@ -7,7 +7,7 @@
  * Absolute value of the speed below which the speed is considered as zero.
  */
 
-#define SPEED_ZERO_THRESHOLD 30  // rpm
+#define SPEED_ZERO_THRESHOLD 10  // rpm
 
 /**
  * @brief Find the coefficients of the polynomial regressions for the negative

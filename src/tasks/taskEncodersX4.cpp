@@ -14,7 +14,7 @@
 
 #include "taskEncoders.h"
 
-// delay between each time the debug information is printed
+// delay in ms between each time the debug information is printed
 #define DEBUG_DELAY 100
 
 void initialiseEncoder(Encoder* encoder, EncoderParams* params);
@@ -52,10 +52,12 @@ void TaskEncodersX4(void* pvParameters) {
                   CHANGE);
   attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_PIN2), rightCounterPin2,
                   CHANGE);
-
+  uint32_t previousTime = millis();
   while (true) {
-    vTaskDelay(DEBUG_DELAY);
-    if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS) {
+    vTaskDelay(1);
+    uint32_t currentTime = millis();
+    if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS &&
+        currentTime - previousTime > DEBUG_DELAY) {
       Serial.print(getSeconds(), 3);
       Serial.print(", \t");
       Serial.print(robot.leftEncoder.counts);
@@ -65,6 +67,8 @@ void TaskEncodersX4(void* pvParameters) {
       Serial.print(getParameter(PARAM_MOTOR_LEFT_MODE));
       Serial.print(", \t");
       Serial.println(getParameter(PARAM_MOTOR_RIGHT_MODE));
+
+      previousTime = currentTime;
     }
   }
 }
@@ -130,11 +134,16 @@ void counterRoutine(Encoder* encoder,
   }
   encoder->counts = newValue;
 
-  // compute low speed in counts/us
+  // compute low speed (X/dt) in counts/us
   encoder->lowSpeedNbCounts++;
+
+  uint32_t currentTime = micros();
+  uint32_t deltaTime = currentTime - encoder->previousTime;
+  Serial.print("deltaTime: ");
+  Serial.println(deltaTime);
+  Serial.print("encoder->lowSpeedNbCounts: ");
+  Serial.println(encoder->lowSpeedNbCounts);
   if (encoder->lowSpeedNbCounts == LOW_SPEED_NB_COUNTS) {
-    uint32_t currentTime = micros();
-    uint32_t deltaTime = currentTime - encoder->previousTime;
     double nbSteps = encoder->counts - encoder->lowSpeedCounts;
     if (deltaTime > 0) {
       encoder->lowSpeed = nbSteps / deltaTime;
@@ -152,4 +161,16 @@ void initialiseEncoder(Encoder* encoder, EncoderParams* params) {
   pinMode(encoder->pin1, INPUT_PULLUP);
   pinMode(encoder->pin2, INPUT_PULLUP);
   encoder->previousTime = micros();
+}
+
+void handleZeroLowSpeed(Encoder* encoder) {
+  uint32_t currentTime = micros();
+  uint32_t deltaTime = currentTime - encoder->previousTime;
+  if (encoder->lowSpeed != 0 && deltaTime > LOW_SPEED_MAX_DELAY) {
+    Serial.println("speed is zero");
+    encoder->lowSpeed = 0;
+    encoder->lowSpeedCounts = encoder->counts;
+    encoder->lowSpeedNbCounts = 0;
+    encoder->previousTime = currentTime;
+  }
 }

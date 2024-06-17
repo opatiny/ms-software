@@ -121,13 +121,9 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
   Serial.print(", ");
   Serial.print(data->speed);
   Serial.print(", ");
-  Serial.print(robot->leftMotor.wheelSpeeds.highSpeed);
+  Serial.print(robot->leftMotor.wheelSpeed);
   Serial.print(", ");
-  Serial.print(robot->leftMotor.wheelSpeeds.lowSpeed);
-  Serial.print(", ");
-  Serial.print(robot->rightMotor.wheelSpeeds.highSpeed);
-  Serial.print(", ");
-  Serial.println(robot->rightMotor.wheelSpeeds.lowSpeed);
+  Serial.print(robot->rightMotor.wheelSpeed);
 
   data->speed += data->speedStep;
   if (data->speed > CALIBRATION_SPEED_LIMIT) {
