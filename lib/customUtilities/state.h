@@ -22,8 +22,20 @@ struct Encoder {
   EncoderCounter previousCounts;
   int pin1;
   int pin2;
+  int lowSpeedNbCounts;
+  EncoderCounter lowSpeedCounts;
+  double lowSpeed;  // computed with X/delta t, more precise at low speeds
+  uint32_t previousTime;
 };
 
+/**
+ * Structure containing the wheel speed computed through different methods.
+ * The choice of the actual speed is based on the amplitude of the speed.
+ */
+struct WheelSpeeds {
+  double lowSpeed;   // computed with X/delta t, more precise at low speeds
+  double highSpeed;  // computed with delta X/T, more precise at high speeds
+};
 /**
  * Motor structure.
  *  - commandParameter: Serial parameter for the target speed of the motor.
@@ -57,6 +69,7 @@ struct Motor {
   uint32_t previousTime;  // time in ms!!
   Regressions regressions;
   double wheelSpeed;
+  WheelSpeeds wheelSpeeds;
 };
 
 /**

@@ -22,8 +22,8 @@ void test_findZeros(void) {
   DataArray x = {0.00,  -500.00, -500.00, -500.00, -333.33, 0.00,   0.00,
                  0.00,  0.00,    333.33,  500.00,  500.00,  500.00, -0.00,
                  -0.00, -0.00,   -0.00,   -0.00,   -0.00,   -0.00,  -0.00};
-  TEST_ASSERT_EQUAL_INT(5, findMinZero(x));
-  TEST_ASSERT_EQUAL_INT(8, findMaxZero(x));
+  TEST_ASSERT_EQUAL_INT(5, findMinZero(x, 0));
+  TEST_ASSERT_EQUAL_INT(8, findMaxZero(x, 0));
 }
 
 void test_getRegressions(void) {

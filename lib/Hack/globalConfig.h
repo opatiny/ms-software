@@ -23,6 +23,7 @@ enum DebugMode {
   DEBUG_ROBOT_CONTROL,      // 12
   DEBUG_MOTORS_DT,          // 13
   DEBUG_MAIN,               // 14
+  DEBUG_SPEEDS,             // 15
 };
 
 // SERIAL PARAMETERS

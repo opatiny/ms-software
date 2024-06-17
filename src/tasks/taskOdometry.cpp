@@ -20,6 +20,7 @@
 
 void updateOdometry(Robot* robot);
 void printOdometry(Robot* robot);
+void printSpeeds(Robot* robot);
 
 void TaskOdometry(void* pvParameters) {
   uint32_t previousTime = millis();
@@ -27,16 +28,25 @@ void TaskOdometry(void* pvParameters) {
   while (true) {
     updateOdometry(&robot);
 
-    if (millis() - previousTime > DEBUG_DELAY &&
-        getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
-      printOdometry(&robot);
+    if (millis() - previousTime > DEBUG_DELAY) {
+      switch (getParameter(PARAM_DEBUG)) {
+        case DEBUG_ODOMETRY:
+          printOdometry(&robot);
+          break;
+        case DEBUG_SPEEDS:
+          printSpeeds(&robot);
+          break;
+        default:
+          break;
+      }
+
       previousTime = millis();
     }
     // problem: what is the optimal delay?
     // if delay is too small, there can be not a single interrupt on the motors
     // pins and the speeds are nonsense if delay is too big, the odometry will
     // have a big error
-    vTaskDelay(10);
+    vTaskDelay(1);
   }
 }
 
@@ -72,9 +82,19 @@ void updateOdometry(Robot* robot) {
   // Serial.print(", rightCounts: ");
   // Serial.println(rightCounts);
 
-  // calculate speed of each wheel in rpm
-  robot->leftMotor.wheelSpeed = computeWheelRpm(leftCounts, dt);
-  robot->rightMotor.wheelSpeed = computeWheelRpm(rightCounts, dt);
+  // calculate high speed of each wheel in rpm
+  robot->leftMotor.wheelSpeeds.highSpeed = computeWheelRpm(leftCounts, dt);
+  robot->rightMotor.wheelSpeeds.highSpeed = computeWheelRpm(rightCounts, dt);
+
+  // calculate low speed of each wheel in rpm
+  robot->leftMotor.wheelSpeeds.lowSpeed =
+      getLowSpeedRpm(robot->leftEncoder.lowSpeed);
+  robot->rightMotor.wheelSpeeds.lowSpeed =
+      getLowSpeedRpm(robot->rightEncoder.lowSpeed);
+
+  // pick what speed to use // todo: change this
+  robot->leftMotor.wheelSpeed = robot->leftMotor.wheelSpeeds.lowSpeed;
+  robot->rightMotor.wheelSpeed = robot->rightMotor.wheelSpeeds.lowSpeed;
 
   // calculate the distance traveled by each wheel
   double leftDistance = leftCounts * DISTANCE_PER_COUNT;
@@ -127,8 +147,16 @@ void printOdometry(Robot* robot) {
   Serial.print(robot->odometry.speed.v);
   Serial.print(", ");
   Serial.print(robot->odometry.speed.omega);
+}
+
+void printSpeeds(Robot* robot) {
+  Serial.print(robot->odometry.time);
   Serial.print(", ");
-  Serial.print(robot->leftMotor.wheelSpeed);
+  Serial.print(robot->leftMotor.wheelSpeeds.highSpeed);
   Serial.print(", ");
-  Serial.println(robot->rightMotor.wheelSpeed);
+  Serial.print(robot->leftMotor.wheelSpeeds.lowSpeed);
+  Serial.print(", ");
+  Serial.print(robot->rightMotor.wheelSpeeds.highSpeed);
+  Serial.print(", ");
+  Serial.println(robot->rightMotor.wheelSpeeds.lowSpeed);
 }

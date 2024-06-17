@@ -19,7 +19,7 @@
 
 void initialiseEncoder(Encoder* encoder, EncoderParams* params);
 
-void counterRoutine(EncoderCounter* counter,
+void counterRoutine(Encoder* encoder,
                     int interruptPin,
                     int directionPin,
                     int increment);
@@ -80,23 +80,22 @@ void taskEncodersX4() {
 }
 
 void leftCounterPin1() {
-  counterRoutine(&(robot.leftEncoder.counts), LEFT_ENCODER_PIN1,
-                 LEFT_ENCODER_PIN2, 1);
+  counterRoutine(&(robot.leftEncoder), LEFT_ENCODER_PIN1, LEFT_ENCODER_PIN2, 1);
 }
 
 void leftCounterPin2() {
-  counterRoutine(&(robot.leftEncoder.counts), LEFT_ENCODER_PIN2,
-                 LEFT_ENCODER_PIN1, -1);
+  counterRoutine(&(robot.leftEncoder), LEFT_ENCODER_PIN2, LEFT_ENCODER_PIN1,
+                 -1);
 }
 
 void rightCounterPin1() {
-  counterRoutine(&(robot.rightEncoder.counts), RIGHT_ENCODER_PIN1,
-                 RIGHT_ENCODER_PIN2, 1);
+  counterRoutine(&(robot.rightEncoder), RIGHT_ENCODER_PIN1, RIGHT_ENCODER_PIN2,
+                 1);
 }
 
 void rightCounterPin2() {
-  counterRoutine(&(robot.rightEncoder.counts), RIGHT_ENCODER_PIN2,
-                 RIGHT_ENCODER_PIN1, -1);
+  counterRoutine(&(robot.rightEncoder), RIGHT_ENCODER_PIN2, RIGHT_ENCODER_PIN1,
+                 -1);
 }
 /**
  * Interrupt routine to count the encoder pulses.
@@ -108,14 +107,14 @@ void rightCounterPin2() {
  *  @param directionPin - The pin used to determine the direction of the
  * rotation.
  */
-void counterRoutine(EncoderCounter* counter,
+void counterRoutine(Encoder* encoder,
                     int interruptPin,
                     int directionPin,
                     int increment) {
   int interruptValue = digitalRead(interruptPin);
   int directionValue = digitalRead(directionPin);
 
-  EncoderCounter newValue = *counter;
+  EncoderCounter newValue = encoder->counts;
   if (interruptValue == HIGH) {
     if (directionValue == HIGH) {
       newValue = newValue - increment;
@@ -129,7 +128,21 @@ void counterRoutine(EncoderCounter* counter,
       newValue = newValue - increment;
     }
   }
-  *counter = newValue;
+  encoder->counts = newValue;
+
+  // compute low speed in counts/us
+  encoder->lowSpeedNbCounts++;
+  if (encoder->lowSpeedNbCounts == LOW_SPEED_NB_COUNTS) {
+    uint32_t currentTime = micros();
+    uint32_t deltaTime = currentTime - encoder->previousTime;
+    double nbSteps = encoder->counts - encoder->lowSpeedCounts;
+    if (deltaTime > 0) {
+      encoder->lowSpeed = nbSteps / deltaTime;
+    }
+    encoder->previousTime = currentTime;
+    encoder->lowSpeedCounts = encoder->counts;
+    encoder->lowSpeedNbCounts = 0;
+  }
 }
 
 void initialiseEncoder(Encoder* encoder, EncoderParams* params) {
@@ -138,5 +151,5 @@ void initialiseEncoder(Encoder* encoder, EncoderParams* params) {
 
   pinMode(encoder->pin1, INPUT_PULLUP);
   pinMode(encoder->pin2, INPUT_PULLUP);
-  encoder->counts = 0;
+  encoder->previousTime = micros();
 }

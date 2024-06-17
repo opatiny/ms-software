@@ -35,14 +35,13 @@ void debugTask(char const* taskName);
 void setup() {
   // start serial communication
   Serial.begin(SERIAL_SPEED);  // only for debug purpose
-  delay(2000);                 // wait for serial connection to open
+  delay(500);                  // wait for serial connection to open
   Serial.println("Device is up");
 
   // start I2C communication
   xSemaphoreGive(xSemaphoreWire);
 
   Wire.begin(SDA_PIN, SCL_PIN, I2C_SPEED);
-  // Wire.setClock(I2C_SPEED);
 
   // set default serial parameters values in case of reboot
   // todo: this doesn't work -> setAndSave? doesn't work either
@@ -84,11 +83,11 @@ void setup() {
   taskCalibrateSpeed();
   debugTask("TaskCalibration");
 
-  // taskVoltage();
-  // debugTask("TaskVoltage");
+  taskVoltage();
+  debugTask("TaskVoltage");
 
-  taskButton();
-  debugTask("TaskButton");
+  // taskButton();
+  // debugTask("TaskButton");
 
   // taskBuzzer();
   // debugTask("TaskBuzzer");

@@ -24,3 +24,4 @@ UnicycleSpeed diffToUnicycleSpeed(DiffSpeed diffSpeed);
 DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed);
 double computeCurvature(UnicycleSpeed unicycleSpeed);
 double computeWheelRpm(int counts, double dt);
+double getLowSpeedRpm(double lowSpeed);

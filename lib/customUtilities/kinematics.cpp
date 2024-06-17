@@ -46,3 +46,10 @@ double computeWheelRpm(int counts, double dt) {
   double degSec = angle / dt;
   return degSec / 6.0;
 }
+
+/**
+ * @brief Convert speed from counts/us to rpm.
+ */
+double getLowSpeedRpm(double lowSpeed) {
+  return lowSpeed / (ENCODER_COUNTS_PER_REV * GEAR_RATIO) * 60 * 1000000;
+}

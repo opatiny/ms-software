@@ -139,6 +139,8 @@ void printDebug() {
   Serial.println("\t11) Speed calibration");
   Serial.println("\t12) Robot control");
   Serial.println("\t13) Motors (only time interval since last call)");
+  Serial.println("\t14) Main: print when tasks are up");
+  Serial.println("\t15) Different wheel speeds");
 
   Serial.print("\nCurrent debug mode: U");
   Serial.println(getParameter(PARAM_DEBUG));

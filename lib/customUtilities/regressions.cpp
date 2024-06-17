@@ -4,6 +4,12 @@
 #include <utilities/params.h>
 
 /**
+ * Absolute value of the speed below which the speed is considered as zero.
+ */
+
+#define SPEED_ZERO_THRESHOLD 30  // rpm
+
+/**
  * @brief Find the coefficients of the polynomial regressions for the negative
  * and positive parts of the curve. We use this function to find the
  * relationship between motor speed and command. The degree of the polynoms is
@@ -23,8 +29,8 @@ void getRegressions(Regressions* regessions,
   int start = findMinIndex(speeds, -speedLimit);
   int end = findMaxIndex(speeds, speedLimit);
 
-  int minZero = findMinZero(speeds);
-  int maxZero = findMaxZero(speeds);
+  int minZero = findMinZero(speeds, SPEED_ZERO_THRESHOLD);
+  int maxZero = findMaxZero(speeds, SPEED_ZERO_THRESHOLD);
 
   int negLength = minZero - start + 1;
   int posLength = end - maxZero + 1;
@@ -89,12 +95,17 @@ int findMaxIndex(DataArray dataArray, double maxValue) {
   return index;
 }
 
-int findMinZero(DataArray dataArray) {
+/**
+ * Find the index at which the negative regression will end. We use
+ * a speed threshold to define the part of the regression that will be
+ * considered as zero.
+ */
+int findMinZero(DataArray dataArray, int threshold) {
   int index = 0;
   int previousValue = 0;
   for (int i = 0; i < CALIBRATION_MAX_NB_VALUES; i++) {
     index = i;
-    if (dataArray[i] == 0 && previousValue < 0) {
+    if (dataArray[i] >= -threshold && previousValue < -threshold) {
       break;
     }
 
@@ -103,11 +114,16 @@ int findMinZero(DataArray dataArray) {
   return index;
 }
 
-int findMaxZero(DataArray dataArray) {
+/**
+ * Find the index at which the positive regression will start. We use
+ * a speed threshold to define the part of the regression that will be
+ * considered as zero.
+ */
+int findMaxZero(DataArray dataArray, int threshold) {
   int index = 0;
   int previousValue = 0;
   for (int i = 0; i < CALIBRATION_MAX_NB_VALUES; i++) {
-    if (dataArray[i] > 0 && previousValue == 0) {
+    if (dataArray[i] > threshold && previousValue <= threshold) {
       break;
     }
     index = i;
