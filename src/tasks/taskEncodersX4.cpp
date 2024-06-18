@@ -18,7 +18,7 @@
 #define DEBUG_DELAY 100
 
 void initialiseEncoder(Encoder* encoder, EncoderParams* params);
-
+void handleZeroLowSpeed(Encoder* encoder);
 void counterRoutine(Encoder* encoder,
                     int interruptPin,
                     int directionPin,
@@ -54,6 +54,9 @@ void TaskEncodersX4(void* pvParameters) {
                   CHANGE);
   uint32_t previousTime = millis();
   while (true) {
+    handleZeroLowSpeed(&(robot.leftEncoder));
+    handleZeroLowSpeed(&(robot.rightEncoder));
+
     vTaskDelay(1);
     uint32_t currentTime = millis();
     if (getParameter(PARAM_DEBUG) == DEBUG_ENCODERS &&
@@ -139,10 +142,6 @@ void counterRoutine(Encoder* encoder,
 
   uint32_t currentTime = micros();
   uint32_t deltaTime = currentTime - encoder->previousTime;
-  Serial.print("deltaTime: ");
-  Serial.println(deltaTime);
-  Serial.print("encoder->lowSpeedNbCounts: ");
-  Serial.println(encoder->lowSpeedNbCounts);
   if (encoder->lowSpeedNbCounts == LOW_SPEED_NB_COUNTS) {
     double nbSteps = encoder->counts - encoder->lowSpeedCounts;
     if (deltaTime > 0) {
@@ -163,11 +162,14 @@ void initialiseEncoder(Encoder* encoder, EncoderParams* params) {
   encoder->previousTime = micros();
 }
 
+/**
+ * Handle case where speed is zero. Indeed it is not
+ * being handled by the interrupts.
+ */
 void handleZeroLowSpeed(Encoder* encoder) {
   uint32_t currentTime = micros();
   uint32_t deltaTime = currentTime - encoder->previousTime;
   if (encoder->lowSpeed != 0 && deltaTime > LOW_SPEED_MAX_DELAY) {
-    Serial.println("speed is zero");
     encoder->lowSpeed = 0;
     encoder->lowSpeedCounts = encoder->counts;
     encoder->lowSpeedNbCounts = 0;
