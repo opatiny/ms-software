@@ -141,6 +141,7 @@ void robotMoveStraight(Robot* robot, int speed) {
     clearController(&robot->controller.leftSpeedController);
     clearController(&robot->controller.rightSpeedController);
     robot->controller.clearControllers = 0;
+    Serial.println("Clear controllers");
   }
 
   robot->controller.leftSpeedController.targetValue = speed;
@@ -161,7 +162,7 @@ void robotMoveStraight(Robot* robot, int speed) {
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
     // time, targetSpeed, leftSpeed, leftCommand, rightSpeed, rightCommand
-    Serial.print(getSeconds(), 3);
+    Serial.print(millis());
     Serial.print(", ");
     Serial.print(speed);
     Serial.print(", ");
