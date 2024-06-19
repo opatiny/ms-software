@@ -174,6 +174,8 @@ void robotMoveStraight(Robot* robot, int speed) {
     Serial.print(", ");
     Serial.println(robot->rightMotor.currentCommand);
   }
+
+  vTaskDelay(1);
 }
 
 /**

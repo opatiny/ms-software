@@ -130,13 +130,13 @@ void robotControl(Robot* robot) {
       stopWhenObstacle(robot, targetSpeed, distance);
       break;
     }
-    case ROBOT_MOVE_STRAIGHT:
-      robotMoveStraight(robot, targetSpeed);
-      vTaskDelay(10);
-      break;
     case ROBOT_EACH_WHEEL:
       motorControl(&robot->leftMotor, &robot->leftEncoder);
       motorControl(&robot->rightMotor, &robot->rightEncoder);
+      break;
+    case ROBOT_MOVE_STRAIGHT:
+      robotMoveStraight(robot, targetSpeed);
+
       break;
     default:
       Serial.println("Unknown robot movement mode");
