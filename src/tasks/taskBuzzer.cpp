@@ -17,16 +17,16 @@ void TaskBuzzer(void* pvParameters) {
   buzzer.attach(BUZZER_PIN);
 
   int repetitionsAlarm = 0;
-  setAndSaveParameter(PARAM_BUZZER, BUZZER_OFF);
+  setAndSaveParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
   int previousMode = BUZZER_OFF;
   while (true) {
     if (getParameter(PARAM_DEBUG) == DEBUG_BUZZER &&
-        getParameter(PARAM_BUZZER) != previousMode) {
+        getParameter(PARAM_BUZZER_MODE) != previousMode) {
       Serial.print("Buzzer mode: ");
-      Serial.println(getParameter(PARAM_BUZZER));
-      previousMode = getParameter(PARAM_BUZZER);
+      Serial.println(getParameter(PARAM_BUZZER_MODE));
+      previousMode = getParameter(PARAM_BUZZER_MODE);
     }
-    switch (getParameter(PARAM_BUZZER)) {
+    switch (getParameter(PARAM_BUZZER_MODE)) {
       case BUZZER_OFF:
         // duration of zero turns output off
         buzzer.note(BUZZER_PIN, NOTE_E, 3, 0, 0);
@@ -35,7 +35,7 @@ void TaskBuzzer(void* pvParameters) {
       case BUZZER_SINGLE_NOTE:
         buzzer.note(BUZZER_PIN, NOTE_C, 4, 10, 0);
         vTaskDelay(100);
-        setParameter(PARAM_BUZZER, BUZZER_OFF);
+        setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
       case BUZZER_ALARM:
         buzzer.note(BUZZER_PIN, NOTE_C, 4, 10, 0);
@@ -45,7 +45,7 @@ void TaskBuzzer(void* pvParameters) {
         repetitionsAlarm++;
 
         if (repetitionsAlarm == NB_REPETITIONS_ALARM) {
-          setParameter(PARAM_BUZZER, BUZZER_OFF);
+          setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
           repetitionsAlarm = 0;
         }
         break;
@@ -54,18 +54,18 @@ void TaskBuzzer(void* pvParameters) {
           buzzer.note(BUZZER_PIN, scale[i], scaleOctaves[i], 10, 0);
           vTaskDelay(100);
         }
-        setParameter(PARAM_BUZZER, BUZZER_OFF);
+        setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
       case BUZZER_BOOT:
         for (int i = 0; i < nbNotesBoot; i++) {
           buzzer.note(BUZZER_PIN, bootNotes[i], 5, bootNotesLengths[i], 0);
           vTaskDelay(100);
         }
-        setParameter(PARAM_BUZZER, BUZZER_OFF);
+        setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
       default:
         Serial.println("Unknown buzzer mode");
-        setParameter(PARAM_BUZZER, BUZZER_OFF);
+        setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
     }
   }

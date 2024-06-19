@@ -34,7 +34,7 @@ void robotControl(Robot* robot);
 void TaskRobotMove(void* pvParameters) {
   // define parameters of the motors
   MotorParams leftMotorParams = {
-    commandParameter : PARAM_MOTOR_LEFT_SPEED_CMD,
+    commandParameter : PARAM_MOTOR_LEFT_COMMAND,
     modeParameter : PARAM_MOTOR_LEFT_MODE,
     accDurationParameter : PARAM_MOTOR_ACC_DURATION,
     pin1 : MOTOR_LEFT_PIN1,
@@ -42,7 +42,7 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   MotorParams rightMotorParams = {
-    commandParameter : PARAM_MOTOR_RIGHT_SPEED_CMD,
+    commandParameter : PARAM_MOTOR_RIGHT_COMMAND,
     modeParameter : PARAM_MOTOR_RIGHT_MODE,
     accDurationParameter : PARAM_MOTOR_ACC_DURATION,
     pin1 : MOTOR_RIGHT_PIN1,

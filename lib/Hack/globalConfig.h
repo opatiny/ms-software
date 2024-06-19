@@ -31,6 +31,62 @@ enum DebugMode {
 #define MAX_PARAM 52
 extern int16_t parameters[MAX_PARAM];
 
+// debug
+#define PARAM_DEBUG 20                // U
+#define PARAM_DISTANCE_DEBUG_MODE 33  // AH
+
+// buzzer parameters
+#define PARAM_SOUND 16        // Q
+#define PARAM_BUZZER_MODE 18  // S
+
+// voltage measurement parameters
+#define PARAM_BATTERY_VOLTAGE 19  // T
+#define PARAM_VCC_VOLTAGE 43      // AR
+
+// RGB LED parameters
+/**
+ * choose RGB LED mode (constant, blink, ...)
+ */
+#define PARAM_RGB_LED_MODE 44        // AS
+#define PARAM_RGB_LED_COLOR 35       // AJ
+#define PARAM_RGB_LED_BRIGHTNESS 36  // AK
+
+// motors parameters
+/**
+ * Desired speed for when the motors are moving. This is not the current speed
+ * of the motors.
+ */
+#define PARAM_MOTOR_LEFT_COMMAND 26   // AA
+#define PARAM_MOTOR_RIGHT_COMMAND 27  // AB
+#define PARAM_MOTOR_LEFT_MODE 28      // AC
+#define PARAM_MOTOR_RIGHT_MODE 29     // AD
+#define PARAM_MOTOR_ACC_DURATION 34   // AI
+
+// AL
+
+// robot control parameters
+/**
+ * Command for both wheels of the robot, when the mode is
+ * ROBOT_MOVE_SAME_COMMAND.
+ */
+#define PARAM_ROBOT_COMMAND 38  // AM
+/**
+ * Target speed for the robot in rpm, used in ROBOT_MOVE mode.
+ */
+#define PARAM_ROBOT_SPEED 39        // AN
+#define PARAM_ROBOT_MODE 40         // AO
+#define PARAM_ROBOT_ANGLE_CMD 41    // AP
+#define PARAM_OBSTACLE_DISTANCE 42  // AQ
+
+// speed calibration parameters
+#define PARAM_CALIBRATION_MODE 45  // AT
+#define PARAM_CALIBRATION_STEP 46  // AU
+
+// controller parameters
+#define PARAM_CONTROLLER_KP 47  // AV
+#define PARAM_CONTROLLER_KI 48  // AW
+#define PARAM_CONTROLLER_KD 49  // AX
+
 // IMU parameteers
 // accelerations are in g -> 1g = 9.81 m/s^2
 #define PARAM_ACCELERATION_X 0  // A
@@ -53,65 +109,13 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_OFFSET_RIGHT 14        // O
 #define PARAM_OFFSET_FRONT_RIGHT 15  // P
 
-// debug
-#define PARAM_BATTERY_VOLTAGE 18  // S
-#define PARAM_BUZZER 19           // T
-#define PARAM_DEBUG 20            // U, 0 = no debug, 1 = debug (serial)
-
-// other parameters
-#define PARAM_STATUS \
-  21                        // V
-                            // W
-#define PARAM_CHARGING 23   // X
-#define PARAM_WIFI_RSSI 24  // Y
-#define PARAM_ERROR 25      // Z
-
-// motors parameters
-/**
- * Desired speed for when the motors are moving. This is not the current speed
- * of the motors.
- */
-#define PARAM_MOTOR_LEFT_SPEED_CMD 26   // AA
-#define PARAM_MOTOR_RIGHT_SPEED_CMD 27  // AB
-#define PARAM_MOTOR_LEFT_MODE 28        // AC
-#define PARAM_MOTOR_RIGHT_MODE 29       // AD
-
+// push button parameter
 #define PARAM_BUTTON 32  // AG
 
-#define PARAM_DISTANCE_DEBUG_MODE 33  // AH
-#define PARAM_MOTOR_ACC_DURATION 34   // AI
-
-#define PARAM_RGB_LED_COLOR 35       // AJ
-#define PARAM_RGB_LED_BRIGHTNESS 36  // AK
-
-// AL
-
-// robot control parameters
-/**
- * Command for both wheels of the robot, when the mode is
- * ROBOT_MOVE_SAME_COMMAND.
- */
-#define PARAM_ROBOT_COMMAND 38  // AM
-/**
- * Target speed for the robot in rpm, used in ROBOT_MOVE mode.
- */
-#define PARAM_ROBOT_SPEED 39        // AN
-#define PARAM_ROBOT_MODE 40         // AO
-#define PARAM_ROBOT_ANGLE_CMD 41    // AP
-#define PARAM_OBSTACLE_DISTANCE 42  // AQ
-
-#define PARAM_VCC_VOLTAGE 43  // AR
-
-/**
- * choose RGB LED mode (constant, blink, ...)
- */
-#define PARAM_RGB_LED_MODE 44  // AS
-
-#define PARAM_CALIBRATION_MODE 45  // AT
-#define PARAM_CALIBRATION_STEP 46  // AU
-
-#define PARAM_CONTROLLER_KP 47  // AV
-#define PARAM_CONTROLLER_KI 48  // AW
-#define PARAM_CONTROLLER_KD 49  // AX
-
+// various parameters
+// V
+// W
+#define PARAM_STATUS 23     // X
+#define PARAM_WIFI_RSSI 24  // Y
+#define PARAM_ERROR 25      // Z
 #define PARAM_STATUS_FLAG_NO_WIFI 0
