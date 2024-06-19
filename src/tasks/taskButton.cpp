@@ -5,6 +5,7 @@
 #include <utilities/params.h>
 
 #include "./taskButton.h"
+#include "./taskBuzzer.h"
 #include "./taskVl53L1X.h"
 
 struct ButtonFlags buttonFlags;
@@ -14,19 +15,17 @@ void setButtonFlags();
 
 void TaskButton(void* pvParameters) {
   pinMode(BUTTON_PIN, INPUT);
-  pinMode(BLINK_LED_PIN, OUTPUT);
 
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonRoutine, CHANGE);
 
   setParameter(PARAM_BUTTON, BUTTON_RELEASED);
 
-  digitalWrite(BLINK_LED_PIN, LOW);
-
   while (true) {
     if (getParameter(PARAM_BUTTON) == BUTTON_PRESSED) {
-      digitalWrite(BLINK_LED_PIN, HIGH);
-    } else {
-      digitalWrite(BLINK_LED_PIN, LOW);
+      if (getParameter(PARAM_SOUND) == SOUND_ON) {
+        setParameter(PARAM_BUZZER_MODE, BUZZER_SINGLE_NOTE);
+      }
+    } else if (getParameter(PARAM_BUTTON) == BUTTON_RELEASED) {
     }
     vTaskDelay(100);
   }
@@ -54,15 +53,15 @@ void buttonRoutine() {
   if (currentTime - previousTime > DEBOUNCE_TIME) {
     previousTime = currentTime;
     if (getParameter(PARAM_BUTTON) == BUTTON_PRESSED) {
+      setParameter(PARAM_BUTTON, BUTTON_RELEASED);
       if (getParameter(PARAM_DEBUG) == DEBUG_BUTTON) {
         Serial.println("Button released");
       }
-      setParameter(PARAM_BUTTON, BUTTON_RELEASED);
     } else if (getParameter(PARAM_BUTTON) == BUTTON_RELEASED) {
+      setParameter(PARAM_BUTTON, BUTTON_PRESSED);
       if (getParameter(PARAM_DEBUG) == DEBUG_BUTTON) {
         Serial.println("Button pressed");
       }
-      setParameter(PARAM_BUTTON, BUTTON_PRESSED);
       setButtonFlags();
     }
   }

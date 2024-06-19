@@ -119,6 +119,7 @@ void robotTurnInPlace(Robot* robot, int speed) {
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
     if (robot->distances[i] < distance) {
+      robot->controller.clearControllers = 1;
       robotStop(robot);
       return;
     }

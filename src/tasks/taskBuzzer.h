@@ -4,6 +4,11 @@
 
 #define NB_REPETITIONS_ALARM 4
 
+enum SoundMode {
+  SOUND_OFF,  // 0
+  SOUND_ON    // 1
+};
+
 enum BuzzerModes {
   BUZZER_OFF,          // 0
   BUZZER_SINGLE_NOTE,  // 1

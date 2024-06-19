@@ -43,10 +43,6 @@ void setup() {
 
   Wire.begin(SDA_PIN, SCL_PIN, I2C_SPEED);
 
-  // set default serial parameters values in case of reboot
-  // todo: this doesn't work -> setAndSave? doesn't work either
-  setAndSaveParameter(PARAM_DEBUG, DEBUG_BUTTON);
-
   // load data from EEPROM
   loadWheelsRegressions(&robot.leftMotor.regressions,
                         &robot.rightMotor.regressions);
@@ -56,18 +52,19 @@ void setup() {
   taskSerial();
   debugTask("TaskSerial");
 
-  taskWifi();
-  debugTask("TaskWifi");
+  // taskWifi();
+  // debugTask("TaskWifi");
 
-  taskWebserver();
-  debugTask("TaskWebserver");
+  // taskWebserver();
+  // debugTask("TaskWebserver");
 
-  taskWire();  // stack size problem?
-  debugTask("TaskWire");
+  // taskWire();  // stack size problem?
+  // debugTask("TaskWire");
 
   taskGY521();
   debugTask("TaskGY521");
 
+  // todo: requestFrom() I2C error in there
   taskVL53L1X();
   debugTask("TaskVL53L1X");
 
@@ -80,14 +77,14 @@ void setup() {
   taskOdometry();
   debugTask("TaskOdometry");
 
-  taskCalibrateSpeed();
-  debugTask("TaskCalibration");
+  // taskCalibrateSpeed();
+  // debugTask("TaskCalibration");
 
-  taskVoltage();
-  debugTask("TaskVoltage");
+  // taskVoltage();
+  // debugTask("TaskVoltage");
 
-  // taskButton();
-  // debugTask("TaskButton");
+  taskButton();
+  debugTask("TaskButton");
 
   // taskBuzzer();
   // debugTask("TaskBuzzer");
@@ -95,11 +92,15 @@ void setup() {
   // taskRgbLed();
   // debugTask("TaskRgbLed");
 
-  taskEventSourceSender();
-  debugTask("TaskEventSourceSender");
+  // taskEventSourceSender();
+  // debugTask("TaskEventSourceSender");
 
   taskBlink();
   debugTask("TaskBlink");
+
+  if (getParameter(PARAM_SOUND) == SOUND_ON) {
+    setParameter(PARAM_BUZZER_MODE, BUZZER_BOOT);
+  }
 }
 
 void loop() {

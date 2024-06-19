@@ -32,7 +32,11 @@ double getNewPidValue(PidController* regulator, double error) {
   uint32_t time = micros();
   double dt = microsToSeconds(time - regulator->previousTime);
   regulator->integral += error * dt;
-  double derivative = (error - regulator->previousError) / dt;
+  double derivative = 0;
+  // protect from division by zero
+  if (dt != 0) {
+    (error - regulator->previousError) / dt;
+  }
   double newValue = regulator->params.kp * error +
                     regulator->params.ki * regulator->integral +
                     regulator->params.kd * derivative;
