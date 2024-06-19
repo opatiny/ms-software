@@ -71,7 +71,7 @@ If you have problems with the pio commands, check that all serial monitors are c
 
 - create a folder at the first level called `data`.
 
-To upload the data, run this command in a terminal. The esp must be connected to the computer. The data must be uploaded every time the folder is modified.
+To upload the data, run this command in a terminal. The esp must be connected to the computer. The data must be uploaded every time the folder is modified. This loads the contents of the folder onto the esp file system.
 
 ```
 pio run --target uploadfs
@@ -79,6 +79,9 @@ pio run --target uploadfs
 
 To access the page, you must know the device IP address and be connected to the same wifi. The address can be known using the `wi` serial command.
 Url example: `192.168.1.193`
+
+- to check that the device is connected to the wifi, try to `ping` it from a terminal
+- in a browser: just paste the IP address
 
 Alternatively, the page can be built locally. Right-click on the html file and choose "Open with live server". You can then see the page and still interact with the device. For this to work, you have to set `localDevelopment = true` in `index.html`.
 

@@ -56,17 +56,17 @@ void setup() {
   taskSerial();
   debugTask("TaskSerial");
 
-  // taskWifi();
-  // debugTask("TaskWifi");
+  taskWifi();
+  debugTask("TaskWifi");
 
-  // taskWebserver();
-  // debugTask("TaskWebserver");
+  taskWebserver();
+  debugTask("TaskWebserver");
 
   taskWire();  // stack size problem?
   debugTask("TaskWire");
 
-  // taskGY521();
-  // debugTask("TaskGY521");
+  taskGY521();
+  debugTask("TaskGY521");
 
   taskVL53L1X();
   debugTask("TaskVL53L1X");
@@ -95,7 +95,8 @@ void setup() {
   // taskRgbLed();
   // debugTask("TaskRgbLed");
 
-  // taskEventSourceSender();
+  taskEventSourceSender();
+  debugTask("TaskEventSourceSender");
 
   taskBlink();
   debugTask("TaskBlink");

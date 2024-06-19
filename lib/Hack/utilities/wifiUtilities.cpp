@@ -36,6 +36,9 @@ void processWifiCommand(char command,
       output->print("SSID: ");
       getParameter("wifi.ssid", wifiTemp);
       output->println(wifiTemp);
+      output->print("Password: ");
+      getParameter("wifi.password", wifiTemp);
+      output->println(wifiTemp);
       output->print("IP address: ");
       output->println(WiFi.localIP());
       output->print("Mac address: ");
@@ -45,9 +48,6 @@ void processWifiCommand(char command,
       output->println(wifiTemp);
       output->print("Identity: ");
       getParameter("wifi.identity", wifiTemp);
-      output->println(wifiTemp);
-      output->print("Password: ");
-      getParameter("wifi.password", wifiTemp);
       output->println(wifiTemp);
       output->print("AP ssid: ");
       getParameter("wifi.ap.ssid", wifiTemp);
