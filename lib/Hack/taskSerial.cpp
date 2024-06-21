@@ -27,6 +27,8 @@ void printSpecificHelp(Print* output);
 void TaskSerial(void* pvParameters) {
   Serial.begin(115200);
   while (true) {
+    debugProcess("TaskSerial");
+
     while (Serial.available()) {
       // get the new byte:
       char inChar = (char)Serial.read();

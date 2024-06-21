@@ -41,6 +41,7 @@ void TaskVoltage(void* pvParameters) {
   initializeVoltage(&robot.vcc, &vcc);
 
   while (true) {
+    debugProcess("TaskVoltage ");
     int batteryLevel = analogReadMilliVolts(BATTERY_PIN) *
                        (BATTERY_R1 + BATTERY_R2) / BATTERY_R2;
     int vccLevel = analogReadMilliVolts(VCC_PIN) * (VCC_R1 + VCC_R2) / VCC_R2;

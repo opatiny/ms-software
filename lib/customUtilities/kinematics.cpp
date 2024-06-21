@@ -32,17 +32,23 @@ DiffSpeed unicycleToDiffSpeed(UnicycleSpeed unicycleSpeed) {
 }
 
 double computeCurvature(UnicycleSpeed unicycleSpeed) {
+  if (unicycleSpeed.omega == 0) {
+    return 0;
+  }
   return unicycleSpeed.v / unicycleSpeed.omega;
 }
 
 /**
- * @brief Compute the wheel speed in rpm from the encoder counts difference and
- * the time elapsed since the last update.
+ * @brief Compute the wheel speed in rpm from the encoder counts difference
+ * and the time elapsed since the last update.
  * @param counts The number of encoder counts since the last update.
  * @param dt The time elapsed since the last update in seconds.
  */
 double computeWheelRpm(int counts, double dt) {
   double angle = countsToAngle(counts);
+  if (dt == 0) {
+    Serial.println("computeWheelRpm dt is 0");
+  }
   double degSec = angle / dt;
   return degSec / 6.0;
 }

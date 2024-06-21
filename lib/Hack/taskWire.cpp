@@ -16,29 +16,6 @@ byte wireDeviceID[WIRE_MAX_DEVICES];
 
 void wireUpdateList(int8_t sleepTime);
 
-void TaskWire(void* pvParameters) {
-  vTaskDelay(100);
-  (void)pvParameters;
-
-  Wire.begin(SDA_PIN, SCL_PIN);
-
-  while (true) {
-    wireUpdateList();
-    vTaskDelay(1000);
-  }
-}
-
-void taskWire() {
-  // Now set up two tasks to run independently.
-  xTaskCreatePinnedToCore(TaskWire, "TaskWire",
-                          4048,  // This stack size can be checked & adjusted by
-                                 // reading the Stack Highwater
-                          NULL,
-                          2,  // Priority, with 3 (configMAX_PRIORITIES - 1)
-                              // being the highest, and 0 being the lowest.
-                          NULL, 1);
-}
-
 int wireReadInt(uint8_t address) {
   Wire.requestFrom(address, (uint8_t)2);
   if (Wire.available() != 2) {

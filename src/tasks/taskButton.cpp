@@ -22,6 +22,7 @@ void TaskButton(void* pvParameters) {
   setParameter(PARAM_BUTTON, BUTTON_RELEASED);
 
   while (true) {
+    debugProcess("TaskButton ");
     if (getParameter(PARAM_BUTTON) == BUTTON_PRESSED) {
       if (getParameter(PARAM_SOUND) == SOUND_ON) {
         setParameter(PARAM_BUZZER_MODE, BUZZER_SINGLE_NOTE);

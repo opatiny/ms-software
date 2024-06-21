@@ -183,21 +183,43 @@ void printRegressionsForMatlab(Robot* robot, int nbDigits) {
   Serial.println();
 }
 
-void printControllerParameters(Print* output, PidController* controller) {
-  updatePidParameters(controller);
+void printControllerParameters(Print* output, Robot* robot) {
+  PidController* wheel = &robot->navigation.wheelsSpeedController.left;
+  PidController* linear = &robot->navigation.robotSpeedController.linear;
+  PidController* angular = &robot->navigation.robotSpeedController.angular;
+  updatePidParameters(wheel);
+  updatePidParameters(linear);
+  updatePidParameters(angular);
+
   int nbDigits = 3;
   output->println(F("Serial parameters are Kn * 1000."));
-  output->println(F("PID speed controller parameters:"));
-  output->print("\t- (AV) Kp: ");
-  output->println(controller->params.kp, nbDigits);
-  output->print("\t- (AW) Ki: ");
-  output->println(controller->params.ki, nbDigits);
-  output->print("\t- (AX) Kd: ");
-  output->println(controller->params.kd, nbDigits);
+  output->println(F("PID wheels speed controller parameters:"));
+  output->print("\t- (BA) Kp: ");
+  output->println(wheel->params.kp, nbDigits);
+  output->print("\t- (BB) Ki: ");
+  output->println(wheel->params.ki, nbDigits);
+  output->print("\t- (BC) Kd: ");
+  output->println(wheel->params.kd, nbDigits);
+
+  output->println(F("PID robot linear speed controller parameters:"));
+  output->print("\t- (BD) Kp: ");
+  output->println(linear->params.kp, nbDigits);
+  output->print("\t- (BE) Ki: ");
+  output->println(linear->params.ki, nbDigits);
+  output->print("\t- (BF) Kd: ");
+  output->println(linear->params.kd, nbDigits);
+
+  output->println(F("PID robot angular speed controller parameters:"));
+  output->print("\t- (BG) Kp: ");
+  output->println(angular->params.kp, nbDigits);
+  output->print("\t- (BH) Ki: ");
+  output->println(angular->params.ki, nbDigits);
+  output->print("\t- (BI) Kd: ");
+  output->println(angular->params.kd, nbDigits);
 }
 
 void showPrintHelp(Print* output) {
-  output->println(F("(pc) Print controller parameters"));
+  output->println(F("(pc) Print controllers parameters"));
   output->println(F("(ps) Print state"));
   output->println(F("(pr) Print regressions (for speed calibration)"));
 }
@@ -213,9 +235,7 @@ void processPrintCommand(char command,
       printRegressionsForMatlab(&robot, 10);
       break;
     case 'c':
-
-      printControllerParameters(output,
-                                &robot.navigation.wheelsSpeedController.left);
+      printControllerParameters(output, &robot);
       break;
     default:
       showPrintHelp(output);

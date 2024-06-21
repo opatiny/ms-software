@@ -50,10 +50,22 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   // pid control to ensure both wheels go at same speed
-  PidSerialParameters serialParamsPid = {
-    kp : PARAM_CONTROLLER_KP,
-    ki : PARAM_CONTROLLER_KI,
-    kd : PARAM_CONTROLLER_KD,
+  PidSerialParameters wheelsPid = {
+    kp : PARAM_WHEEL_KP,
+    ki : PARAM_WHEEL_KI,
+    kd : PARAM_WHEEL_KD,
+  };
+
+  PidSerialParameters linearPid = {
+    kp : PARAM_LINEAR_KP,
+    ki : PARAM_LINEAR_KI,
+    kd : PARAM_LINEAR_KD,
+  };
+
+  PidSerialParameters angularPid = {
+    kp : PARAM_ANGULAR_KP,
+    ki : PARAM_ANGULAR_KI,
+    kd : PARAM_ANGULAR_KD,
   };
 
   ControllerParams robotParams = {
@@ -61,7 +73,9 @@ void TaskRobotMove(void* pvParameters) {
     speedParameter : PARAM_ROBOT_WHEELS_SPEED,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
-    pidParams : serialParamsPid,
+    wheelsPid : wheelsPid,
+    linearPid : linearPid,
+    angularPid : angularPid,
   };
 
   initialiseController(&robot.navigation, &robotParams);
@@ -71,6 +85,7 @@ void TaskRobotMove(void* pvParameters) {
   initialiseMotor(&robot.rightMotor, &rightMotorParams);
 
   while (true) {
+    debugProcess("TaskRobotMove ");
     robotControl(&robot);
     vTaskDelay(1);  // smallest delay possible -> there should be no other
                     // delays in this task!!
@@ -102,9 +117,12 @@ void robotControl(Robot* robot) {
 
   if (robot->navigation.previousMode != currentMode) {
     // clear the controllers when changing back to a mode that uses them
-    if (currentMode == ROBOT_MOVE_STRAIGHT ||
+    if (currentMode == ROBOT_WHEEL_SPEED_CONTROL ||
         currentMode == ROBOT_STOP_OBSTACLE) {
       robot->navigation.wheelsSpeedController.clearControllers = 1;
+    }
+    if (currentMode == ROBOT_SPEED_CONTROL) {
+      robot->navigation.robotSpeedController.clearControllers = 1;
     }
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
       Serial.print("New robot mode: ");
@@ -134,10 +152,15 @@ void robotControl(Robot* robot) {
       motorControl(&robot->leftMotor, &robot->leftEncoder);
       motorControl(&robot->rightMotor, &robot->rightEncoder);
       break;
-    case ROBOT_MOVE_STRAIGHT:
-      robotMoveStraight(robot, targetSpeed);
-
+    case ROBOT_WHEEL_SPEED_CONTROL:
+      wheelSpeedControl(robot, targetSpeed);
       break;
+    case ROBOT_SPEED_CONTROL: {
+      double linSpeed = getParameter(PARAM_ROBOT_SPEED_LIN) / 1000;  // m/s
+      double angSpeed = getParameter(PARAM_ROBOT_SPEED_ANG) * DEG_TO_RAD;
+      robotSpeedControl(robot, linSpeed, angSpeed);
+      break;
+    }
     default:
       Serial.println("Unknown robot movement mode");
       setParameter(robot->navigation.modeParameter, ROBOT_STOP);

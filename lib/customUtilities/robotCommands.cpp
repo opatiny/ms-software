@@ -6,7 +6,7 @@
 #include "robotCommands.h"
 #include "robotModes.h"
 
-int getClampedSpeed(int speed);
+int getClampedCommand(int command);
 void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid);
 void printPidDebug(PidController* pid, Motor* motor);
 
@@ -24,11 +24,17 @@ void initialiseController(RobotNavigation* navigation,
   navigation->obstacleDistanceParameter = params->obstacleDistanceParameter;
   navigation->previousMode = ROBOT_STOP;
 
-  // initialize PID
+  // initialize PID of wheel speeds
   initialisePidController(&navigation->wheelsSpeedController.left,
-                          &params->pidParams);
+                          &params->wheelsPid);
   initialisePidController(&navigation->wheelsSpeedController.right,
-                          &params->pidParams);
+                          &params->wheelsPid);
+
+  // initialize PID of robot speed
+  initialisePidController(&navigation->robotSpeedController.linear,
+                          &params->linearPid);
+  initialisePidController(&navigation->robotSpeedController.angular,
+                          &params->angularPid);
 
   // initally stop the robot
   setParameter(navigation->modeParameter,
@@ -127,7 +133,7 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
       return;
     }
   }
-  robotMoveStraight(robot, speed);
+  wheelSpeedControl(robot, speed);
   rgbLedFlags.obstacleDetected = 0;
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       robot->navigation.previousMode != ROBOT_STOP_OBSTACLE) {
@@ -141,7 +147,7 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
  * @param robot The robot structure.
  * @param speed The desired speed for the wheels in rpm.
  */
-void robotMoveStraight(Robot* robot, int speed) {
+void wheelSpeedControl(Robot* robot, int speed) {
   if (robot->navigation.wheelsSpeedController
           .clearControllers) {  // todo: check this condition
     clearController(&robot->navigation.wheelsSpeedController.left);
@@ -163,7 +169,7 @@ void robotMoveStraight(Robot* robot, int speed) {
   // printPidDebug(&robot->navigation.leftSpeedController, &robot->leftMotor);
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->navigation.previousMode != ROBOT_MOVE_STRAIGHT &&
+      robot->navigation.previousMode != ROBOT_WHEEL_SPEED_CONTROL &&
       robot->navigation.previousMode != ROBOT_STOP_OBSTACLE) {
     Serial.println("Robot move straight with PID on wheels speeds");
   }
@@ -188,6 +194,12 @@ void robotMoveStraight(Robot* robot, int speed) {
 
 // todo: finish this function
 // caution: copy of struct or pointer to struct??
+/**
+ * Control the robot's angular and linear speed using PID controllers.
+ * @param robot The robot structure.
+ * @param linearSpeed The desired linear speed in m/s.
+ * @param angularSpeed The desired angular speed in rad/s.
+ */
 void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed) {
   RobotSpeedController robotController = robot->navigation.robotSpeedController;
 
@@ -207,23 +219,38 @@ void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed) {
       robot->odometry.speed.v - robotController.linear.targetValue;
   double linCorrection = getNewPidValue(&robotController.linear, linError);
 
+  double angError =
+      robot->odometry.speed.omega - robotController.angular.targetValue;
+  double angCorrection = getNewPidValue(&robotController.angular, angError);
+
+  double leftCorrection = linCorrection - angCorrection;
+  double rightCorrection = linCorrection + angCorrection;
+
+  double leftCommand =
+      getClampedCommand(robot->leftMotor.currentCommand - leftCorrection);
+  double rightCommand =
+      getClampedCommand(robot->rightMotor.currentCommand - rightCorrection);
+
+  // duration is 1 because movement must be as fast as possible
+  updateMotor(&robot->leftMotor, leftCommand, 1);
+  updateMotor(&robot->rightMotor, rightCommand, 1);
   vTaskDelay(1);
 }
 
 /**
- * Get the clamped speed value between the minimum and maximum speed
+ * Get the clamped command value between the minimum and maximum command
  * values.
- * @param speed The speed to clamp.
- * @return The clamped speed value.
+ * @param command The command to clamp.
+ * @return The clamped command value.
  */
-int getClampedSpeed(int speed) {
-  int rounded = round(speed);
-  if (speed > MAX_SPEED_COMMAND) {
+int getClampedCommand(int command) {
+  int rounded = round(command);
+  if (command > MAX_SPEED_COMMAND) {
     return MAX_SPEED_COMMAND;
-  } else if (speed < MIN_SPEED_COMMAND) {
+  } else if (command < MIN_SPEED_COMMAND) {
     return MIN_SPEED_COMMAND;
   }
-  return speed;
+  return command;
 }
 
 /**
@@ -236,7 +263,7 @@ int getClampedSpeed(int speed) {
 void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
   double errorRpm = motor->wheelSpeed - pid->targetValue;
   double correction = getNewPidValue(pid, errorRpm);
-  int newCmd = getClampedSpeed(motor->currentCommand - correction);
+  int newCmd = getClampedCommand(motor->currentCommand - correction);
 
   updateMotor(motor, newCmd,
               1);  // duration is 1 because movement must be as fast as possible

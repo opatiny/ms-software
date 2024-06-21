@@ -26,6 +26,7 @@ void TaskOdometry(void* pvParameters) {
   uint32_t previousTime = millis();
   robot.odometry.time = micros();
   while (true) {
+    debugProcess("TaskOdometry ");
     updateOdometry(&robot);
 
     if (millis() - previousTime > DEBUG_DELAY) {
@@ -75,13 +76,6 @@ void updateOdometry(Robot* robot) {
   double leftCounts = leftEncoder - robot->leftEncoder.previousCounts;
   double rightCounts = rightEncoder - robot->rightEncoder.previousCounts;
 
-  // Serial.print("dt: ");
-  // Serial.print(dt, 6);
-  // Serial.print(", leftCounts: ");
-  // Serial.print(leftCounts);
-  // Serial.print(", rightCounts: ");
-  // Serial.println(rightCounts);
-
   // calculate high speed of each wheel in rpm
   robot->leftMotor.wheelSpeeds.highSpeed = computeWheelRpm(leftCounts, dt);
   robot->rightMotor.wheelSpeeds.highSpeed = computeWheelRpm(rightCounts, dt);
@@ -130,6 +124,9 @@ void updateOdometry(Robot* robot) {
   robot->odometry.pose.y += dy;
 
   // update the linear and angular velocities of the robot
+  if (dt == 0) {
+    Serial.println("updateOdometry: dt is 0");
+  }
   robot->odometry.speed.v = distance / dt;
   robot->odometry.speed.omega = dTheta / dt;
 }

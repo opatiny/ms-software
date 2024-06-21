@@ -39,6 +39,7 @@ void TaskRgbLed(void* pvParameters) {
   setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
 
   while (true) {
+    debugProcess("TaskRgbLed ");
     processRgbFlags();
 
     int ledMode = getParameter(PARAM_RGB_LED_MODE);

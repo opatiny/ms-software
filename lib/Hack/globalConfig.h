@@ -2,33 +2,15 @@
 
 #include <Arduino.h>
 
+#include "debugUtilities.h"
+
 // I2C
 extern SemaphoreHandle_t xSemaphoreWire;
 #define I2C_SPEED 400000
 
-// debug (U)
-enum DebugMode {
-  NO_DEBUG,                 // 0
-  DEBUG_DISTANCE,           // 1
-  DEBUG_IMU,                // 2
-  DEBUG_VOLTAGES,           // 3
-  DEBUG_BATTERY_LOG_DATA,   // 4
-  DEBUG_ENCODERS,           // 5
-  DEBUG_BUTTON,             // 6
-  DEBUG_MOTORS,             // 7
-  DEBUG_RGB_LED,            // 8
-  DEBUG_BUZZER,             // 9
-  DEBUG_ODOMETRY,           // 10
-  DEBUG_SPEED_CALIBRATION,  // 11
-  DEBUG_ROBOT_CONTROL,      // 12
-  DEBUG_MOTORS_DT,          // 13
-  DEBUG_MAIN,               // 14
-  DEBUG_SPEEDS,             // 15
-};
-
 // SERIAL PARAMETERS
 
-#define MAX_PARAM 52
+#define MAX_PARAM 78
 extern int16_t parameters[MAX_PARAM];
 
 // debug
@@ -82,11 +64,6 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_CALIBRATION_MODE 45  // AT
 #define PARAM_CALIBRATION_STEP 46  // AU
 
-// navigation parameters
-#define PARAM_CONTROLLER_KP 47  // AV
-#define PARAM_CONTROLLER_KI 48  // AW
-#define PARAM_CONTROLLER_KD 49  // AX
-
 // IMU parameteers
 // accelerations are in g -> 1g = 9.81 m/s^2
 #define PARAM_ACCELERATION_X 0  // A
@@ -103,6 +80,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_DISTANCE_FRONT_RIGHT 9  // J
 #define PARAM_DISTANCE_RIGHT 10       // K
 
+// remove these from serial params
 #define PARAM_OFFSET_FRONT 11        // L
 #define PARAM_OFFSET_FRONT_LEFT 12   // M
 #define PARAM_OFFSET_LEFT 13         // N
@@ -112,10 +90,28 @@ extern int16_t parameters[MAX_PARAM];
 // push button parameter
 #define PARAM_BUTTON 32  // AG
 
+// controllers parameters
+
+// todo: verify the numbers
+// wheels speed controller
+#define PARAM_WHEEL_KP 52  // BA
+#define PARAM_WHEEL_KI 53  // BB
+#define PARAM_WHEEL_KD 54  // BC
+
+// robot linear speed controller
+#define PARAM_LINEAR_KP 55  // BD
+#define PARAM_LINEAR_KI 56  // BE
+#define PARAM_LINEAR_KD 57  // BF
+
+// robot angular speed controller
+#define PARAM_ANGULAR_KP 58  // BG
+#define PARAM_ANGULAR_KI 59  // BH
+#define PARAM_ANGULAR_KD 60  // BI
+
 // various parameters
 // V
 // W
-#define PARAM_STATUS 23     // X
-#define PARAM_WIFI_RSSI 24  // Y
-#define PARAM_ERROR 25      // Z
+#define PARAM_STATUS 75     // BX
+#define PARAM_WIFI_RSSI 76  // BY
+#define PARAM_ERROR 77      // BZ
 #define PARAM_STATUS_FLAG_NO_WIFI 0

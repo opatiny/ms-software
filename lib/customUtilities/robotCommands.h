@@ -11,10 +11,12 @@ struct ControllerParams {
   int modeParameter;
   int angleParameter;
   int obstacleDistanceParameter;
-  PidSerialParameters pidParams;
+  PidSerialParameters wheelsPid;
+  PidSerialParameters linearPid;
+  PidSerialParameters angularPid;
 };
 
-int getClampedSpeed(int speed);
+int getClampedCommand(int speed);
 void initialiseController(RobotNavigation* controller,
                           ControllerParams* params);
 void robotMoveSameCommand(Robot* robot, int speed);
@@ -22,4 +24,5 @@ void robotMove(Robot* robot, int speed);
 void robotStop(Robot* robot);
 void robotTurnInPlace(Robot* robot, int speed);
 void stopWhenObstacle(Robot* robot, int speed, int distance);
-void robotMoveStraight(Robot* robot, int speed);
+void wheelSpeedControl(Robot* robot, int speed);
+void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed);

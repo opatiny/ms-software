@@ -25,7 +25,6 @@ void taskBlink();
 void taskSerial();
 void taskWifi();
 void taskWebserver();
-void taskWire();
 void taskGY521();
 void taskEventSourceSender();
 void taskDcMotorTest();
@@ -35,13 +34,12 @@ void debugTask(char const* taskName);
 void setup() {
   // start serial communication
   Serial.begin(SERIAL_SPEED);  // only for debug purpose
-  delay(500);                  // wait for serial connection to open
-  Serial.println("Device is up");
-
   // start I2C communication
   xSemaphoreGive(xSemaphoreWire);
-
   Wire.begin(SDA_PIN, SCL_PIN, I2C_SPEED);
+
+  vTaskDelay(1000);  // wait for connections to open
+  Serial.println("Device is up");
 
   // load data from EEPROM
   loadWheelsRegressions(&robot.leftMotor.regressions,
@@ -58,11 +56,8 @@ void setup() {
   // taskWebserver();
   // debugTask("TaskWebserver");
 
-  // taskWire();  // stack size problem?
-  // debugTask("TaskWire");
-
-  // taskGY521();
-  // debugTask("TaskGY521");
+  taskGY521();
+  debugTask("TaskGY521");
 
   // todo: requestFrom() I2C error in there
   taskVL53L1X();
@@ -86,8 +81,8 @@ void setup() {
   taskButton();
   debugTask("TaskButton");
 
-  taskBuzzer();
-  debugTask("TaskBuzzer");
+  // taskBuzzer();
+  // debugTask("TaskBuzzer");
 
   taskRgbLed();
   debugTask("TaskRgbLed");
@@ -101,6 +96,7 @@ void setup() {
   if (getParameter(PARAM_SOUND) == SOUND_ON) {
     setParameter(PARAM_BUZZER_MODE, BUZZER_BOOT);
   }
+  // setParameter(PARAM_DEBUG, DEBUG_PROCESSES);
 }
 
 void loop() {
@@ -110,15 +106,5 @@ void loop() {
 void resetParameters() {
   for (byte i = 0; i < MAX_PARAM; i++) {
     setAndSaveParameter(i, ERROR_VALUE);
-  }
-}
-
-void debugTask(char const* taskName) {
-  if (getParameter(PARAM_DEBUG) == DEBUG_MAIN) {
-    Serial.print("Task ");
-    Serial.print(taskName);
-    Serial.print(" running, remaining stack: ");
-    TaskHandle_t handle = xTaskGetHandle(taskName);
-    Serial.println(uxTaskGetStackHighWaterMark(handle));
   }
 }

@@ -70,6 +70,9 @@ void updateMotor(Motor* motor, int target, uint32_t duration) {
   if (target != motor->previousTargetCommand) {
     // increment necessary per us: if duration is too big, step would be 0, so
     // we set the min step to be 1 or -1
+    if (duration == 0) {
+      Serial.println("updateMotor duration is 0");
+    }
     int diff = target - motor->currentCommand;
     int idealStep = diff / duration;
 

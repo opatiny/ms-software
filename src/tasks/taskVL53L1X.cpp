@@ -56,6 +56,7 @@ void TaskVL53L1X(void* pvParameters) {
 
   int16_t distance;
   while (true) {
+    debugProcess("TaskVL53L1X ");
     vTaskDelay(DISTANCE_TASK_DELAY);
     for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
       if (xSemaphoreTake(xSemaphoreWire, 1) == pdTRUE) {

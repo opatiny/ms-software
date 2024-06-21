@@ -1,4 +1,6 @@
 #include <Arduino.h>
+
+#include <debugUtilities.h>
 #include "../customUtilities/pinMapping.h"
 
 void TaskBlink(void* pvParameters) {
@@ -6,6 +8,7 @@ void TaskBlink(void* pvParameters) {
   pinMode(BLINK_LED_PIN, OUTPUT);
 
   while (true) {
+    debugProcess("TaskBlink ");
     digitalWrite(BLINK_LED_PIN, HIGH);
     vTaskDelay(500);
     digitalWrite(BLINK_LED_PIN, LOW);

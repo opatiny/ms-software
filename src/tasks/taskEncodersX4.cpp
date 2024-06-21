@@ -54,6 +54,7 @@ void TaskEncodersX4(void* pvParameters) {
                   CHANGE);
   uint32_t previousTime = millis();
   while (true) {
+    debugProcess("TaskEncodersX4 ");
     handleZeroLowSpeed(&(robot.leftEncoder));
     handleZeroLowSpeed(&(robot.rightEncoder));
 
