@@ -10,6 +10,7 @@ enum RgbLedMode {
   LED_ON,     // 2
   LED_BLINK,  // 3
 };
+
 /**
  * RGB color
  * Each parameter is a value between 0 and 255
@@ -19,6 +20,14 @@ typedef struct {
   uint8_t g;
   uint8_t b;
 } RgbColor;
+
+typedef struct {
+  int buttonPressed;
+  int batteryEmpty;
+  int obstacleDetected;
+} RgbLedFlags;
+
+extern RgbLedFlags rgbLedFlags;
 
 const RgbColor colors[NB_RGB_COLORS] = {
     {0, 0, 0},     {255, 0, 0},   {0, 255, 0},   {0, 0, 255},

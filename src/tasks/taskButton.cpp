@@ -6,6 +6,7 @@
 
 #include "./taskButton.h"
 #include "./taskBuzzer.h"
+#include "./taskRgbLed.h"
 #include "./taskVl53L1X.h"
 
 struct ButtonFlags buttonFlags;
@@ -63,6 +64,8 @@ void buttonRoutine() {
         Serial.println("Button pressed");
       }
       setButtonFlags();
+      // turn RGB led on once
+      rgbLedFlags.buttonPressed = 1;
     }
   }
 }
@@ -74,5 +77,4 @@ void buttonRoutine() {
 void setButtonFlags() {
   buttonFlags.distanceCalibration = BUTTON_PRESSED;
   buttonFlags.robotMode = BUTTON_PRESSED;
-  buttonFlags.rgbLed = BUTTON_PRESSED;
 }

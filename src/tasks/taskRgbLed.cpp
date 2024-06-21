@@ -16,13 +16,18 @@
 #include "taskButton.h"
 #include "taskRgbLed.h"
 
+#define DEFAULT_RGB_BRIGHNESS 5
+#define BUTTON_PRESSED_COLOR 2
+#define OBSTACLE_DETECTED_COLOR 3
+
+RgbLedFlags rgbLedFlags;
+
 const char colorNames[NB_RGB_COLORS][10] = {
     "black", "red", "green", "blue", "yellow", "cyan", "magenta", "white"};
 
-#define BUTTON_PRESSED_COLOR 1
-
 uint32_t getColorFromIndex(int colorIndex);
 uint32_t getColorFromName(char const* colorName);
+void processRgbFlags();
 
 Adafruit_NeoPixel pixels(NUMPIXELS, RGB_LED_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -31,8 +36,11 @@ void TaskRgbLed(void* pvParameters) {
   pixels.clear();  // turn all pixels off
 
   setParameter(PARAM_RGB_LED_MODE, LED_OFF);
+  setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
 
   while (true) {
+    processRgbFlags();
+
     int ledMode = getParameter(PARAM_RGB_LED_MODE);
     int colorIndex = getParameter(PARAM_RGB_LED_COLOR);
     int brightness = getParameter(PARAM_RGB_LED_BRIGHTNESS);
@@ -53,11 +61,6 @@ void TaskRgbLed(void* pvParameters) {
         vTaskDelay(100);
         break;
       case LED_ON: {
-        if (buttonFlags.rgbLed == BUTTON_PRESSED) {
-          colorIndex = BUTTON_PRESSED_COLOR;
-          buttonFlags.rgbLed = BUTTON_RELEASED;
-        }
-
         pixels.setBrightness(brightness);
         pixels.setPixelColor(0, getColorFromIndex(colorIndex));
         pixels.show();  // todo: go check the doc, there's something about
@@ -67,7 +70,7 @@ void TaskRgbLed(void* pvParameters) {
       }
       case LED_BLINK: {
         pixels.setBrightness(brightness);
-        pixels.setPixelColor(0, getColorFromName("red"));
+        pixels.setPixelColor(0, getColorFromIndex(colorIndex));
         pixels.show();
         vTaskDelay(200);
         pixels.setPixelColor(0, getColorFromName("black"));
@@ -123,4 +126,34 @@ int findColorIndex(const char* colorName) {
 uint32_t getColorFromName(char const* colorName) {
   int colorIndex = findColorIndex(colorName);
   return getColorFromIndex(colorIndex);
+}
+
+/**
+ * @brief Process the RGB LED flags to set mode, color and brightness depending
+ * on the tasks flags.
+ */
+void processRgbFlags() {
+  if (rgbLedFlags.buttonPressed) {
+    rgbLedFlags.buttonPressed = 0;
+    setParameter(PARAM_RGB_LED_MODE, LED_ON);
+    setParameter(PARAM_RGB_LED_COLOR, BUTTON_PRESSED_COLOR);
+    setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
+    return;
+  } else {
+    setParameter(PARAM_RGB_LED_MODE, LED_OFF);
+  }
+  if (rgbLedFlags.obstacleDetected) {
+    setParameter(PARAM_RGB_LED_MODE, LED_ON);
+    setParameter(PARAM_RGB_LED_COLOR, OBSTACLE_DETECTED_COLOR);
+    setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
+    return;
+  } else {
+    setParameter(PARAM_RGB_LED_MODE, LED_OFF);
+  }
+  if (rgbLedFlags.batteryEmpty) {
+    setParameter(PARAM_RGB_LED_MODE, LED_BLINK);
+    setParameter(PARAM_RGB_LED_COLOR, 1);
+    setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
+    return;
+  }
 }

@@ -68,12 +68,12 @@ void TaskVoltage(void* pvParameters) {
     // blink RGB LED if battery is empty
     if (batteryLevel <= BATTERY_EMPTY) {
       if (previousBatteryState == 1) {
-        setParameter(PARAM_RGB_LED_MODE, LED_BLINK);
+        rgbLedFlags.batteryEmpty = 1;
         previousBatteryState = 0;
       }
     } else {
       if (previousBatteryState == 0) {
-        setParameter(PARAM_RGB_LED_MODE, LED_OFF);
+        rgbLedFlags.batteryEmpty = 0;
         previousBatteryState = 1;
       }
     }

@@ -61,8 +61,8 @@ void setup() {
   // taskWire();  // stack size problem?
   // debugTask("TaskWire");
 
-  taskGY521();
-  debugTask("TaskGY521");
+  // taskGY521();
+  // debugTask("TaskGY521");
 
   // todo: requestFrom() I2C error in there
   taskVL53L1X();
@@ -80,8 +80,8 @@ void setup() {
   // taskCalibrateSpeed();
   // debugTask("TaskCalibration");
 
-  // taskVoltage();
-  // debugTask("TaskVoltage");
+  taskVoltage();
+  debugTask("TaskVoltage");
 
   taskButton();
   debugTask("TaskButton");
@@ -89,8 +89,8 @@ void setup() {
   // taskBuzzer();
   // debugTask("TaskBuzzer");
 
-  // taskRgbLed();
-  // debugTask("TaskRgbLed");
+  taskRgbLed();
+  debugTask("TaskRgbLed");
 
   // taskEventSourceSender();
   // debugTask("TaskEventSourceSender");

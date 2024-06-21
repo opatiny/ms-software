@@ -1,6 +1,7 @@
 #include <timeUtilities.h>
 #include <utilities/params.h>
 
+#include "../../src/tasks/taskRgbLed.h"
 #include "motorCommands.h"
 #include "robotCommands.h"
 #include "robotModes.h"
@@ -121,10 +122,12 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
     if (robot->distances[i] < distance) {
       robot->controller.clearControllers = 1;
       robotStop(robot);
+      rgbLedFlags.obstacleDetected = 1;
       return;
     }
   }
   robotMoveStraight(robot, speed);
+  rgbLedFlags.obstacleDetected = 0;
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
       robot->controller.previousMode != ROBOT_STOP_OBSTACLE) {
     Serial.println("Robot stop obstacle");
