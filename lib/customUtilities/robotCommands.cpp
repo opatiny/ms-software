@@ -136,11 +136,11 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
 }
 
 /**
- * Move the robot straight at a given speed in rpm using a PID navigation.
+ * Move the robot straight at a given wheel speed in rpm using PID controllers
+ * on the wheels.
  * @param robot The robot structure.
  * @param speed The desired speed for the wheels in rpm.
-
-*/
+ */
 void robotMoveStraight(Robot* robot, int speed) {
   if (robot->navigation.wheelsSpeedController
           .clearControllers) {  // todo: check this condition
@@ -186,6 +186,30 @@ void robotMoveStraight(Robot* robot, int speed) {
   vTaskDelay(1);
 }
 
+// todo: finish this function
+// caution: copy of struct or pointer to struct??
+void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed) {
+  RobotSpeedController robotController = robot->navigation.robotSpeedController;
+
+  if (robotController.clearControllers) {
+    clearController(&robotController.linear);
+    clearController(&robotController.angular);
+    robotController.clearControllers = 0;
+    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+      Serial.println("Clear controllers");
+    }
+  }
+
+  robotController.linear.targetValue = linearSpeed;
+  robotController.angular.targetValue = angularSpeed;
+
+  double linError =
+      robot->odometry.speed.v - robotController.linear.targetValue;
+  double linCorrection = getNewPidValue(&robotController.linear, linError);
+
+  vTaskDelay(1);
+}
+
 /**
  * Get the clamped speed value between the minimum and maximum speed
  * values.
@@ -208,7 +232,6 @@ int getClampedSpeed(int speed) {
  * @param motor The motor structure.
  * @param encoder The encoder structure.
  * @param pid The PID navigation structure.
-
 */
 void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {
   double errorRpm = motor->wheelSpeed - pid->targetValue;
