@@ -214,7 +214,8 @@ void processPrintCommand(char command,
       break;
     case 'c':
 
-      printControllerParameters(output, &robot.controller.leftSpeedController);
+      printControllerParameters(output,
+                                &robot.navigation.wheelsSpeedController.left);
       break;
     default:
       showPrintHelp(output);

@@ -58,13 +58,13 @@ void TaskRobotMove(void* pvParameters) {
 
   ControllerParams robotParams = {
     commandParameter : PARAM_ROBOT_COMMAND,
-    speedParameter : PARAM_ROBOT_SPEED,
+    speedParameter : PARAM_ROBOT_WHEELS_SPEED,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
     pidParams : serialParamsPid,
   };
 
-  initialiseController(&robot.controller, &robotParams);
+  initialiseController(&robot.navigation, &robotParams);
 
   // initialise the motors
   initialiseMotor(&robot.leftMotor, &leftMotorParams);
@@ -83,9 +83,9 @@ void taskRobotMove() {
 }
 
 void robotControl(Robot* robot) {
-  int targetCommand = getParameter(robot->controller.commandParameter);
-  int targetSpeed = getParameter(robot->controller.speedParameter);
-  int currentMode = getParameter(robot->controller.modeParameter);
+  int targetCommand = getParameter(robot->navigation.commandParameter);
+  int targetSpeed = getParameter(robot->navigation.speedParameter);
+  int currentMode = getParameter(robot->navigation.modeParameter);
 
   if (buttonFlags.robotMode) {
     if (currentMode != ROBOT_STOP) {
@@ -96,15 +96,15 @@ void robotControl(Robot* robot) {
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
       Serial.println("Button pressed!");
     }
-    setParameter(robot->controller.modeParameter, currentMode);
+    setParameter(robot->navigation.modeParameter, currentMode);
     buttonFlags.robotMode = false;
   }
 
-  if (robot->controller.previousMode != currentMode) {
+  if (robot->navigation.previousMode != currentMode) {
     // clear the controllers when changing back to a mode that uses them
     if (currentMode == ROBOT_MOVE_STRAIGHT ||
         currentMode == ROBOT_STOP_OBSTACLE) {
-      robot->controller.clearControllers = 1;
+      robot->navigation.wheelsSpeedController.clearControllers = 1;
     }
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
       Serial.print("New robot mode: ");
@@ -140,9 +140,9 @@ void robotControl(Robot* robot) {
       break;
     default:
       Serial.println("Unknown robot movement mode");
-      setParameter(robot->controller.modeParameter, ROBOT_STOP);
+      setParameter(robot->navigation.modeParameter, ROBOT_STOP);
       break;
   }
 
-  robot->controller.previousMode = currentMode;
+  robot->navigation.previousMode = currentMode;
 }

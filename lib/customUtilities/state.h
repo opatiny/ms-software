@@ -73,10 +73,28 @@ struct Motor {
 };
 
 /**
+ * Control both wheels speeds with a separate PID controller.
+ */
+struct WheelsSpeedController {
+  PidController left;
+  PidController right;
+  bool clearControllers;
+};
+
+/**
+ * Control the robot's angular and linear speed with a PID controller.
+ */
+struct RobotSpeedController {
+  PidController linear;
+  PidController angular;
+  bool clearControllers;
+};
+
+/**
  * The structure for the control of the robot movement. Allows to set the
  * movement mode, speed, etc
  */
-struct RobotController {
+struct RobotNavigation {
   int commandParameter;
   int speedParameter;
   int angleParameter;
@@ -86,9 +104,8 @@ struct RobotController {
   int currentCommand;
   int currentSpeed;
   int previousMode;
-  PidController leftSpeedController;
-  PidController rightSpeedController;
-  bool clearControllers;
+  WheelsSpeedController wheelsSpeedController;
+  RobotSpeedController robotSpeedController;
 };
 
 /**
@@ -134,7 +151,7 @@ struct Robot {
   int distances[NB_DISTANCE_SENSORS];
   // bool walls[NB_DISTANCE_SENSORS];
   ImuData imuData;
-  RobotController controller;
+  RobotNavigation navigation;
   Odometry odometry;
   VoltageMeasurement battery;
   VoltageMeasurement vcc;

@@ -15,7 +15,7 @@ struct ControllerParams {
 };
 
 int getClampedSpeed(int speed);
-void initialiseController(RobotController* controller,
+void initialiseController(RobotNavigation* controller,
                           ControllerParams* params);
 void robotMoveSameCommand(Robot* robot, int speed);
 void robotMove(Robot* robot, int speed);

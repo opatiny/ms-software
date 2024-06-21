@@ -151,9 +151,9 @@ void stopMotor(Motor* motor) {
 void stopMotors(Robot* robot) {
   stopMotor(&robot->leftMotor);
   stopMotor(&robot->rightMotor);
-  robot->controller.currentCommand = 0;
-  robot->controller.currentSpeed = 0;
-  robot->controller.previousMode = ROBOT_STOP;
+  robot->navigation.currentCommand = 0;
+  robot->navigation.currentSpeed = 0;
+  robot->navigation.previousMode = ROBOT_STOP;
 }
 
 /**

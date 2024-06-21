@@ -43,7 +43,7 @@ void TaskCalibration(void* pvParameters) {
     if (getParameter(PARAM_CALIBRATION_MODE) == CALIBRATION_OFF &&
         testData.speed != -CALIBRATION_SPEED_LIMIT) {
       clearTestCalibrationData(&testData);
-      setParameter(PARAM_ROBOT_SPEED, 0);
+      setParameter(PARAM_ROBOT_WHEELS_SPEED, 0);
       setParameter(PARAM_ROBOT_MODE, ROBOT_STOP);
     }
     vTaskDelay(SPEED_CALIBRATION_DELAY);

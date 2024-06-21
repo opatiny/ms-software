@@ -86,8 +86,8 @@ void setup() {
   taskButton();
   debugTask("TaskButton");
 
-  // taskBuzzer();
-  // debugTask("TaskBuzzer");
+  taskBuzzer();
+  debugTask("TaskBuzzer");
 
   taskRgbLed();
   debugTask("TaskRgbLed");

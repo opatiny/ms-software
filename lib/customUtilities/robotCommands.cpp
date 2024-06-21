@@ -11,33 +11,34 @@ void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid);
 void printPidDebug(PidController* pid, Motor* motor);
 
 /**
- * @brief Initialise the robot controller by giving the desired default values
+ * @brief Initialise the robot navigation by giving the desired default values
  * to the parameters.
  */
-void initialiseController(RobotController* controller,
+void initialiseController(RobotNavigation* navigation,
                           ControllerParams* params) {
   // setup the motor parameters
-  controller->commandParameter = params->commandParameter;
-  controller->speedParameter = params->speedParameter;
-  controller->modeParameter = params->modeParameter;
-  controller->angleParameter = params->angleParameter;
-  controller->obstacleDistanceParameter = params->obstacleDistanceParameter;
-  controller->previousMode = ROBOT_STOP;
+  navigation->commandParameter = params->commandParameter;
+  navigation->speedParameter = params->speedParameter;
+  navigation->modeParameter = params->modeParameter;
+  navigation->angleParameter = params->angleParameter;
+  navigation->obstacleDistanceParameter = params->obstacleDistanceParameter;
+  navigation->previousMode = ROBOT_STOP;
 
   // initialize PID
-  initialisePidController(&controller->leftSpeedController, &params->pidParams);
-  initialisePidController(&controller->rightSpeedController,
+  initialisePidController(&navigation->wheelsSpeedController.left,
+                          &params->pidParams);
+  initialisePidController(&navigation->wheelsSpeedController.right,
                           &params->pidParams);
 
   // initally stop the robot
-  setParameter(controller->modeParameter,
+  setParameter(navigation->modeParameter,
                ROBOT_EACH_WHEEL);  // todo: change back to ROBOT_STOP
 
   // initialise robot parameters
-  setParameter(controller->commandParameter, 150);
-  // setParameter(controller->speedParameter, 300);
-  setParameter(controller->angleParameter, 90);  // degrees
-  setParameter(controller->obstacleDistanceParameter,
+  setParameter(navigation->commandParameter, 150);
+  // setParameter(navigation->speedParameter, 300);
+  setParameter(navigation->angleParameter, 90);  // degrees
+  setParameter(navigation->obstacleDistanceParameter,
                150);  // distance in mm
 }
 
@@ -48,34 +49,34 @@ void initialiseController(RobotController* controller,
  * @param command The speed command for the wheels.
  */
 void robotMoveSameCommand(Robot* robot, int command) {
-  if (command != robot->controller.currentCommand) {
-    robot->controller.currentCommand = command;
+  if (command != robot->navigation.currentCommand) {
+    robot->navigation.currentCommand = command;
   }
   updateMotors(robot, command, command, getParameter(PARAM_MOTOR_ACC_DURATION));
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->controller.previousMode != ROBOT_MOVE_SAME_COMMAND) {
+      robot->navigation.previousMode != ROBOT_MOVE_SAME_COMMAND) {
     Serial.println("Robot move same command");
   }
 }
 
 /**
  * Move the robot in a straight line at a given speed in rpm.
- * This function doesn't use a PID controller, but linearizes the speed based on
+ * This function doesn't use a PID navigation, but linearizes the speed based on
  * the calibration between rpm speed and command.
  * @param robot The robot structure.
  * @param speed The desired speed for the wheels in rpm.
  */
 void robotMove(Robot* robot, int speed) {
-  if (speed != robot->controller.currentSpeed) {
-    robot->controller.currentSpeed = speed;
+  if (speed != robot->navigation.currentSpeed) {
+    robot->navigation.currentSpeed = speed;
   }
   int leftCommand = getCommand(&robot->leftMotor.regressions, speed);
   int rightCommand = getCommand(&robot->rightMotor.regressions, speed);
   updateMotors(robot, leftCommand, rightCommand,
                getParameter(PARAM_MOTOR_ACC_DURATION));
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->controller.previousMode != ROBOT_MOVE) {
+      robot->navigation.previousMode != ROBOT_MOVE) {
     Serial.println("Robot move same speed on both wheels");
   }
 }
@@ -85,7 +86,7 @@ void robotMove(Robot* robot, int speed) {
  */
 void robotStop(Robot* robot) {
   stopMotors(robot);
-  robot->controller.currentCommand = 0;
+  robot->navigation.currentCommand = 0;
 }
 
 /**
@@ -96,8 +97,8 @@ void robotStop(Robot* robot) {
  * robot counter-clockwise.
  */
 void robotTurnInPlace(Robot* robot, int speed) {
-  if (speed != robot->controller.currentSpeed) {
-    robot->controller.currentSpeed = 0;
+  if (speed != robot->navigation.currentSpeed) {
+    robot->navigation.currentSpeed = 0;
   }
   int leftCommand = getCommand(&robot->leftMotor.regressions, speed);
   int rightCommand = getCommand(&robot->rightMotor.regressions, -speed);
@@ -105,7 +106,7 @@ void robotTurnInPlace(Robot* robot, int speed) {
                getParameter(PARAM_MOTOR_ACC_DURATION));
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->controller.previousMode != ROBOT_TURN_IN_PLACE) {
+      robot->navigation.previousMode != ROBOT_TURN_IN_PLACE) {
     Serial.println("Robot turn in place");
   }
 }
@@ -120,7 +121,7 @@ void robotTurnInPlace(Robot* robot, int speed) {
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
     if (robot->distances[i] < distance) {
-      robot->controller.clearControllers = 1;
+      robot->navigation.wheelsSpeedController.clearControllers = 1;
       robotStop(robot);
       rgbLedFlags.obstacleDetected = 1;
       return;
@@ -129,41 +130,42 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
   robotMoveStraight(robot, speed);
   rgbLedFlags.obstacleDetected = 0;
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->controller.previousMode != ROBOT_STOP_OBSTACLE) {
+      robot->navigation.previousMode != ROBOT_STOP_OBSTACLE) {
     Serial.println("Robot stop obstacle");
   }
 }
 
 /**
- * Move the robot straight at a given speed in rpm using a PID controller.
+ * Move the robot straight at a given speed in rpm using a PID navigation.
  * @param robot The robot structure.
  * @param speed The desired speed for the wheels in rpm.
 
 */
 void robotMoveStraight(Robot* robot, int speed) {
-  if (robot->controller.clearControllers) {  // todo: check this condition
-    clearController(&robot->controller.leftSpeedController);
-    clearController(&robot->controller.rightSpeedController);
-    robot->controller.clearControllers = 0;
+  if (robot->navigation.wheelsSpeedController
+          .clearControllers) {  // todo: check this condition
+    clearController(&robot->navigation.wheelsSpeedController.left);
+    clearController(&robot->navigation.wheelsSpeedController.right);
+    robot->navigation.wheelsSpeedController.clearControllers = 0;
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
       Serial.println("Clear controllers");
     }
   }
 
-  robot->controller.leftSpeedController.targetValue = speed;
-  robot->controller.rightSpeedController.targetValue = speed;
+  robot->navigation.wheelsSpeedController.left.targetValue = speed;
+  robot->navigation.wheelsSpeedController.right.targetValue = speed;
 
   wheelSpeedController(&robot->leftMotor, &robot->leftEncoder,
-                       &robot->controller.leftSpeedController);
+                       &robot->navigation.wheelsSpeedController.left);
   wheelSpeedController(&robot->rightMotor, &robot->rightEncoder,
-                       &robot->controller.rightSpeedController);
+                       &robot->navigation.wheelsSpeedController.right);
 
-  // printPidDebug(&robot->controller.leftSpeedController, &robot->leftMotor);
+  // printPidDebug(&robot->navigation.leftSpeedController, &robot->leftMotor);
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL &&
-      robot->controller.previousMode != ROBOT_MOVE_STRAIGHT &&
-      robot->controller.previousMode != ROBOT_STOP_OBSTACLE) {
-    Serial.println("Robot move straight with PID");
+      robot->navigation.previousMode != ROBOT_MOVE_STRAIGHT &&
+      robot->navigation.previousMode != ROBOT_STOP_OBSTACLE) {
+    Serial.println("Robot move straight with PID on wheels speeds");
   }
 
   if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
@@ -201,11 +203,11 @@ int getClampedSpeed(int speed) {
 }
 
 /**
- * @brief Control the speed of a wheel using a PID controller. The desired
+ * @brief Control the speed of a wheel using a PID navigation. The desired
  target speed in rpm is in the pid structure..
  * @param motor The motor structure.
  * @param encoder The encoder structure.
- * @param pid The PID controller structure.
+ * @param pid The PID navigation structure.
 
 */
 void wheelSpeedController(Motor* motor, Encoder* encoder, PidController* pid) {

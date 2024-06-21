@@ -111,7 +111,7 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
     Serial.print("Speed step: ");
     Serial.println(data->speedStep);
     setParameter(PARAM_ROBOT_MODE, ROBOT_MOVE);
-    setParameter(PARAM_ROBOT_SPEED, data->speed);
+    setParameter(PARAM_ROBOT_WHEELS_SPEED, data->speed);
     Serial.println("\ntime, batteryVoltage, speed, leftSpeed, rightSpeed");
   }
 
@@ -133,7 +133,7 @@ void testCalibration(Robot* robot, TestCalibrationData* data) {
     clearTestCalibrationData(data);
     return;
   }
-  setParameter(PARAM_ROBOT_SPEED, data->speed);
+  setParameter(PARAM_ROBOT_WHEELS_SPEED, data->speed);
 }
 
 void clearTestCalibrationData(TestCalibrationData* data) {
