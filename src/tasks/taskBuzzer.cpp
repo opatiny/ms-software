@@ -11,6 +11,8 @@
 
 #include "./taskBuzzer.h"
 
+void playNote(note_t note, int octave, int duration);
+
 Pwm buzzer = Pwm();  // constructor
 
 void TaskBuzzer(void* pvParameters) {
@@ -33,14 +35,13 @@ void TaskBuzzer(void* pvParameters) {
         vTaskDelay(10);
         break;
       case BUZZER_SINGLE_NOTE:
-        buzzer.note(BUZZER_PIN, NOTE_C, 4, 10, 0);
-        vTaskDelay(100);
+        playNote(NOTE_C, 4, 10);
         setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
       case BUZZER_ALARM:
-        buzzer.note(BUZZER_PIN, NOTE_C, 4, 10, 0);
+        playNote(NOTE_C, 4, 10);
         vTaskDelay(100);
-        buzzer.note(BUZZER_PIN, NOTE_D, 4, 10, 0);
+        playNote(NOTE_E, 4, 10);
         vTaskDelay(100);
         repetitionsAlarm++;
 
@@ -51,15 +52,13 @@ void TaskBuzzer(void* pvParameters) {
         break;
       case BUZZER_SCALE:
         for (int i = 0; i < nbNotesScale; i++) {
-          buzzer.note(BUZZER_PIN, scale[i], scaleOctaves[i], 10, 0);
-          vTaskDelay(100);
+          playNote(scale[i], scaleOctaves[i], 100);
         }
         setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
       case BUZZER_BOOT:
         for (int i = 0; i < nbNotesBoot; i++) {
-          buzzer.note(BUZZER_PIN, bootNotes[i], 5, bootNotesLengths[i], 0);
-          vTaskDelay(100);
+          playNote(bootNotes[i], 5, bootNotesLengths[i]);
         }
         setParameter(PARAM_BUZZER_MODE, BUZZER_OFF);
         break;
@@ -80,4 +79,16 @@ void taskBuzzer() {
                           1,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
                           NULL, 1);
+}
+
+/**
+ * Play a note on the buzzer.
+ *
+ * @param note Note to play
+ * @param octave Octave of the note
+ * @param duration Duration of the note
+ */
+void playNote(note_t note, int octave, int duration) {
+  buzzer.note(BUZZER_PIN, note, octave, duration, 0);
+  vTaskDelay(duration);
 }
