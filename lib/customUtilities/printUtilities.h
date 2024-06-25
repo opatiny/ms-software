@@ -2,9 +2,11 @@
 
 #include <state.h>
 
-void printDebug();
-void printState();
-void printArray(double* array, int size, int nbDigits = 2);
-void printRegressions(Regressions* regressions, int nbDigits = 2);
-void printRegressionsForMatlab(Robot* robot, int nbDigits);
+void printDebug(Print* output);
+void printState(Print* output);
+void printArray(Print* output, double* array, int size, int nbDigits = 2);
+void printRegressions(Print* output,
+                      Regressions* regressions,
+                      int nbDigits = 2);
+void printRegressionsForMatlab(Print* output, Robot* robot, int nbDigits);
 void processPrintCommand(char command, char* paramValue, Print* output);

@@ -162,7 +162,7 @@ void printResult(char* data, Print* output) {
   // we will process the commands, it means it starts with lowercase
   switch (data[0]) {
     case 'd':
-      printDebug();
+      printDebug(output);
       break;
 
     case 'h':

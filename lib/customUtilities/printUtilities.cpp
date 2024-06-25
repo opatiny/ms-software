@@ -5,92 +5,92 @@
 #include "pidController.h"
 #include "printUtilities.h"
 
-void printRegressions(Regressions* regressions, int nbDigits);
+void printRegressions(Print* output, Regressions* regressions, int nbDigits);
 
 /**
  * @brief Print the accelerometer's data.
  */
-void printImu(ImuData* imuData) {
-  Serial.print("\t- Acceleration [mm/s^2]: ");
-  Serial.print(imuData->acceleration.x);
-  Serial.print(", ");
-  Serial.print(imuData->acceleration.y);
-  Serial.print(", ");
-  Serial.println(imuData->acceleration.z);
-  Serial.print("\t- Rotation: ");
-  Serial.print(imuData->rotation.x);
-  Serial.print(", ");
-  Serial.print(imuData->rotation.y);
-  Serial.print(", ");
-  Serial.println(imuData->rotation.z);
+void printImu(Print* output, ImuData* imuData) {
+  output->print("\t- Acceleration [mm/s^2]: ");
+  output->print(imuData->acceleration.x);
+  output->print(", ");
+  output->print(imuData->acceleration.y);
+  output->print(", ");
+  output->println(imuData->acceleration.z);
+  output->print("\t- Rotation: ");
+  output->print(imuData->rotation.x);
+  output->print(", ");
+  output->print(imuData->rotation.y);
+  output->print(", ");
+  output->println(imuData->rotation.z);
 }
 
 /**
  * @brief Print the distance sensors' data.
  */
-void printDistances(int* distances) {
+void printDistances(Print* output, int* distances) {
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-    Serial.print(distances[i]);
-    Serial.print(", ");
+    output->print(distances[i]);
+    output->print(", ");
   }
-  Serial.println();
+  output->println();
 }
 
 /**
  * @brief Print the data of one of the motors.
  */
-void printMotor(Motor* motor) {
-  Serial.print("\t - Pins: ");
-  Serial.print(motor->pin1);
-  Serial.print(", ");
-  Serial.println(motor->pin2);
-  Serial.print("\t - Mode: ");
-  Serial.println(getParameter(motor->modeParameter));
-  Serial.print("\t - Current speed: ");
-  Serial.println(motor->currentCommand);
-  Serial.print("\t - Target speed: ");
-  Serial.println(getParameter(motor->commandParameter));
-  Serial.print("\t - Target angle: ");
-  Serial.println(getParameter(motor->angleParameter));
-  Serial.println("Speed calibration regressions: ");
-  printRegressions(&motor->regressions, 5);
+void printMotor(Print* output, Motor* motor) {
+  output->print("\t - Pins: ");
+  output->print(motor->pin1);
+  output->print(", ");
+  output->println(motor->pin2);
+  output->print("\t - Mode: ");
+  output->println(getParameter(motor->modeParameter));
+  output->print("\t - Current speed: ");
+  output->println(motor->currentCommand);
+  output->print("\t - Target speed: ");
+  output->println(getParameter(motor->commandParameter));
+  output->print("\t - Target angle: ");
+  output->println(getParameter(motor->angleParameter));
+  output->println("Speed calibration regressions: ");
+  printRegressions(output, &motor->regressions, 5);
 }
 
 /**
  * @brief Print the data of the encoders.
  */
-void printEncoder(Encoder* encoder) {
-  Serial.print("\t - Pins: ");
-  Serial.print(encoder->pin1);
-  Serial.print(", ");
-  Serial.println(encoder->pin2);
-  Serial.print("\t - Counts: ");
-  Serial.println(encoder->counts);
+void printEncoder(Print* output, Encoder* encoder) {
+  output->print("\t - Pins: ");
+  output->print(encoder->pin1);
+  output->print(", ");
+  output->println(encoder->pin2);
+  output->print("\t - Counts: ");
+  output->println(encoder->counts);
 }
 
 /**
  * @brief Print the data of the battery.
  */
-void printVoltage(VoltageMeasurement* voltageMeasurement) {
-  Serial.print("\t - Pin: ");
-  Serial.println(voltageMeasurement->pin);
-  Serial.print("\t - Voltage [mV]: ");
-  Serial.println(getParameter(voltageMeasurement->voltageParameter));
-  Serial.print("\t - Warning voltage [mV]: ");
-  Serial.println(voltageMeasurement->warningVoltage);
+void printVoltage(Print* output, VoltageMeasurement* voltageMeasurement) {
+  output->print("\t - Pin: ");
+  output->println(voltageMeasurement->pin);
+  output->print("\t - Voltage [mV]: ");
+  output->println(getParameter(voltageMeasurement->voltageParameter));
+  output->print("\t - Warning voltage [mV]: ");
+  output->println(voltageMeasurement->warningVoltage);
 }
 
-void printOdometry(Odometry* odometry) {
-  Serial.print("\t - Pose (x,y,theta): ");
-  Serial.print(odometry->pose.x);
-  Serial.print(", ");
-  Serial.print(odometry->pose.y);
-  Serial.print(", ");
-  Serial.println(odometry->pose.theta);
-  Serial.print("\t - Speed (v,omega): ");
-  Serial.print(odometry->speed.v);
-  Serial.print(", ");
-  Serial.println(odometry->speed.omega);
+void printOdometry(Print* output, Odometry* odometry) {
+  output->print("\t - Pose (x,y,theta): ");
+  output->print(odometry->pose.x);
+  output->print(", ");
+  output->print(odometry->pose.y);
+  output->print(", ");
+  output->println(odometry->pose.theta);
+  output->print("\t - Speed (v,omega): ");
+  output->print(odometry->speed.v);
+  output->print(", ");
+  output->println(odometry->speed.omega);
 }
 
 // todo: enhance print state
@@ -98,63 +98,63 @@ void printOdometry(Odometry* odometry) {
 /**
  * @brief Print the current state of the robot.
  */
-void printState() {
-  Serial.println("Logging current state...\n");
-  Serial.println("Left motor:");
-  printMotor(&robot.leftMotor);
-  Serial.println("\nRight motor:");
-  printMotor(&robot.rightMotor);
-  Serial.println("\nLeft encoder:");
-  printEncoder(&robot.leftEncoder);
-  Serial.println("\nRight encoder:");
-  printEncoder(&robot.rightEncoder);
-  Serial.println("\nOdometry:");
-  printOdometry(&robot.odometry);
-  Serial.print("\nDistances [mm]: ");
-  printDistances(robot.distances);
-  Serial.println("\nIMU data");
-  printImu(&robot.imuData);
-  Serial.println("\nBattery:");
-  printVoltage(&robot.battery);
-  Serial.println("\nVcc:");
-  printVoltage(&robot.vcc);
+void printState(Print* output) {
+  output->print("Logging current state...\n");
+  output->println("Left motor:");
+  printMotor(output, &robot.leftMotor);
+  output->println("\nRight motor:");
+  printMotor(output, &robot.rightMotor);
+  output->println("\nLeft encoder:");
+  printEncoder(output, &robot.leftEncoder);
+  output->println("\nRight encoder:");
+  printEncoder(output, &robot.rightEncoder);
+  output->println("\nOdometry:");
+  printOdometry(output, &robot.odometry);
+  output->print("\nDistances [mm]: ");
+  printDistances(output, robot.distances);
+  output->println("\nIMU data");
+  printImu(output, &robot.imuData);
+  output->print("\nBattery:");
+  printVoltage(output, &robot.battery);
+  output->println("\nVcc:");
+  printVoltage(output, &robot.vcc);
 }
 
 /**
  * @brief Print the help for the debug modes and the current debug mode.
  */
-void printDebug() {
-  Serial.println("Use serial parameter U to switch between debug modes.");
-  Serial.println("\t0) No debug");
-  Serial.println("\t1) Distance sensors");
-  Serial.println("\t2) Accelerometer");
-  Serial.println("\t3) Battery");
-  Serial.println("\t4) Battery for matlab");
-  Serial.println("\t5) Encoders");
-  Serial.println("\t6) Push button");
-  Serial.println("\t7) Motors");
-  Serial.println("\t8) RGB LED");
-  Serial.println("\t9) Buzzer");
-  Serial.println("\t10) Odometry");
-  Serial.println("\t11) Speed calibration");
-  Serial.println("\t12) Robot control");
-  Serial.println("\t13) Motors (only time interval since last call)");
-  Serial.println("\t14) Main: print when tasks are up");
-  Serial.println("\t15) Wheel speed measurements with different methods");
+void printDebug(Print* output) {
+  output->println("Use serial parameter U to switch between debug modes.");
+  output->println("\t0) No debug");
+  output->println("\t1) Distance sensors");
+  output->println("\t2) Accelerometer");
+  output->println("\t3) Battery");
+  output->println("\t4) Battery for matlab");
+  output->println("\t5) Encoders");
+  output->println("\t6) Push button");
+  output->println("\t7) Motors");
+  output->println("\t8) RGB LED");
+  output->println("\t9) Buzzer");
+  output->println("\t10) Odometry");
+  output->println("\t11) Speed calibration");
+  output->println("\t12) Robot control");
+  output->println("\t13) Motors (only time interval since last call)");
+  output->println("\t14) Main: print when tasks are up");
+  output->println("\t15) Wheel speed measurements with different methods");
 
-  Serial.print("\nCurrent debug mode: U");
-  Serial.println(getParameter(PARAM_DEBUG));
+  output->print("\nCurrent debug mode: U");
+  output->println(getParameter(PARAM_DEBUG));
 }
 
 /**
  * @brief Print an array of doubles.
  */
-void printArray(double* array, int size, int nbDigits) {
+void printArray(Print* output, double* array, int size, int nbDigits) {
   for (int i = 0; i < size; i++) {
-    Serial.print(array[i], nbDigits);
-    Serial.print(", ");
+    output->print(array[i], nbDigits);
+    output->print(", ");
   }
-  Serial.println();
+  output->println();
 }
 
 /**
@@ -162,25 +162,25 @@ void printArray(double* array, int size, int nbDigits) {
  * @param regressions The regressions to print.
  * @param nbDigits The number of decimal digits to print (default is 2).
  */
-void printRegressions(Regressions* regressions, int nbDigits) {
-  Serial.print("\t- Negative part: ");
-  printArray(regressions->pNeg, NB_COEFF, nbDigits);
-  Serial.print("\t- Positive part: ");
-  printArray(regressions->pPos, NB_COEFF, nbDigits);
+void printRegressions(Print* output, Regressions* regressions, int nbDigits) {
+  output->print("\t- Negative part: ");
+  printArray(output, regressions->pNeg, NB_COEFF, nbDigits);
+  output->print("\t- Positive part: ");
+  printArray(output, regressions->pPos, NB_COEFF, nbDigits);
 }
 
-void printRegressionsForMatlab(Robot* robot, int nbDigits) {
-  Serial.println("\n pNegLeft, pPosLeft, pNegRight, pPosRight");
+void printRegressionsForMatlab(Print* output, Robot* robot, int nbDigits) {
+  output->println("\n pNegLeft, pPosLeft, pNegRight, pPosRight");
   for (int i = 0; i < NB_COEFF; i++) {
-    Serial.print(robot->leftMotor.regressions.pNeg[i], nbDigits);
-    Serial.print(", ");
-    Serial.print(robot->leftMotor.regressions.pPos[i], nbDigits);
-    Serial.print(", ");
-    Serial.print(robot->rightMotor.regressions.pNeg[i], nbDigits);
-    Serial.print(", ");
-    Serial.println(robot->rightMotor.regressions.pPos[i], nbDigits);
+    output->print(robot->leftMotor.regressions.pNeg[i], nbDigits);
+    output->print(", ");
+    output->print(robot->leftMotor.regressions.pPos[i], nbDigits);
+    output->print(", ");
+    output->print(robot->rightMotor.regressions.pNeg[i], nbDigits);
+    output->print(", ");
+    output->println(robot->rightMotor.regressions.pPos[i], nbDigits);
   }
-  Serial.println();
+  output->println();
 }
 
 void printControllerParameters(Print* output, Robot* robot) {
@@ -229,10 +229,10 @@ void processPrintCommand(char command,
                          Print* output) {  // char and char* ??
   switch (command) {
     case 's':
-      printState();
+      printState(output);
       break;
     case 'r':
-      printRegressionsForMatlab(&robot, 10);
+      printRegressionsForMatlab(output, &robot, 10);
       break;
     case 'c':
       printControllerParameters(output, &robot);

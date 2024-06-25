@@ -70,9 +70,9 @@ void wheelSpeedCalibration(CalibrationData* data,
     saveWheelsRegressions(leftRegressions, rightRegressions);
 
     Serial.println("\nLeft wheel regressions:");
-    printRegressions(leftRegressions, 10);
+    printRegressions(&Serial, leftRegressions, 10);
     Serial.println("Right wheel regressions:");
-    printRegressions(rightRegressions, 10);
+    printRegressions(&Serial, rightRegressions, 10);
 
     Serial.println("Speed calibration finished.");
     setParameter(PARAM_CALIBRATION_MODE, CALIBRATION_OFF);
