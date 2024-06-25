@@ -53,9 +53,9 @@ extern int16_t parameters[MAX_PARAM];
 /**
  * Target speed for the robot in rpm, used in ROBOT_MOVE mode.
  */
-#define PARAM_ROBOT_WHEELS_SPEED 39  // AN, wheel speed in rpm
-#define PARAM_ROBOT_SPEED_LIN 50     // AY, linear speed in mm/s
-#define PARAM_ROBOT_SPEED_ANG 37     // AL, angular speed in deg/s
+#define PARAM_ROBOT_WHEELS_SPEED 39  // AN, target wheel speed in rpm
+#define PARAM_ROBOT_SPEED_LIN 50     // AY, target linear speed in mm/s
+#define PARAM_ROBOT_SPEED_ANG 37     // AL, target angular speed in deg/s
 #define PARAM_ROBOT_MODE 40          // AO
 #define PARAM_ROBOT_ANGLE_CMD 41     // AP
 #define PARAM_OBSTACLE_DISTANCE 42   // AQ

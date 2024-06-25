@@ -8,11 +8,12 @@
 
 #include <WiFi.h>
 
+#include <state.h>
 #include "./globalConfig.h"
 #include "./taskWebserver.h"
 #include "./utilities/params.h"
 
-char* tempString = new char[50];
+char* tempString = new char[100];
 
 void TaskEventSourceSender(void* pvParameters) {
   while (WiFi.status() != WL_CONNECTED) {
@@ -20,11 +21,15 @@ void TaskEventSourceSender(void* pvParameters) {
   }
 
   while (true) {
-    sprintf(tempString, "%i,%i,%i,%i,%i,%i", getParameter(PARAM_ACCELERATION_X),
-            getParameter(PARAM_ACCELERATION_Y),
-            getParameter(PARAM_ACCELERATION_Z), getParameter(PARAM_ROTATION_X),
-            getParameter(PARAM_ROTATION_Y), getParameter(PARAM_ROTATION_Z));
-    sendEventSource("accelerometer", tempString);
+    sprintf(
+        tempString,
+        "{\"acceleration\": {\"x\": %i, \"y\": %i, \"z\": %i}, \"rotation\": "
+        "{\"x\": %i, \"y\": %i, \"z\": %i}}",
+        robot.imuData.acceleration.x, robot.imuData.acceleration.y,
+        robot.imuData.acceleration.z, robot.imuData.rotation.x,
+        robot.imuData.rotation.y, robot.imuData.rotation.z);
+
+    sendEventSource("state", tempString);
     vTaskDelay(50);
   }
 }
