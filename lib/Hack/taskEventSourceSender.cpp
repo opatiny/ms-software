@@ -9,11 +9,12 @@
 #include <WiFi.h>
 
 #include <state.h>
+#include <updateStateJson.h>
 #include "./globalConfig.h"
 #include "./taskWebserver.h"
 #include "./utilities/params.h"
 
-char* tempString = new char[100];
+char tempString[TEMP_STRING_SIZE];
 
 void TaskEventSourceSender(void* pvParameters) {
   while (WiFi.status() != WL_CONNECTED) {
@@ -21,16 +22,9 @@ void TaskEventSourceSender(void* pvParameters) {
   }
 
   while (true) {
-    sprintf(
-        tempString,
-        "{\"acceleration\": {\"x\": %i, \"y\": %i, \"z\": %i}, \"rotation\": "
-        "{\"x\": %i, \"y\": %i, \"z\": %i}}",
-        robot.imuData.acceleration.x, robot.imuData.acceleration.y,
-        robot.imuData.acceleration.z, robot.imuData.rotation.x,
-        robot.imuData.rotation.y, robot.imuData.rotation.z);
-
+    getStateString(&robot, tempString);
     sendEventSource("state", tempString);
-    vTaskDelay(50);
+    vTaskDelay(200);
   }
 }
 
