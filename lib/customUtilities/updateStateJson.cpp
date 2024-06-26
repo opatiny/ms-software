@@ -22,7 +22,7 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
 
   // Distance sensors
   for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-    stateJson["distanceSensors"][i] = robot->distances[i];
+    stateJson["distances"][i] = robot->distances[i];
   }
 
   // Odometry

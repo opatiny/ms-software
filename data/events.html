@@ -48,15 +48,16 @@
       );
 
       source.addEventListener(
-        "accelerometer",
+        "state",
         function (e) {
-          const data = e.data.split(",");
+          const state = JSON.parse(e.data);
+          console.log("state: ", state);
           const target = document.getElementById("accelerometer");
+          const accLin = state.imu.acceleration;
+          const accRot = state.imu.rotation;
+
           // display acceleration and rotation
-          target.innerHTML =
-            `x: ${data[0]} y: ${data[1]} z: ${data[2]}` +
-            "<br>" +
-            `alpha: ${data[3]} beta: ${data[4]} gamma: ${data[5]}`;
+          target.innerHTML = `x: ${accLin.x} y: ${accLin.y} z: ${accLin.z}`;
         },
         false
       );

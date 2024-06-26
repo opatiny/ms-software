@@ -23,6 +23,7 @@ void TaskEventSourceSender(void* pvParameters) {
 
   while (true) {
     getStateString(&robot, tempString);
+    // Serial.println(tempString);
     sendEventSource("state", tempString);
     vTaskDelay(200);
   }
