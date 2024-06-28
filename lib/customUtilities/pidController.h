@@ -20,8 +20,8 @@ struct PidInitParameters {
 };
 
 typedef struct {
-  PidParams params;
   int factor;
+  PidParams params;
   PidSerialParameters serialParams;
   double integral;
   double previousError;

@@ -31,7 +31,7 @@ extern int16_t parameters[MAX_PARAM];
  */
 #define PARAM_RGB_LED_MODE 44        // AS
 #define PARAM_RGB_LED_COLOR 35       // AJ
-#define PARAM_RGB_LED_BRIGHTNESS 36  // AK
+#define PARAM_RGB_LED_BRIGHTNESS 43  // AK
 
 // motors parameters
 /**
@@ -44,7 +44,7 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_MOTOR_RIGHT_MODE 29     // AD
 #define PARAM_MOTOR_ACC_DURATION 34   // AI
 
-// robot control parameters
+// robot navigation parameters
 /**
  * Command for both wheels of the robot, when the mode is
  * ROBOT_MOVE_SAME_COMMAND.
@@ -63,6 +63,11 @@ extern int16_t parameters[MAX_PARAM];
 // speed calibration parameters
 #define PARAM_CALIBRATION_MODE 45  // AT
 #define PARAM_CALIBRATION_STEP 46  // AU
+
+// controllers parameters: pick which controller to use (boolean value)
+#define PARAM_LINEAR_CONTROLLER 30   // AE
+#define PARAM_ANGULAR_CONTROLLER 31  // AF
+#define PARAM_WALLS_CONTROLLER 47    // AV
 
 // IMU parameteers
 // accelerations are in g -> 1g = 9.81 m/s^2

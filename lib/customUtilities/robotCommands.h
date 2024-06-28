@@ -2,17 +2,15 @@
 
 #include <state.h>
 
+enum ControllerModes {
+  CONTROLLER_OFF = 0,
+  CONTROLLER_ON = 1,
+};
+
 /**
  * Parameters for the initialisation of the robot.
  */
 struct ControllerParams {
-  int commandParameter;
-  int wheelSpeedParameter;
-  int linearSpeedParameter;
-  int angularSpeedParameter;
-  int modeParameter;
-  int angleParameter;
-  int obstacleDistanceParameter;
   PidInitParameters wheelsPid;
   PidInitParameters linearPid;
   PidInitParameters angularPid;

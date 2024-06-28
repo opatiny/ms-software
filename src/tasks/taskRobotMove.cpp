@@ -65,7 +65,7 @@ void TaskRobotMove(void* pvParameters) {
       ki : PARAM_LINEAR_KI,
       kd : PARAM_LINEAR_KD,
     },
-    factor : 1,
+    factor : 10,
   };
 
   PidInitParameters angularPid = {
@@ -74,16 +74,10 @@ void TaskRobotMove(void* pvParameters) {
       ki : PARAM_ANGULAR_KI,
       kd : PARAM_ANGULAR_KD,
     },
-    factor : 1,
+    factor : 1000,
   };
 
   ControllerParams robotParams = {
-    commandParameter : PARAM_ROBOT_COMMAND,
-    wheelSpeedParameter : PARAM_ROBOT_WHEELS_SPEED,
-    linearSpeedParameter : PARAM_ROBOT_SPEED_LIN,
-    angularSpeedParameter : PARAM_ROBOT_SPEED_ANG,
-    modeParameter : PARAM_ROBOT_MODE,
-    angleParameter : PARAM_ROBOT_ANGLE_CMD,
     wheelsPid : wheelsPid,
     linearPid : linearPid,
     angularPid : angularPid,
@@ -110,7 +104,6 @@ void taskRobotMove() {
 }
 
 void robotControl(Robot* robot) {
-  // Serial.println("Robot control");
   int targetCommand = getParameter(robot->navigation.commandParameter);
   int targetSpeed = getParameter(robot->navigation.wheelSpeedParameter);
   int currentMode = getParameter(robot->navigation.modeParameter);

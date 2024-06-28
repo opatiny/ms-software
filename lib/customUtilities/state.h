@@ -81,6 +81,11 @@ struct WheelsSpeedController {
   bool clearControllers;
 };
 
+struct ControllerModeParameters {
+  int linearController;
+  int angularController;
+  int wallsController;
+};
 /**
  * Control the robot's angular and linear speed with a PID controller.
  */
@@ -88,6 +93,7 @@ struct RobotSpeedController {
   PidController linear;
   PidController angular;
   bool clearControllers;
+  ControllerModeParameters modeParameters;
 };
 
 /**

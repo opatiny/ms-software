@@ -16,23 +16,33 @@ void printPidDebug(PidController* pid, Motor* motor);
  */
 void initialiseNavigation(RobotNavigation* navigation,
                           ControllerParams* params) {
-  // setup the motor parameters
-  navigation->commandParameter = params->commandParameter;
-  navigation->wheelSpeedParameter = params->wheelSpeedParameter;
-  navigation->linearSpeedParameter = params->linearSpeedParameter;
-  navigation->angularSpeedParameter = params->angularSpeedParameter;
-  navigation->modeParameter = params->modeParameter;
-  navigation->angleParameter = params->angleParameter;
-  navigation->obstacleDistanceParameter = params->obstacleDistanceParameter;
+  // setup the navigation parameters
+  navigation->commandParameter = PARAM_ROBOT_COMMAND;
+  navigation->wheelSpeedParameter = PARAM_ROBOT_WHEELS_SPEED;
+  navigation->linearSpeedParameter = PARAM_ROBOT_SPEED_LIN;
+  navigation->angularSpeedParameter = PARAM_ROBOT_SPEED_ANG;
+  navigation->modeParameter = PARAM_ROBOT_MODE;
+  navigation->angleParameter = PARAM_ROBOT_ANGLE_CMD;
+  navigation->obstacleDistanceParameter = PARAM_OBSTACLE_DISTANCE;
   navigation->previousMode = ROBOT_STOP;
 
+  // parameters for wheter controllers should be used or not
+  navigation->robotSpeedController.modeParameters.linearController =
+      PARAM_LINEAR_CONTROLLER;
+  navigation->robotSpeedController.modeParameters.angularController =
+      PARAM_ANGULAR_CONTROLLER;
+  navigation->robotSpeedController.modeParameters.wallsController =
+      PARAM_WALLS_CONTROLLER;
+
   // initialize PID of wheel speeds
+  // controllers unit: rpm
   initialisePidController(&navigation->wheelsSpeedController.left,
                           &params->wheelsPid);
   initialisePidController(&navigation->wheelsSpeedController.right,
                           &params->wheelsPid);
 
   // initialize PID of robot speed
+  // controllers unit: m/s for linear and rad/s for angular
   initialisePidController(&navigation->robotSpeedController.linear,
                           &params->linearPid);
   initialisePidController(&navigation->robotSpeedController.angular,
@@ -42,7 +52,7 @@ void initialiseNavigation(RobotNavigation* navigation,
   setParameter(navigation->modeParameter,
                ROBOT_STOP);  // todo: change back to ROBOT_STOP
 
-  // initialise robot parameters
+  // initialise navigation parameters
   setParameter(navigation->commandParameter, 150);
   // setParameter(navigation->wheelSpeedParameter, 300);
   setParameter(navigation->linearSpeedParameter, 200);  // mm/s
@@ -50,6 +60,14 @@ void initialiseNavigation(RobotNavigation* navigation,
   setParameter(navigation->angleParameter, 90);         // degrees
   setParameter(navigation->obstacleDistanceParameter,
                150);  // distance in mm
+
+  setParameter(navigation->robotSpeedController.modeParameters.linearController,
+               CONTROLLER_ON);
+  setParameter(
+      navigation->robotSpeedController.modeParameters.angularController,
+      CONTROLLER_ON);
+  setParameter(navigation->robotSpeedController.modeParameters.wallsController,
+               CONTROLLER_ON);
 }
 
 /**
@@ -217,19 +235,30 @@ void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed) {
     }
   }
 
-  robotController->linear.targetValue = linearSpeed;
-  robotController->angular.targetValue = angularSpeed;
+  double leftCorrection = 0;
+  double rightCorrection = 0;
 
-  double linError =
-      robot->odometry.speed.v - robotController->linear.targetValue;
-  double linCorrection = getNewPidValue(&robotController->linear, linError);
+  if (robotController->modeParameters.linearController) {
+    robotController->linear.targetValue = linearSpeed;
 
-  double angError =
-      robot->odometry.speed.omega - robotController->angular.targetValue;
-  double angCorrection = getNewPidValue(&robotController->angular, angError);
+    double linError =
+        robot->odometry.speed.v - robotController->linear.targetValue;
+    double linCorrection = getNewPidValue(&robotController->linear, linError);
 
-  double leftCorrection = linCorrection - angCorrection;
-  double rightCorrection = linCorrection + angCorrection;
+    leftCorrection += linCorrection;
+    rightCorrection += linCorrection;
+  }
+
+  if (robotController->modeParameters.angularController) {
+    robotController->angular.targetValue = angularSpeed;
+
+    double angError =
+        robot->odometry.speed.omega - robotController->angular.targetValue;
+    double angCorrection = getNewPidValue(&robotController->angular, angError);
+
+    leftCorrection -= angCorrection;
+    rightCorrection += angCorrection;
+  }
 
   double leftCommand =
       getClampedCommand(robot->leftMotor.currentCommand - leftCorrection);
