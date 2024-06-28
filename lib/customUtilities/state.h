@@ -96,7 +96,9 @@ struct RobotSpeedController {
  */
 struct RobotNavigation {
   int commandParameter;
-  int speedParameter;
+  int wheelSpeedParameter;
+  int linearSpeedParameter;
+  int angularSpeedParameter;
   int angleParameter;
   int distanceParameter;
   int obstacleDistanceParameter;

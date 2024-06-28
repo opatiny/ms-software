@@ -50,36 +50,49 @@ void TaskRobotMove(void* pvParameters) {
   };
 
   // pid control to ensure both wheels go at same speed
-  PidSerialParameters wheelsPid = {
-    kp : PARAM_WHEEL_KP,
-    ki : PARAM_WHEEL_KI,
-    kd : PARAM_WHEEL_KD,
+  PidInitParameters wheelsPid = {
+    serialParams : {
+      kp : PARAM_WHEEL_KP,
+      ki : PARAM_WHEEL_KI,
+      kd : PARAM_WHEEL_KD,
+    },
+    factors : {p : 1000, i : 1000, d : 1000}
+
   };
 
-  PidSerialParameters linearPid = {
-    kp : PARAM_LINEAR_KP,
-    ki : PARAM_LINEAR_KI,
-    kd : PARAM_LINEAR_KD,
+  PidInitParameters linearPid = {
+    serialParams : {
+      kp : PARAM_LINEAR_KP,
+      ki : PARAM_LINEAR_KI,
+      kd : PARAM_LINEAR_KD,
+    },
+    factors : {p : 1, i : 1, d : 1}
   };
 
-  PidSerialParameters angularPid = {
-    kp : PARAM_ANGULAR_KP,
-    ki : PARAM_ANGULAR_KI,
-    kd : PARAM_ANGULAR_KD,
+  PidInitParameters angularPid = {
+    serialParams : {
+      kp : PARAM_ANGULAR_KP,
+      ki : PARAM_ANGULAR_KI,
+      kd : PARAM_ANGULAR_KD,
+    },
+    factors : {p : 1, i : 1, d : 1}
   };
 
   ControllerParams robotParams = {
     commandParameter : PARAM_ROBOT_COMMAND,
-    speedParameter : PARAM_ROBOT_WHEELS_SPEED,
+    wheelSpeedParameter : PARAM_ROBOT_WHEELS_SPEED,
+    linearSpeedParameter : PARAM_ROBOT_SPEED_LIN,
+    angularSpeedParameter : PARAM_ROBOT_SPEED_ANG,
     modeParameter : PARAM_ROBOT_MODE,
     angleParameter : PARAM_ROBOT_ANGLE_CMD,
     wheelsPid : wheelsPid,
     linearPid : linearPid,
     angularPid : angularPid,
   };
+  Serial.println("Initialising navigation");
+  initialiseNavigation(&robot.navigation, &robotParams);
 
-  initialiseController(&robot.navigation, &robotParams);
-
+  Serial.println("Initialising motors");
   // initialise the motors
   initialiseMotor(&robot.leftMotor, &leftMotorParams);
   initialiseMotor(&robot.rightMotor, &rightMotorParams);
@@ -98,8 +111,9 @@ void taskRobotMove() {
 }
 
 void robotControl(Robot* robot) {
+  // Serial.println("Robot control");
   int targetCommand = getParameter(robot->navigation.commandParameter);
-  int targetSpeed = getParameter(robot->navigation.speedParameter);
+  int targetSpeed = getParameter(robot->navigation.wheelSpeedParameter);
   int currentMode = getParameter(robot->navigation.modeParameter);
 
   if (buttonFlags.robotMode) {
@@ -114,7 +128,7 @@ void robotControl(Robot* robot) {
     setParameter(robot->navigation.modeParameter, currentMode);
     buttonFlags.robotMode = false;
   }
-
+  // Serial.println("Button flags done");
   if (robot->navigation.previousMode != currentMode) {
     // clear the controllers when changing back to a mode that uses them
     if (currentMode == ROBOT_WHEEL_SPEED_CONTROL ||
@@ -128,10 +142,14 @@ void robotControl(Robot* robot) {
       Serial.print("New robot mode: ");
       Serial.println(currentMode);
     }
+    robot->navigation.previousMode = currentMode;
   }
-
+  // Serial.println("Clear controller flags done");
+  // Serial.print("Current mode: ");
+  // Serial.println(currentMode);
   switch (currentMode) {
     case ROBOT_STOP:
+      // Serial.println("Robot stop");
       stopMotors(robot);
       break;
     case ROBOT_MOVE_SAME_COMMAND:
@@ -156,8 +174,10 @@ void robotControl(Robot* robot) {
       wheelSpeedControl(robot, targetSpeed);
       break;
     case ROBOT_SPEED_CONTROL: {
-      double linSpeed = getParameter(PARAM_ROBOT_SPEED_LIN) / 1000;  // m/s
-      double angSpeed = getParameter(PARAM_ROBOT_SPEED_ANG) * DEG_TO_RAD;
+      double linSpeed = getParameter(PARAM_ROBOT_SPEED_LIN) / 1000.0;  // m/s
+      double angSpeed =
+          getParameter(PARAM_ROBOT_SPEED_ANG) * DEG_TO_RAD;  // rad/s
+
       robotSpeedControl(robot, linSpeed, angSpeed);
       break;
     }

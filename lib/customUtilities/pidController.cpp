@@ -13,11 +13,16 @@ void updatePidParameters(PidController* regulator);
  * @brief Initialise the PID controller.
  */
 void initialisePidController(PidController* regulator,
-                             PidSerialParameters* params) {
-  regulator->serialParams.kp = params->kp;
-  regulator->serialParams.ki = params->ki;
-  regulator->serialParams.kd = params->kd;
+                             PidInitParameters* params) {
+  regulator->serialParams.kp = params->serialParams.kp;
+  regulator->serialParams.ki = params->serialParams.ki;
+  regulator->serialParams.kd = params->serialParams.kd;
+  regulator->factors.p = params->factors.p;
+  regulator->factors.i = params->factors.i;
+  regulator->factors.d = params->factors.d;
   regulator->previousTime = micros();
+
+  updatePidParameters(regulator);
 }
 
 /**
@@ -50,9 +55,12 @@ double getNewPidValue(PidController* regulator, double error) {
  * @brief Update the PID parameters from the serial parameters.
  */
 void updatePidParameters(PidController* regulator) {
-  regulator->params.kp = getParameter(regulator->serialParams.kp) / PID_FACTOR;
-  regulator->params.ki = getParameter(regulator->serialParams.ki) / PID_FACTOR;
-  regulator->params.kd = getParameter(regulator->serialParams.kd) / PID_FACTOR;
+  regulator->params.kp =
+      getParameter(regulator->serialParams.kp) / regulator->factors.p;
+  regulator->params.ki =
+      getParameter(regulator->serialParams.ki) / regulator->factors.i;
+  regulator->params.kd =
+      getParameter(regulator->serialParams.kd) / regulator->factors.d;
 }
 
 void clearController(PidController* regulator) {

@@ -14,8 +14,20 @@ struct PidSerialParameters {
   int kd;
 };
 
+struct PidFactors {
+  int p;
+  int i;
+  int d;
+};
+
+struct PidInitParameters {
+  PidSerialParameters serialParams;
+  PidFactors factors;
+};
+
 typedef struct {
   PidParams params;
+  PidFactors factors;
   PidSerialParameters serialParams;
   double integral;
   double previousError;
@@ -26,7 +38,7 @@ typedef struct {
 } PidController;
 
 void initialisePidController(PidController* regulator,
-                             PidSerialParameters* params);
+                             PidInitParameters* params);
 double getNewPidValue(PidController* regulator, double error);
 void updatePidParameters(PidController* regulator);
 void clearController(PidController* regulator);

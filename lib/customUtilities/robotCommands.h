@@ -7,13 +7,15 @@
  */
 struct ControllerParams {
   int commandParameter;
-  int speedParameter;
+  int wheelSpeedParameter;
+  int linearSpeedParameter;
+  int angularSpeedParameter;
   int modeParameter;
   int angleParameter;
   int obstacleDistanceParameter;
-  PidSerialParameters wheelsPid;
-  PidSerialParameters linearPid;
-  PidSerialParameters angularPid;
+  PidInitParameters wheelsPid;
+  PidInitParameters linearPid;
+  PidInitParameters angularPid;
 };
 
 int getClampedCommand(int speed);
@@ -25,4 +27,4 @@ void robotStop(Robot* robot);
 void robotTurnInPlace(Robot* robot, int speed);
 void stopWhenObstacle(Robot* robot, int speed, int distance);
 void wheelSpeedControl(Robot* robot, int speed);
-void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed);
+void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed);

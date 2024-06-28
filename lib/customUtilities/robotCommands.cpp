@@ -18,7 +18,9 @@ void initialiseNavigation(RobotNavigation* navigation,
                           ControllerParams* params) {
   // setup the motor parameters
   navigation->commandParameter = params->commandParameter;
-  navigation->speedParameter = params->speedParameter;
+  navigation->wheelSpeedParameter = params->wheelSpeedParameter;
+  navigation->linearSpeedParameter = params->linearSpeedParameter;
+  navigation->angularSpeedParameter = params->angularSpeedParameter;
   navigation->modeParameter = params->modeParameter;
   navigation->angleParameter = params->angleParameter;
   navigation->obstacleDistanceParameter = params->obstacleDistanceParameter;
@@ -42,8 +44,10 @@ void initialiseNavigation(RobotNavigation* navigation,
 
   // initialise robot parameters
   setParameter(navigation->commandParameter, 150);
-  // setParameter(navigation->speedParameter, 300);
-  setParameter(navigation->angleParameter, 90);  // degrees
+  // setParameter(navigation->wheelSpeedParameter, 300);
+  setParameter(navigation->linearSpeedParameter, 200);  // mm/s
+  setParameter(navigation->angularSpeedParameter, 0);   // deg/s
+  setParameter(navigation->angleParameter, 90);         // degrees
   setParameter(navigation->obstacleDistanceParameter,
                150);  // distance in mm
 }
@@ -200,28 +204,29 @@ void wheelSpeedControl(Robot* robot, int speed) {
  * @param linearSpeed The desired linear speed in m/s.
  * @param angularSpeed The desired angular speed in rad/s.
  */
-void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed) {
-  RobotSpeedController robotController = robot->navigation.robotSpeedController;
+void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed) {
+  RobotSpeedController* robotController =
+      &(robot->navigation.robotSpeedController);
 
-  if (robotController.clearControllers) {
-    clearController(&robotController.linear);
-    clearController(&robotController.angular);
-    robotController.clearControllers = 0;
+  if (robotController->clearControllers) {
+    clearController(&robotController->linear);
+    clearController(&robotController->angular);
+    robotController->clearControllers = 0;
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
-      Serial.println("Clear controllers");
+      Serial.println("Clear robot speed controllers");
     }
   }
 
-  robotController.linear.targetValue = linearSpeed;
-  robotController.angular.targetValue = angularSpeed;
+  robotController->linear.targetValue = linearSpeed;
+  robotController->angular.targetValue = angularSpeed;
 
   double linError =
-      robot->odometry.speed.v - robotController.linear.targetValue;
-  double linCorrection = getNewPidValue(&robotController.linear, linError);
+      robot->odometry.speed.v - robotController->linear.targetValue;
+  double linCorrection = getNewPidValue(&robotController->linear, linError);
 
   double angError =
-      robot->odometry.speed.omega - robotController.angular.targetValue;
-  double angCorrection = getNewPidValue(&robotController.angular, angError);
+      robot->odometry.speed.omega - robotController->angular.targetValue;
+  double angCorrection = getNewPidValue(&robotController->angular, angError);
 
   double leftCorrection = linCorrection - angCorrection;
   double rightCorrection = linCorrection + angCorrection;

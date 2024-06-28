@@ -114,7 +114,7 @@ void printState(Print* output) {
   printDistances(output, robot.distances);
   output->println("\nIMU data");
   printImu(output, &robot.imuData);
-  output->print("\nBattery:");
+  output->println("\nBattery:");
   printVoltage(output, &robot.battery);
   output->println("\nVcc:");
   printVoltage(output, &robot.vcc);
@@ -183,7 +183,19 @@ void printRegressionsForMatlab(Print* output, Robot* robot, int nbDigits) {
   output->println();
 }
 
-void printControllerParameters(Print* output, Robot* robot) {
+void printController(Print* output,
+                     PidController* controller,
+                     const char* pidNames[3]) {
+  const int nbDigits = ceil(log10(controller->factors.p));
+  output->printf("\t- (%s) Kp: %.*f | Factor: %i\n", pidNames[0], nbDigits,
+                 controller->params.kp, controller->factors.p);
+  output->printf("\t- (%s) Ki: %.*f | Factor: %i\n", pidNames[1], nbDigits,
+                 controller->params.ki, controller->factors.i);
+  output->printf("\t- (%s) Kd: %.*f | Factor: %i\n", pidNames[2], nbDigits,
+                 controller->params.kd, controller->factors.d);
+}
+
+void printControllers(Print* output, Robot* robot) {
   PidController* wheel = &robot->navigation.wheelsSpeedController.left;
   PidController* linear = &robot->navigation.robotSpeedController.linear;
   PidController* angular = &robot->navigation.robotSpeedController.angular;
@@ -191,31 +203,18 @@ void printControllerParameters(Print* output, Robot* robot) {
   updatePidParameters(linear);
   updatePidParameters(angular);
 
-  int nbDigits = 3;
-  output->println(F("Serial parameters are Kn * 1000."));
+  const char* wheelsPidNames[3] = {"BA", "BB", "BC"};
+  const char* robotLinearPidNames[3] = {"BD", "BE", "BF"};
+  const char* robotAngularPidNames[3] = {"BG", "BH", "BI"};
+
   output->println(F("PID wheels speed controller parameters:"));
-  output->print("\t- (BA) Kp: ");
-  output->println(wheel->params.kp, nbDigits);
-  output->print("\t- (BB) Ki: ");
-  output->println(wheel->params.ki, nbDigits);
-  output->print("\t- (BC) Kd: ");
-  output->println(wheel->params.kd, nbDigits);
+  printController(output, wheel, wheelsPidNames);
 
   output->println(F("PID robot linear speed controller parameters:"));
-  output->print("\t- (BD) Kp: ");
-  output->println(linear->params.kp, nbDigits);
-  output->print("\t- (BE) Ki: ");
-  output->println(linear->params.ki, nbDigits);
-  output->print("\t- (BF) Kd: ");
-  output->println(linear->params.kd, nbDigits);
+  printController(output, linear, robotLinearPidNames);
 
   output->println(F("PID robot angular speed controller parameters:"));
-  output->print("\t- (BG) Kp: ");
-  output->println(angular->params.kp, nbDigits);
-  output->print("\t- (BH) Ki: ");
-  output->println(angular->params.ki, nbDigits);
-  output->print("\t- (BI) Kd: ");
-  output->println(angular->params.kd, nbDigits);
+  printController(output, angular, robotAngularPidNames);
 }
 
 void showPrintHelp(Print* output) {
@@ -224,9 +223,7 @@ void showPrintHelp(Print* output) {
   output->println(F("(pr) Print regressions (for speed calibration)"));
 }
 
-void processPrintCommand(char command,
-                         char* paramValue,
-                         Print* output) {  // char and char* ??
+void processPrintCommand(char command, char* paramValue, Print* output) {
   switch (command) {
     case 's':
       printState(output);
@@ -235,7 +232,7 @@ void processPrintCommand(char command,
       printRegressionsForMatlab(output, &robot, 10);
       break;
     case 'c':
-      printControllerParameters(output, &robot);
+      printControllers(output, &robot);
       break;
     default:
       showPrintHelp(output);
