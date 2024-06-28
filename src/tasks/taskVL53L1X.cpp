@@ -1,6 +1,6 @@
 /**
  * Thread to handle the I2C communication with the five VL53L1X distance
- * sensors.
+ * sensors. The distances are from the center of the robot!!
  * Set the distance debug mode with parameter AH.
  * Debug: U1
  */
@@ -25,7 +25,6 @@ void initialiseVL53L1X(VL53L1X sensors[NB_DISTANCE_SENSORS],
 
 void distanceSensorsDebug(int* distancesParameters);
 
-#if BOARD == ALGERNON_V1_1_0
 int addresses[] = {VL53_LEFT_ADDRESS, VL53_FRONT_LEFT_ADDRESS,
                    VL53_FRONT_ADDRESS, VL53_FRONT_RIGHT_ADDRESS,
                    VL53_RIGHT_ADDRESS};
@@ -36,17 +35,11 @@ int distancesParameters[] = {PARAM_DISTANCE_LEFT, PARAM_DISTANCE_FRONT_LEFT,
 
 int xshutPins[] = {XSHUT_PIN_LEFT, XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT,
                    XSHUT_PIN_FRONT_RIGHT, XSHUT_PIN_RIGHT};
-#elif BOARD == ALGERNON_V1_0_0
-// only 4 sensors because left is where the USB connector is
-int addresses[] = {VL53_FRONT_LEFT_ADDRESS, VL53_FRONT_ADDRESS,
-                   VL53_FRONT_RIGHT_ADDRESS, VL53_RIGHT_ADDRESS};
 
-int distancesParameters[] = {PARAM_DISTANCE_FRONT_LEFT, PARAM_DISTANCE_FRONT,
-                             PARAM_DISTANCE_FRONT_RIGHT, PARAM_DISTANCE_RIGHT};
-
-int xshutPins[] = {XSHUT_PIN_FRONT_LEFT, XSHUT_PIN_FRONT, XSHUT_PIN_FRONT_RIGHT,
-                   XSHUT_PIN_RIGHT};
-#endif
+/**
+ * Distances from the center of the robot to the sensors in mm.
+ */
+const int offsets[] = {22, 54, 50, 54, 22};
 
 void TaskVL53L1X(void* pvParameters) {
   VL53L1X sensors[NB_DISTANCE_SENSORS];
@@ -64,7 +57,7 @@ void TaskVL53L1X(void* pvParameters) {
         xSemaphoreGive(xSemaphoreWire);
 
         robot.distances[i] = distance;
-        setParameter(distancesParameters[i], distance);
+        setParameter(distancesParameters[i] + offsets[i], distance);
       }
     }
     distanceSensorsDebug(distancesParameters);

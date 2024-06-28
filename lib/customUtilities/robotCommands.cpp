@@ -14,7 +14,7 @@ void printPidDebug(PidController* pid, Motor* motor);
  * @brief Initialise the robot navigation by giving the desired default values
  * to the parameters.
  */
-void initialiseController(RobotNavigation* navigation,
+void initialiseNavigation(RobotNavigation* navigation,
                           ControllerParams* params) {
   // setup the motor parameters
   navigation->commandParameter = params->commandParameter;
@@ -38,7 +38,7 @@ void initialiseController(RobotNavigation* navigation,
 
   // initally stop the robot
   setParameter(navigation->modeParameter,
-               ROBOT_EACH_WHEEL);  // todo: change back to ROBOT_STOP
+               ROBOT_STOP);  // todo: change back to ROBOT_STOP
 
   // initialise robot parameters
   setParameter(navigation->commandParameter, 150);
@@ -235,6 +235,23 @@ void robotSpeedControl(Robot* robot, int linearSpeed, int angularSpeed) {
   updateMotor(&robot->leftMotor, leftCommand, 1);
   updateMotor(&robot->rightMotor, rightCommand, 1);
   vTaskDelay(1);
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
+    // time, targetSpeed, leftSpeed, leftCommand, rightSpeed, rightCommand
+    Serial.print(millis());
+    Serial.print(", ");
+    Serial.print(linearSpeed);
+    Serial.print(", ");
+    Serial.print(robot->odometry.speed.v);
+    Serial.print(", ");
+    Serial.print(angularSpeed);
+    Serial.print(", ");
+    Serial.print(robot->odometry.speed.omega);
+    Serial.print(", ");
+    Serial.print(robot->leftMotor.currentCommand);
+    Serial.print(", ");
+    Serial.println(robot->rightMotor.currentCommand);
+  }
 }
 
 /**

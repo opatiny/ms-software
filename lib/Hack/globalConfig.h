@@ -80,13 +80,6 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_DISTANCE_FRONT_RIGHT 9  // J
 #define PARAM_DISTANCE_RIGHT 10       // K
 
-// remove these from serial params
-#define PARAM_OFFSET_FRONT 11        // L
-#define PARAM_OFFSET_FRONT_LEFT 12   // M
-#define PARAM_OFFSET_LEFT 13         // N
-#define PARAM_OFFSET_RIGHT 14        // O
-#define PARAM_OFFSET_FRONT_RIGHT 15  // P
-
 // push button parameter
 #define PARAM_BUTTON 32  // AG
 
