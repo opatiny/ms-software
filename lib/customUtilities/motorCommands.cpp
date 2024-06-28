@@ -74,7 +74,7 @@ void updateMotor(Motor* motor, int target, uint32_t duration) {
       Serial.println("updateMotor duration is 0");
     }
     int diff = target - motor->currentCommand;
-    int idealStep = diff / duration;
+    int idealStep = duration == 0 ? 1 : diff / duration;
 
     if (idealStep == 0 && diff > 0) {
       motor->step = 1;
