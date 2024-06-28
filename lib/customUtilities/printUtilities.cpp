@@ -183,17 +183,32 @@ void printRegressionsForMatlab(Print* output, Robot* robot, int nbDigits) {
   output->println();
 }
 
+/**
+ * Print out a PID controller.
+ * @param output The output to print to.
+ * @param controller The controller structure.
+ * @param paramNames The names of the serial parameters.
+ * @param mode The mode of the controller (on or off).
+ * @param unit The unit of the target value.
+ */
 void printController(Print* output,
                      PidController* controller,
-                     const char* pidNames[3]) {
+                     const char* paramNames[5],
+                     bool mode,
+                     int targetParam,
+                     const char* unit) {
   updatePidParameters(controller);
   const int nbDigits = ceil(log10(controller->factor));
+  output->printf("\t- (%s) Mode: %s\n", paramNames[0], mode ? "ON" : "OFF");
+  output->printf("\t- (%s) Target: %i %s\n\n", paramNames[1],
+                 getParameter(targetParam), unit);
+
   output->printf("\t- Factor: %i\n", controller->factor);
-  output->printf("\t- (%s) Kp: %.*f\n", pidNames[0], nbDigits,
+  output->printf("\t- (%s) Kp: %.*f\n", paramNames[2], nbDigits,
                  controller->params.kp);
-  output->printf("\t- (%s) Ki: %.*f\n", pidNames[1], nbDigits,
+  output->printf("\t- (%s) Ki: %.*f\n", paramNames[3], nbDigits,
                  controller->params.ki);
-  output->printf("\t- (%s) Kd: %.*f\n", pidNames[2], nbDigits,
+  output->printf("\t- (%s) Kd: %.*f\n", paramNames[4], nbDigits,
                  controller->params.kd);
 }
 
@@ -202,18 +217,27 @@ void printControllers(Print* output, Robot* robot) {
   PidController* linear = &robot->navigation.robotSpeedController.linear;
   PidController* angular = &robot->navigation.robotSpeedController.angular;
 
-  const char* wheelsPidNames[3] = {"BA", "BB", "BC"};
-  const char* robotLinearPidNames[3] = {"BD", "BE", "BF"};
-  const char* robotAngularPidNames[3] = {"BG", "BH", "BI"};
+  bool linMode = getParameter(
+      robot->navigation.robotSpeedController.modeParameters.linearController);
+  bool angMode = getParameter(
+      robot->navigation.robotSpeedController.modeParameters.angularController);
 
-  output->println(F("PID wheels speed controller parameters:"));
-  printController(output, wheel, wheelsPidNames);
+  const int nbParams = 5;
+  const char* wheelsPidNames[nbParams] = {"AE", "AN", "BA", "BB", "BC"};
+  const char* robotLinearPidNames[nbParams] = {"AF", "AY", "BD", "BE", "BF"};
+  const char* robotAngularPidNames[nbParams] = {"AV", "AL", "BG", "BH", "BI"};
 
-  output->println(F("PID robot linear speed controller parameters:"));
-  printController(output, linear, robotLinearPidNames);
+  output->println(F("PID wheels speed controller:"));
+  printController(output, wheel, wheelsPidNames, 1, PARAM_ROBOT_WHEELS_SPEED,
+                  "rpm");
 
-  output->println(F("PID robot angular speed controller parameters:"));
-  printController(output, angular, robotAngularPidNames);
+  output->println(F("PID robot linear speed controller:"));
+  printController(output, linear, robotLinearPidNames, linMode,
+                  PARAM_ROBOT_SPEED_LIN, "mm/s");
+
+  output->println(F("PID robot angular speed controller:"));
+  printController(output, angular, robotAngularPidNames, angMode,
+                  PARAM_ROBOT_SPEED_ANG, "deg/s");
 }
 
 void showPrintHelp(Print* output) {
