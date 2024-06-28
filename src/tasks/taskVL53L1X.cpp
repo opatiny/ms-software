@@ -56,8 +56,10 @@ void TaskVL53L1X(void* pvParameters) {
         distance = sensors[i].read();  // read distance in mm
         xSemaphoreGive(xSemaphoreWire);
 
-        robot.distances[i] = distance;
-        setParameter(distancesParameters[i] + offsets[i], distance);
+        const int correctedDistance = distance + offsets[i];
+
+        robot.distances[i] = correctedDistance;
+        setParameter(distancesParameters[i], correctedDistance);
       }
     }
     distanceSensorsDebug(distancesParameters);

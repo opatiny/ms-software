@@ -14,20 +14,14 @@ struct PidSerialParameters {
   int kd;
 };
 
-struct PidFactors {
-  int p;
-  int i;
-  int d;
-};
-
 struct PidInitParameters {
   PidSerialParameters serialParams;
-  PidFactors factors;
+  int factor;
 };
 
 typedef struct {
   PidParams params;
-  PidFactors factors;
+  int factor;
   PidSerialParameters serialParams;
   double integral;
   double previousError;

@@ -186,22 +186,21 @@ void printRegressionsForMatlab(Print* output, Robot* robot, int nbDigits) {
 void printController(Print* output,
                      PidController* controller,
                      const char* pidNames[3]) {
-  const int nbDigits = ceil(log10(controller->factors.p));
-  output->printf("\t- (%s) Kp: %.*f | Factor: %i\n", pidNames[0], nbDigits,
-                 controller->params.kp, controller->factors.p);
-  output->printf("\t- (%s) Ki: %.*f | Factor: %i\n", pidNames[1], nbDigits,
-                 controller->params.ki, controller->factors.i);
-  output->printf("\t- (%s) Kd: %.*f | Factor: %i\n", pidNames[2], nbDigits,
-                 controller->params.kd, controller->factors.d);
+  updatePidParameters(controller);
+  const int nbDigits = ceil(log10(controller->factor));
+  output->printf("\t- Factor: %i\n", controller->factor);
+  output->printf("\t- (%s) Kp: %.*f\n", pidNames[0], nbDigits,
+                 controller->params.kp);
+  output->printf("\t- (%s) Ki: %.*f\n", pidNames[1], nbDigits,
+                 controller->params.ki);
+  output->printf("\t- (%s) Kd: %.*f\n", pidNames[2], nbDigits,
+                 controller->params.kd);
 }
 
 void printControllers(Print* output, Robot* robot) {
   PidController* wheel = &robot->navigation.wheelsSpeedController.left;
   PidController* linear = &robot->navigation.robotSpeedController.linear;
   PidController* angular = &robot->navigation.robotSpeedController.angular;
-  updatePidParameters(wheel);
-  updatePidParameters(linear);
-  updatePidParameters(angular);
 
   const char* wheelsPidNames[3] = {"BA", "BB", "BC"};
   const char* robotLinearPidNames[3] = {"BD", "BE", "BF"};

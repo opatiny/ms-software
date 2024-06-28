@@ -56,8 +56,7 @@ void TaskRobotMove(void* pvParameters) {
       ki : PARAM_WHEEL_KI,
       kd : PARAM_WHEEL_KD,
     },
-    factors : {p : 1000, i : 1000, d : 1000}
-
+    factor : 1000,
   };
 
   PidInitParameters linearPid = {
@@ -66,7 +65,7 @@ void TaskRobotMove(void* pvParameters) {
       ki : PARAM_LINEAR_KI,
       kd : PARAM_LINEAR_KD,
     },
-    factors : {p : 1, i : 1, d : 1}
+    factor : 1,
   };
 
   PidInitParameters angularPid = {
@@ -75,7 +74,7 @@ void TaskRobotMove(void* pvParameters) {
       ki : PARAM_ANGULAR_KI,
       kd : PARAM_ANGULAR_KD,
     },
-    factors : {p : 1, i : 1, d : 1}
+    factor : 1,
   };
 
   ControllerParams robotParams = {

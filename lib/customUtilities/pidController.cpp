@@ -17,9 +17,7 @@ void initialisePidController(PidController* regulator,
   regulator->serialParams.kp = params->serialParams.kp;
   regulator->serialParams.ki = params->serialParams.ki;
   regulator->serialParams.kd = params->serialParams.kd;
-  regulator->factors.p = params->factors.p;
-  regulator->factors.i = params->factors.i;
-  regulator->factors.d = params->factors.d;
+  regulator->factor = params->factor;
   regulator->previousTime = micros();
 
   updatePidParameters(regulator);
@@ -56,11 +54,11 @@ double getNewPidValue(PidController* regulator, double error) {
  */
 void updatePidParameters(PidController* regulator) {
   regulator->params.kp =
-      getParameter(regulator->serialParams.kp) / regulator->factors.p;
+      (double)getParameter(regulator->serialParams.kp) / regulator->factor;
   regulator->params.ki =
-      getParameter(regulator->serialParams.ki) / regulator->factors.i;
+      (double)getParameter(regulator->serialParams.ki) / regulator->factor;
   regulator->params.kd =
-      getParameter(regulator->serialParams.kd) / regulator->factors.d;
+      (double)getParameter(regulator->serialParams.kd) / regulator->factor;
 }
 
 void clearController(PidController* regulator) {
