@@ -38,7 +38,7 @@ double getNewPidValue(PidController* regulator, double error) {
   double derivative = 0;
   // protect from division by zero
   if (dt != 0) {
-    (error - regulator->previousError) / dt;
+    derivative = (error - regulator->previousError) / dt;
   }
   double newValue = regulator->params.kp * error +
                     regulator->params.ki * regulator->integral +

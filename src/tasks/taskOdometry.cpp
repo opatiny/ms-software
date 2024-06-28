@@ -125,6 +125,7 @@ void updateOdometry(Robot* robot) {
 
   // update the linear and angular velocities of the robot
   if (dt == 0) {
+    dt = 0.000001;
     Serial.println("updateOdometry: dt is 0");
   }
   robot->odometry.speed.v = distance / dt;
