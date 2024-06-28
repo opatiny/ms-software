@@ -208,7 +208,7 @@ void printController(Print* output,
                  controller->params.kp);
   output->printf("\t- (%s) Ki: %.*f\n", paramNames[3], nbDigits,
                  controller->params.ki);
-  output->printf("\t- (%s) Kd: %.*f\n", paramNames[4], nbDigits,
+  output->printf("\t- (%s) Kd: %.*f\n\n", paramNames[4], nbDigits,
                  controller->params.kd);
 }
 
@@ -223,9 +223,9 @@ void printControllers(Print* output, Robot* robot) {
       robot->navigation.robotSpeedController.modeParameters.angularController);
 
   const int nbParams = 5;
-  const char* wheelsPidNames[nbParams] = {"AE", "AN", "BA", "BB", "BC"};
-  const char* robotLinearPidNames[nbParams] = {"AF", "AY", "BD", "BE", "BF"};
-  const char* robotAngularPidNames[nbParams] = {"AV", "AL", "BG", "BH", "BI"};
+  const char* wheelsPidNames[nbParams] = {"none", "AN", "BA", "BB", "BC"};
+  const char* robotLinearPidNames[nbParams] = {"AE", "AY", "BD", "BE", "BF"};
+  const char* robotAngularPidNames[nbParams] = {"AF", "AL", "BG", "BH", "BI"};
 
   output->println(F("PID wheels speed controller:"));
   printController(output, wheel, wheelsPidNames, 1, PARAM_ROBOT_WHEELS_SPEED,

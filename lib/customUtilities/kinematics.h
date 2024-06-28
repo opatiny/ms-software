@@ -1,9 +1,7 @@
 #pragma once
 
 /**
- * Speed of the center of the robot in m/s and curvature radius rho.
- * - turning left: positive rho
- * - turning right: negative rho
+ * The linear speed of the robot in m/s and the angular speed in rad/s.
  */
 struct UnicycleSpeed {
   double v;

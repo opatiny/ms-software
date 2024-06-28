@@ -90,7 +90,7 @@ void updateOdometry(Robot* robot) {
   robot->leftMotor.wheelSpeed = robot->leftMotor.wheelSpeeds.lowSpeed;
   robot->rightMotor.wheelSpeed = robot->rightMotor.wheelSpeeds.lowSpeed;
 
-  // calculate the distance traveled by each wheel
+  // calculate the distance traveled by each wheel in m
   double leftDistance = leftCounts * DISTANCE_PER_COUNT;
   double rightDistance = rightCounts * DISTANCE_PER_COUNT;
 
@@ -98,10 +98,11 @@ void updateOdometry(Robot* robot) {
   robot->leftEncoder.previousCounts = leftEncoder;
   robot->rightEncoder.previousCounts = rightEncoder;
 
-  // calculate the distance traveled by the robot
+  // calculate the distance traveled by the robot in m
   double distance = (leftDistance + rightDistance) / 2.0;
 
-  // calculate the change in orientation of the robot
+  // calculate the change in orientation of the robot in rad (approximation
+  // sin(x) = x)
   double dTheta = (rightDistance - leftDistance) / WHEEL_BASE;
 
   // update the orientation of the robot
@@ -128,8 +129,29 @@ void updateOdometry(Robot* robot) {
     dt = 0.000001;
     Serial.println("updateOdometry: dt is 0");
   }
-  robot->odometry.speed.v = distance / dt;
-  robot->odometry.speed.omega = dTheta / dt;
+
+  const double leftRpm = robot->leftMotor.wheelSpeed;
+  const double rightRpm = robot->rightMotor.wheelSpeed;
+  robot->odometry.speed.v =
+      (leftRpm + rightRpm) * WHEEL_DIAMETER * PI / 2.0 / 60.0;  // m/s
+  robot->odometry.speed.omega =
+      (rightRpm - leftRpm) * WHEEL_DIAMETER / WHEEL_BASE / 60.0;  // rad/s
+
+  double oldV = distance / dt;
+  double oldOmega = dTheta / dt;
+
+  if (getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
+    Serial.print(oldV);
+    Serial.print(", ");
+    Serial.print(oldOmega);
+    Serial.print(", ");
+    Serial.print(robot->odometry.speed.v);
+    Serial.print(", ");
+    Serial.println(robot->odometry.speed.omega);
+  }
+
+  // update the odometry data
+  robot->odometry.time = now;
 }
 
 /**
