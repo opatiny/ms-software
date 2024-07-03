@@ -50,8 +50,8 @@ void setup() {
   taskSerial();
   debugTask("TaskSerial");
 
-  // taskWifi();
-  // debugTask("TaskWifi");
+  taskWifi();
+  debugTask("TaskWifi");
 
   taskWebserver();
   debugTask("TaskWebserver");
@@ -87,8 +87,8 @@ void setup() {
   taskRgbLed();
   debugTask("TaskRgbLed");
 
-  // taskEventSourceSender();
-  // debugTask("TaskEvent");
+  taskEventSourceSender();
+  debugTask("TaskEvent");
 
   taskBlink();
   debugTask("TaskBlink");

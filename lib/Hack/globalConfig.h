@@ -70,13 +70,14 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_WALLS_CONTROLLER 47    // AV
 
 // IMU parameteers
-// accelerations are in g -> 1g = 9.81 m/s^2
+// accelerations are in m/s^2 * 100
 #define PARAM_ACCELERATION_X 0  // A
 #define PARAM_ACCELERATION_Y 1  // B
 #define PARAM_ACCELERATION_Z 2  // C
-#define PARAM_ROTATION_X 3      // D
-#define PARAM_ROTATION_Y 4      // E
-#define PARAM_ROTATION_Z 5      // F
+// rotations are in rad/s * 100
+#define PARAM_ROTATION_X 3  // D
+#define PARAM_ROTATION_Y 4  // E
+#define PARAM_ROTATION_Z 5  // F
 
 // distance sensors parameters (distances are all in mm)
 #define PARAM_DISTANCE_LEFT 6         // G

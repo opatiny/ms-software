@@ -11,13 +11,13 @@ void printRegressions(Print* output, Regressions* regressions, int nbDigits);
  * @brief Print the accelerometer's data.
  */
 void printImu(Print* output, ImuData* imuData) {
-  output->print("\t- Acceleration [mm/s^2]: ");
+  output->print("\t- Acceleration [m/s^2]: ");
   output->print(imuData->acceleration.x);
   output->print(", ");
   output->print(imuData->acceleration.y);
   output->print(", ");
   output->println(imuData->acceleration.z);
-  output->print("\t- Rotation: ");
+  output->print("\t- Rotation [rad/s]: ");
   output->print(imuData->rotation.x);
   output->print(", ");
   output->print(imuData->rotation.y);
