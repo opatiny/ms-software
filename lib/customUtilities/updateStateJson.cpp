@@ -29,9 +29,33 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
   stateJson["odometry"]["pose"]["x"] = robot->odometry.pose.x;
   stateJson["odometry"]["pose"]["y"] = robot->odometry.pose.y;
   stateJson["odometry"]["pose"]["theta"] = robot->odometry.pose.theta;
-  stateJson["odometry"]["speed"]["v"] = robot->odometry.speed.v;
-  stateJson["odometry"]["speed"]["omega"] = robot->odometry.speed.omega;
   stateJson["odometry"]["time"] = robot->odometry.time;
+
+  // Controllers
+  stateJson["controllers"]["v"]["target"] =
+      robot->navigation.robotSpeedController.linear.targetValue;
+  stateJson["controllers"]["v"]["current"] = robot->odometry.speed.v;
+  stateJson["controllers"]["v"]["kp"] =
+      robot->navigation.robotSpeedController.linear.params.kp;
+  stateJson["controllers"]["v"]["ki"] =
+      robot->navigation.robotSpeedController.linear.params.ki;
+  stateJson["controllers"]["v"]["kd"] =
+      robot->navigation.robotSpeedController.linear.params.ki;
+
+  stateJson["controllers"]["omega"]["target"] =
+      robot->navigation.robotSpeedController.angular.targetValue;
+  stateJson["controllers"]["omega"]["current"] = robot->odometry.speed.omega;
+  stateJson["controllers"]["omega"]["kp"] =
+      robot->navigation.robotSpeedController.angular.params.kp;
+  stateJson["controllers"]["omega"]["ki"] =
+      robot->navigation.robotSpeedController.angular.params.ki;
+  stateJson["controllers"]["omega"]["kd"] =
+      robot->navigation.robotSpeedController.angular.params.ki;
+
+  stateJson["motors"]["left"]["command"] = robot->leftMotor.currentCommand;
+  stateJson["motors"]["left"]["speed"] = robot->leftMotor.wheelSpeed;
+  stateJson["motors"]["right"]["command"] = robot->rightMotor.currentCommand;
+  stateJson["motors"]["right"]["speed"] = robot->rightMotor.wheelSpeed;
 
   serializeJson(stateJson, tempString, TEMP_STRING_SIZE);
 }

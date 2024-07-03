@@ -99,8 +99,8 @@ void TaskWifi(void* pvParameters) {
 void taskWifi() {
   // Now set up two tasks to run independently.
   xTaskCreatePinnedToCore(TaskWifi, "TaskWifi",
-                          12000,  // This stack size can be checked & adjusted
-                                  // by reading the Stack Highwater
+                          8192,  // This stack size can be checked & adjusted
+                                 // by reading the Stack Highwater
                           NULL,
                           0,  // Priority, with 3 (configMAX_PRIORITIES - 1)
                               // being the highest, and 0 being the lowest.
