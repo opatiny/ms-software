@@ -34,4 +34,9 @@ Custom tasks:
 
 All of the tasks are called in the main program: `src/main.cpp`, which allows to easily enable or disable them as needed.
 
-## Serial parameters
+## More documentation
+
+The `docs` folder of this repository contains more md file with useful information:
+
+- [`setupAndTasks.md`](./docs/setupAndTasks.md): Explanation about how to set up platformio, as well as how some of the tasks were implemented.
+- [`unitTesting.md`](./docs/unitTesting.md): Documentation on how to do basic cpp unit testing of functions.
