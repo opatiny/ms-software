@@ -1,103 +1,37 @@
-# Setting up prog environment on esp32-s3 on mac
+# Algernon micromouse software
 
-## Linting / auto-formatting
+This repository contains all of the software that was written for my custom micromouse robot. It is a PlatformIO project, based on an `esp32-s3-devkitc-1` board and using the Arduino framework.
 
-- install the C/C++ vscode extension
-- install clang-format with brew: `brew install clang-format`
-- add settings to setting.json:
+To access all of the hardware files, as well as more documentation on this project, checkout the following repository: [opatiny/micromouse](https://github.com/opatiny/micromouse).
 
-```
-"C_Cpp.clang_format_style": "{BasedOnStyle: 'Chromium'}",
+## Code structure
 
-"[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
-  },
-```
+This project uses [FreeRTOS](https://www.freertos.org/index.html), a real time operating system for microcontroller. This allows us to have multiple tasks that are running concurrently. In our case, we have 15 different tasks. This project is initially based on the [hackuarium/esp32-s3](https://github.com/Hackuarium/esp32-c3) repository, which gave us a code base to work with. The tasks that were taken from that repository are in the `lib/Hack` folder, whereas our fully custom tasks are in `src/tasks`. Some of the tasks that were copied still had to be modified for our own application. All of the utilities that we developped were also place in the `lib` folder in `lib/utilities`
 
-## PlatformIO
+Here is the list of all the tasks that are running on our robot, as well as what they are responsible for.
 
-Follow PlatformIO quickstart:https://docs.platformio.org/en/latest/integration/ide/vscode.html#quick-start
+Tasks reused from `hackuarium/esp32-s3`:
 
-- when choosing the board take Xiaomi ESP32S3
-- Framework: Arduino
+- [`taskBlink`](./lib/Hack/taskBlink.cpp): Lowest priority task, which makes an LED blink at all times. Allows to see if the device crashes.
+- [`taskEventSourceSender`](./lib/Hack/taskEventSourceSender.cpp): Allows to post messages for different topics over WiFi.
+- [`taskGY521`](./lib/Hack/taskGY521.cpp): Accelerometer task.
+- [`taskSerial`](./lib/Hack/taskSerial.cpp): Handles the "serial parameters", a custom system to store variables in the EEPROM and read and write to them using the serial interface. More about in the next section.
+- [`taskWebServer`](./lib/Hack/taskWebServer.cpp): Allows to open an HTTP connection over WiFi and continuously send data.
+- [`taskWifi`](./lib/Hack/taskWifi.cpp): Responsible for managing the connection of the device to an existing WiFi rooter.
+- [`taskWire`](./lib/Hack/taskWire.cpp): Manages the I2C devices, allows to scan the I2C buses to detect the connected devices.
 
-## Multi-threading
+Custom tasks:
 
-We base ourself on this repository: https://github.com/Hackuarium/esp32-c3
+- [`taskButton`](./lib/Hack/taskButton.cpp): Handles the push button.
+- [`taskBuzzer`](./lib/Hack/taskBuzzer.cpp): Controls the buzzer, allows to make various sounds depending on the mode, which can be modified in any other task.
+- [`taskCalibrateSpeed`](./lib/Hack/taskCalibrateSpeed.cpp): Task for an automatic speed calibration of the wheels. This allows to establish the feedforward controller for the wheels speed.
+- [`taskEncodersX4`](./lib/Hack/taskEncodersX4.cpp): Handles the encoders data, counts the encoder pulses and computes the motors' speeds.
+- [`taskOdometry`](./lib/Hack/taskOdometry.cpp): Allows to track the robot's position and orientation.
+- [`taskRgbLed`](./lib/Hack/taskRgbLed.cpp): Control of the RBG LED brightness and color.
+- [`taskRobotMove`](./lib/Hack/taskRobotMove.cpp): Manages the robot's speed. They are different control modes. Either the motors' duty cycle is set for each wheel, or a desired rpm speed is set for both wheels at the same time. Finally, the robot's speed can be controlled directly, using speed regulators.
+- [`taskVL53L1X`](./lib/Hack/taskVL53L1X.cpp): Handles the 5 distance sensors.
+- [`taskVoltage`](./lib/Hack/taskVoltage.cpp): Measurement of the battery voltage.
 
-- copy the `taskBlink.cpp` file
-- in main
-  - the `setup` function must call all the tasks
-  - the `loop` function is empty and only contains a `vTaskDelay`
+All of the tasks are called in the main program: `src/main.cpp`, which allows to easily enable or disable them as needed.
 
-**Caution!!** Never use actual `delay()` because it will be blocking all the tasks! Use `vTaskDelay()` instead.
-
-## Setup serial task and serial parameters
-
-- start by copying the `taskSerial` files and the related useful files / tasks
-- `globalConfig.h`: create a config file that will be called everywhere and that contains the list of all the serial parameters
-
-## Adding dependencies arduino (libraries) to PIO project
-
-- go to PlatformIO home page (click on little home in the bottom menu)
-- in the left menu, click on Libraries
-- search for the lib
-- click on the one you need and then click on "Add to project"
-
-## Setting up wifi task
-
-WiFi task:
-
-- copy the `taskWifi` file
-- using the default serial parameters
-- you can set the wifi name with ws+theWifiName (SSID) and the wp+theWifiPassword
-- if the device doesn't try to connect after that, check that the NVS parameters are loaded in your main script!
-- if it's not done, add the following line to the top of the `setup()` function: `setupParameters();`
-- use `wi` to get wifi information
-
-There is another task called `taskWifiAP` which allows the esp to appear as an access point to which we can connect.
-
-## Access the `pio` command
-
-- to access all executables that are installed by the platformio extension
-- add this line to .zshrc : `export PATH=$PATH:~/.platformio/penv/bin`
-
-With this, we can for instance dump a folder in the microcontroller memory. An example of this can be found in the next section.
-If you have problems with the pio commands, check that all serial monitors are closed, because pio is also using serial.
-
-## Setting up webserver task
-
-- first copy the `taskWebserver.cpp` file
-
-- create a folder at the first level called `data`.
-
-To upload the data, run this command in a terminal. The esp must be connected to the computer. The data must be uploaded every time the folder is modified. This loads the contents of the folder onto the esp file system.
-
-```
-pio run --target uploadfs
-```
-
-To access the page, you must know the device IP address and be connected to the same wifi. The address can be known using the `wi` serial command.
-Url example: `192.168.1.193`
-
-- to check that the device is connected to the wifi, try to `ping` it from a terminal
-- in a browser: just paste the IP address
-
-Alternatively, the page can be built locally. Right-click on the html file and choose "Open with live server". You can then see the page and still interact with the device. For this to work, you have to set `localDevelopment = true` in `index.html`.
-
-In the data folder, we create an `index.html` file, which will be served by the esp by default.
-
-There is a way to update files and code over the air with the OTA (over the air update). We did not configure this though.
-
-## Event handler task
-
-- It is a task that allows to open an HTTP connection to the device and hence regularly update some data without closing the connection every time (the device can upload variables every x seconds).
-- copy the `taskEventSource` file
-- we added the `events.html` page that currently shows the accelerometer data
-
-## Battery votage task
-
-- we want to read an analog voltage on a pin
-- we create voltage divider on the battery in order to have voltage that won't exceed max acceptable voltage (around 1.1 V)  
-   https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32s3/api-reference/peripherals/adc.html
-  use analogReadMilis
+## Serial parameters
