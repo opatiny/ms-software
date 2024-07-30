@@ -1,3 +1,8 @@
+/**
+ * Task for the speed calibration of the wheels. Allows to find the parameters
+ * of the polynomial regressions that fit the command VS speed curve.
+ */
+
 #include <globalConfig.h>
 #include <kinematics.h>
 #include <motorProperties.h>

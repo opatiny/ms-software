@@ -3,18 +3,17 @@
  *
  * Use the serial parameters.
  *
- *   - robot mode: AO
- *   - robot speed in rpm: AN
- *   - robot command: AM
+ *   - robot mode: T
+ *   - wheels speed in rpm: Q
+ *   - robot command: P
  *     - speed is in range [-255,255]
  *     - 0 means stop
  *     - positive values means forward
  *     - negative values means backward
- *  - robot angle: AP (used for rotation modes)
- *  - robot distance: A...
- *  - robot radius: commands A... (used for arc mode)
- *
- * Debug: U7
+ *   - for control with regulation:
+ *     - linear speed in mm/s: R
+ *     - angular speed in deg/s: S
+ * Debug: A7
  */
 
 #include <globalConfig.h>

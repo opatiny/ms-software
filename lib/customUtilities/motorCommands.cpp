@@ -1,17 +1,17 @@
 /**
- * Motors can be controlled independently when the robot is in mode AO6
+ * Motors can be controlled independently when the robot is in mode
+ * ROBOT_EACH_WHEEL.
  *
  * Use the serial parameters to act on the motors.
  *
- *   - motor mode: commands AC (left) and AD (right)
- *   - motor speed: commands AA (left) and AB (right)
+ *   - motor mode: commands M (left) and N (right)
+ *   - motor speed: commands K (left) and L (right)
  *     - speed is in range [-255,255]
  *     - 0 means stop
  *     - positive values means forward
  *     - negative values means backward
- *  - motor angle: commands AJ (left) and AK (right)
  *
- * Debug: U7
+ * Debug: A7
  */
 
 #include <utilities/params.h>

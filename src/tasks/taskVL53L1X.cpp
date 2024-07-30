@@ -1,8 +1,8 @@
 /**
  * Thread to handle the I2C communication with the five VL53L1X distance
  * sensors. The distances are from the center of the robot!!
- * Set the distance debug mode with parameter AH.
- * Debug: U1
+ * Set the distance debug mode with parameter B.
+ * Debug: A1
  */
 
 #include <Adafruit_Sensor.h>

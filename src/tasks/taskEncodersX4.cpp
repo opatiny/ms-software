@@ -3,7 +3,7 @@
  * This thread uses X4 encoding.
  * This should give us 360 counts per revolution of the wheel.
  *
- * Debug: U5
+ * Debug: A5
  */
 
 #include <globalConfig.h>

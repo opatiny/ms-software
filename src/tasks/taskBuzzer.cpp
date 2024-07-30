@@ -2,7 +2,7 @@
  * Thread for the control of the buzzer.
  *
  * Buzzer mode: T
- * Debug: U9
+ * Debug: A9
  */
 
 #include <globalConfig.h>

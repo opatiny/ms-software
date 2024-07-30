@@ -1,9 +1,9 @@
 /**
  * Task for the control of the on board RGB LED.
- *   - color: AL
- *   - brightness: AM (0-255)
- *   - mode: AS
- * Debug: U8
+ *   - color: H
+ *   - brightness: I (0-255)
+ *   - mode: G
+ * Debug: A8
  */
 
 #include <Adafruit_NeoPixel.h>

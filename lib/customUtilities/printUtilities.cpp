@@ -124,7 +124,7 @@ void printState(Print* output) {
  * @brief Print the help for the debug modes and the current debug mode.
  */
 void printDebug(Print* output) {
-  output->println("Use serial parameter U to switch between debug modes.");
+  output->println("Use serial parameter A to switch between debug modes.");
   output->println("\t0) No debug");
   output->println("\t1) Distance sensors");
   output->println("\t2) Accelerometer");
@@ -142,7 +142,7 @@ void printDebug(Print* output) {
   output->println("\t14) Main: print when tasks are up");
   output->println("\t15) Wheel speed measurements with different methods");
 
-  output->print("\nCurrent debug mode: U");
+  output->print("\nCurrent debug mode: A");
   output->println(getParameter(PARAM_DEBUG));
 }
 
@@ -223,9 +223,10 @@ void printControllers(Print* output, Robot* robot) {
       robot->navigation.robotSpeedController.modeParameters.angularController);
 
   const int nbParams = 5;
-  const char* wheelsPidNames[nbParams] = {"none", "AN", "BA", "BB", "BC"};
-  const char* robotLinearPidNames[nbParams] = {"AE", "AY", "BD", "BE", "BF"};
-  const char* robotAngularPidNames[nbParams] = {"AF", "AL", "BG", "BH", "BI"};
+  // mode, target, Kp, Ki, Kd
+  const char* wheelsPidNames[nbParams] = {"none", "Q", "BD", "BE", "BF"};
+  const char* robotLinearPidNames[nbParams] = {"BA", "R", "BG", "BH", "BI"};
+  const char* robotAngularPidNames[nbParams] = {"BC", "S", "BJ", "BK", "BL"};
 
   output->println(F("PID wheels speed controller:"));
   printController(output, wheel, wheelsPidNames, 1, PARAM_ROBOT_WHEELS_SPEED,

@@ -1,7 +1,7 @@
 /**
  * Odometry task: computes the position and the speed of the robot.
  *
- * Debug: U10
+ * Debug: A10
  */
 
 #include <curveFitting.h>

@@ -1,8 +1,8 @@
 /**
  * Task to measure battery voltage.
  *
- * Debug: U3
- * Log data for matlab: U4
+ * Debug: A3
+ * Log data for matlab: A4
  */
 
 #include <Arduino.h>
