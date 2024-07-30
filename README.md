@@ -22,15 +22,15 @@ Here is the list of all the tasks that are running on our robot, as well as what
 
 ### Custom tasks
 
-- [`taskButton`](./lib/Hack/taskButton.cpp): Handles the push button.
-- [`taskBuzzer`](./lib/Hack/taskBuzzer.cpp): Controls the buzzer, allows to make various sounds depending on the mode, which can be modified in any other task.
-- [`taskCalibrateSpeed`](./lib/Hack/taskCalibrateSpeed.cpp): Task for an automatic speed calibration of the wheels. This allows to establish the feedforward controller for the wheels speed.
-- [`taskEncodersX4`](./lib/Hack/taskEncodersX4.cpp): Handles the encoders data, counts the encoder pulses and computes the motors' speeds.
-- [`taskOdometry`](./lib/Hack/taskOdometry.cpp): Allows to track the robot's position and orientation.
-- [`taskRgbLed`](./lib/Hack/taskRgbLed.cpp): Control of the RBG LED brightness and color.
-- [`taskRobotMove`](./lib/Hack/taskRobotMove.cpp): Manages the robot's speed. They are different control modes. Either the motors' duty cycle is set for each wheel, or a desired rpm speed is set for both wheels at the same time. Finally, the robot's speed can be controlled directly, using speed regulators.
-- [`taskVL53L1X`](./lib/Hack/taskVL53L1X.cpp): Handles the 5 distance sensors.
-- [`taskVoltage`](./lib/Hack/taskVoltage.cpp): Measurement of the battery voltage.
+- [`taskButton`](./src/tasks/taskButton.cpp): Handles the push button.
+- [`taskBuzzer`](./src/tasks/taskBuzzer.cpp): Controls the buzzer, allows to make various sounds depending on the mode, which can be modified in any other task.
+- [`taskCalibrateSpeed`](./src/tasks/taskCalibrateSpeed.cpp): Task for an automatic speed calibration of the wheels. This allows to establish the feedforward controller for the wheels speed.
+- [`taskEncodersX4`](./src/tasks/taskEncodersX4.cpp): Handles the encoders data, counts the encoder pulses and computes the motors' speeds.
+- [`taskOdometry`](./src/tasks/taskOdometry.cpp): Allows to track the robot's position and orientation.
+- [`taskRgbLed`](./src/tasks/taskRgbLed.cpp): Control of the RBG LED brightness and color.
+- [`taskRobotMove`](./src/tasks/taskRobotMove.cpp): Manages the robot's speed. They are different control modes. Either the motors' duty cycle is set for each wheel, or a desired rpm speed is set for both wheels at the same time. Finally, the robot's speed can be controlled directly, using speed regulators.
+- [`taskVL53L1X`](./src/tasks/taskVL53L1X.cpp): Handles the 5 distance sensors.
+- [`taskVoltage`](./src/tasks/taskVoltage.cpp): Measurement of the battery voltage.
 
 All of the tasks are called in the main program: `src/main.cpp`, which allows to easily enable or disable them as needed.
 
