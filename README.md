@@ -40,3 +40,4 @@ The `docs` folder of this repository contains more md file with useful informati
 
 - [`setupAndTasks.md`](./docs/setupAndTasks.md): Explanation about how to set up platformio, as well as how some of the tasks were implemented.
 - [`unitTesting.md`](./docs/unitTesting.md): Documentation on how to do basic cpp unit testing of functions.
+- [`serialParameters.md`](./docs/serialParameters.md): Documentation about the serial interface of the robot.
