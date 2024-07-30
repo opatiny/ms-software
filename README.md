@@ -10,7 +10,7 @@ This project uses [FreeRTOS](https://www.freertos.org/index.html), a real time o
 
 Here is the list of all the tasks that are running on our robot, as well as what they are responsible for.
 
-Tasks reused from `hackuarium/esp32-s3`:
+### Tasks reused from `hackuarium/esp32-s3`
 
 - [`taskBlink`](./lib/Hack/taskBlink.cpp): Lowest priority task, which makes an LED blink at all times. Allows to see if the device crashes.
 - [`taskEventSourceSender`](./lib/Hack/taskEventSourceSender.cpp): Allows to post messages for different topics over WiFi.
@@ -20,7 +20,7 @@ Tasks reused from `hackuarium/esp32-s3`:
 - [`taskWifi`](./lib/Hack/taskWifi.cpp): Responsible for managing the connection of the device to an existing WiFi rooter.
 - [`taskWire`](./lib/Hack/taskWire.cpp): Manages the I2C devices, allows to scan the I2C buses to detect the connected devices.
 
-Custom tasks:
+### Custom tasks
 
 - [`taskButton`](./lib/Hack/taskButton.cpp): Handles the push button.
 - [`taskBuzzer`](./lib/Hack/taskBuzzer.cpp): Controls the buzzer, allows to make various sounds depending on the mode, which can be modified in any other task.
