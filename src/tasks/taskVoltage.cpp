@@ -81,7 +81,9 @@ void TaskVoltage(void* pvParameters) {
 
     if (millis() - time > WARNING_DELAY) {
       if (batteryLevel <= BATTERY_EMPTY) {
-        Serial.println("Warning: battery is empty!");
+        Serial.print("Warning: battery is empty (");
+        Serial.print(batteryLevel / 1000.0, 2);
+        Serial.println(" V)!");
       }
       if (getParameter(PARAM_VCC_VOLTAGE) == DEBUG_VOLTAGES) {
         if (vccLevel <= VCC_WARNING) {

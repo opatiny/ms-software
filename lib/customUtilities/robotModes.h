@@ -1,6 +1,6 @@
 #pragma once
 
-enum RobotMode {
+enum RobotMode {            // param T8
   ROBOT_STOP,               // 0
   ROBOT_MOVE_SAME_COMMAND,  // 1
   ROBOT_MOVE,               // 2

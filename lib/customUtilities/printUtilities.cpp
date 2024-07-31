@@ -226,7 +226,7 @@ void printControllers(Print* output, Robot* robot) {
   // mode, target, Kp, Ki, Kd
   const char* wheelsPidNames[nbParams] = {"none", "Q", "BD", "BE", "BF"};
   const char* robotLinearPidNames[nbParams] = {"BA", "R", "BG", "BH", "BI"};
-  const char* robotAngularPidNames[nbParams] = {"BC", "S", "BJ", "BK", "BL"};
+  const char* robotAngularPidNames[nbParams] = {"BB", "S", "BJ", "BK", "BL"};
 
   output->println(F("PID wheels speed controller:"));
   printController(output, wheel, wheelsPidNames, 1, PARAM_ROBOT_WHEELS_SPEED,

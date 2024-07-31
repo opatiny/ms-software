@@ -238,7 +238,7 @@ void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed) {
   double leftCorrection = 0;
   double rightCorrection = 0;
 
-  if (robotController->modeParameters.linearController) {
+  if (getParameter(robotController->modeParameters.linearController)) {
     robotController->linear.targetValue = linearSpeed;
 
     double linError =
@@ -249,7 +249,7 @@ void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed) {
     rightCorrection += linCorrection;
   }
 
-  if (robotController->modeParameters.angularController) {
+  if (getParameter(robotController->modeParameters.angularController)) {
     robotController->angular.targetValue = angularSpeed;
 
     double angError =

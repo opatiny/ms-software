@@ -1,5 +1,6 @@
 #include <ArduinoJson.h>
 
+#include <utilities/params.h>
 #include "updateStateJson.h"
 
 JsonDocument stateJson;
@@ -32,6 +33,8 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
   stateJson["odometry"]["time"] = robot->odometry.time;
 
   // Controllers
+  //   Serial.print("v");
+  //   Serial.println(>robot->navigation.robotSpeedController.linear.targetValue);
   stateJson["controllers"]["v"]["target"] =
       robot->navigation.robotSpeedController.linear.targetValue;
   stateJson["controllers"]["v"]["current"] = robot->odometry.speed.v;
@@ -40,7 +43,9 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
   stateJson["controllers"]["v"]["ki"] =
       robot->navigation.robotSpeedController.linear.params.ki;
   stateJson["controllers"]["v"]["kd"] =
-      robot->navigation.robotSpeedController.linear.params.ki;
+      robot->navigation.robotSpeedController.linear.params.kd;
+  stateJson["controllers"]["v"]["mode"] = getParameter(
+      robot->navigation.robotSpeedController.modeParameters.linearController);
 
   stateJson["controllers"]["omega"]["target"] =
       robot->navigation.robotSpeedController.angular.targetValue;
@@ -50,12 +55,14 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
   stateJson["controllers"]["omega"]["ki"] =
       robot->navigation.robotSpeedController.angular.params.ki;
   stateJson["controllers"]["omega"]["kd"] =
-      robot->navigation.robotSpeedController.angular.params.ki;
+      robot->navigation.robotSpeedController.angular.params.kd;
+  stateJson["controllers"]["omega"]["mode"] = getParameter(
+      robot->navigation.robotSpeedController.modeParameters.angularController);
 
-  stateJson["motors"]["left"]["command"] = robot->leftMotor.currentCommand;
-  stateJson["motors"]["left"]["speed"] = robot->leftMotor.wheelSpeed;
-  stateJson["motors"]["right"]["command"] = robot->rightMotor.currentCommand;
-  stateJson["motors"]["right"]["speed"] = robot->rightMotor.wheelSpeed;
+  stateJson["leftMotor"]["command"] = robot->leftMotor.currentCommand;
+  stateJson["leftMotor"]["speed"] = robot->leftMotor.wheelSpeed;
+  stateJson["rightMotor"]["command"] = robot->rightMotor.currentCommand;
+  stateJson["rightMotor"]["speed"] = robot->rightMotor.wheelSpeed;
 
   serializeJson(stateJson, tempString, TEMP_STRING_SIZE);
 }

@@ -44,8 +44,8 @@ The three table below show all of the parameters that are stored in the serial p
 | O         | R/W  | Duration of the motors' acceleration           |
 | P         | R/W  | Wheels command for basic robot control         |
 | Q         | R/W  | Desired wheels speed in rpm                    |
-| R         | R/W  | Desired robot's linear acceleration in mm/s    |
-| S         | R/W  | Desired robot's angular acceleration in deg/s  |
+| R         | R/W  | Desired robot's linear speed in mm/s           |
+| S         | R/W  | Desired robot's angular speed in deg/s         |
 | T         | R/W  | Robot mode                                     |
 | U         | R/W  | Desired rotation angle in deg                  |
 | V         | R/W  | Minimum distance to obstacle before stopping   |

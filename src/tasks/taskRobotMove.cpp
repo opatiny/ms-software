@@ -73,7 +73,7 @@ void TaskRobotMove(void* pvParameters) {
       ki : PARAM_ANGULAR_KI,
       kd : PARAM_ANGULAR_KD,
     },
-    factor : 1000,
+    factor : 100,
   };
 
   ControllerParams robotParams = {
@@ -135,6 +135,7 @@ void robotControl(Robot* robot) {
     }
     robot->navigation.previousMode = currentMode;
   }
+
   // Serial.println("Clear controller flags done");
   // Serial.print("Current mode: ");
   // Serial.println(currentMode);
