@@ -13,6 +13,8 @@ JsonDocument stateJson;
  * @param tempString - The string to store the JSON object.
 */
 void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
+  stateJson["navigation"]["mode"] =
+      getParameter(robot->navigation.modeParameter);
   // IMU data
   stateJson["imu"]["acceleration"]["x"] = robot->imuData.acceleration.x;
   stateJson["imu"]["acceleration"]["y"] = robot->imuData.acceleration.y;
