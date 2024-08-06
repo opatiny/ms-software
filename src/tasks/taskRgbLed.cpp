@@ -13,6 +13,8 @@
 #include <pinMapping.h>
 #include <utilities/params.h>
 
+#include <robotModes.h>
+#include <state.h>
 #include "taskButton.h"
 #include "taskRgbLed.h"
 
@@ -27,7 +29,7 @@ const char colorNames[NB_RGB_COLORS][10] = {
 
 uint32_t getColorFromIndex(int colorIndex);
 uint32_t getColorFromName(char const* colorName);
-void processRgbFlags();
+void processRgbFlags(Robot* robot, RgbLedFlags* flags);
 
 Adafruit_NeoPixel pixels(NUMPIXELS, RGB_LED_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -40,11 +42,12 @@ void TaskRgbLed(void* pvParameters) {
 
   while (true) {
     debugProcess("TaskRgbLed ");
-    processRgbFlags();
+    processRgbFlags(&robot, &rgbLedFlags);
 
-    int ledMode = getParameter(PARAM_RGB_LED_MODE);
-    int colorIndex = getParameter(PARAM_RGB_LED_COLOR);
-    int brightness = getParameter(PARAM_RGB_LED_BRIGHTNESS);
+    int ledMode = robot.rgbLed.mode;
+    int colorIndex = robot.rgbLed.color;
+    int brightness = robot.rgbLed.brightness;
+
     if (getParameter(PARAM_DEBUG) == DEBUG_RGB_LED) {
       Serial.print("RGB LED mode: ");
       Serial.print(ledMode);
@@ -133,28 +136,31 @@ uint32_t getColorFromName(char const* colorName) {
  * @brief Process the RGB LED flags to set mode, color and brightness depending
  * on the tasks flags.
  */
-void processRgbFlags() {
-  if (rgbLedFlags.buttonPressed) {
-    rgbLedFlags.buttonPressed = 0;
-    setParameter(PARAM_RGB_LED_MODE, LED_ON);
-    setParameter(PARAM_RGB_LED_COLOR, BUTTON_PRESSED_COLOR);
-    setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
+void processRgbFlags(Robot* robot, RgbLedFlags* flags) {
+  if (flags->buttonPressed) {
+    flags->buttonPressed = 0;
+    robot->rgbLed.mode = LED_ON;
+    robot->rgbLed.color = BUTTON_PRESSED_COLOR;
+    robot->rgbLed.brightness = DEFAULT_RGB_BRIGHNESS;
+    return;
+  } else if (getParameter(robot->navigation.modeParameter) ==
+             ROBOT_STOP_OBSTACLE) {
+    if (rgbLedFlags.obstacleDetected) {
+      robot->rgbLed.mode = LED_ON;
+      robot->rgbLed.color = OBSTACLE_DETECTED_COLOR;
+      robot->rgbLed.brightness = DEFAULT_RGB_BRIGHNESS;
+      return;
+    } else {
+      robot->rgbLed.mode = LED_OFF;
+    }
+  } else if (rgbLedFlags.batteryEmpty) {
+    robot->rgbLed.mode = LED_BLINK;
+    robot->rgbLed.color = 1;
+    robot->rgbLed.brightness = DEFAULT_RGB_BRIGHNESS;
     return;
   } else {
-    setParameter(PARAM_RGB_LED_MODE, LED_OFF);
-  }
-  if (rgbLedFlags.obstacleDetected) {
-    setParameter(PARAM_RGB_LED_MODE, LED_ON);
-    setParameter(PARAM_RGB_LED_COLOR, OBSTACLE_DETECTED_COLOR);
-    setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
-    return;
-  } else {
-    setParameter(PARAM_RGB_LED_MODE, LED_OFF);
-  }
-  if (rgbLedFlags.batteryEmpty) {
-    setParameter(PARAM_RGB_LED_MODE, LED_BLINK);
-    setParameter(PARAM_RGB_LED_COLOR, 1);
-    setParameter(PARAM_RGB_LED_BRIGHTNESS, DEFAULT_RGB_BRIGHNESS);
-    return;
+    robot->rgbLed.mode = getParameter(PARAM_RGB_LED_MODE);
+    robot->rgbLed.color = getParameter(PARAM_RGB_LED_COLOR);
+    robot->rgbLed.brightness = getParameter(PARAM_RGB_LED_BRIGHTNESS);
   }
 }

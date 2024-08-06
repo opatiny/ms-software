@@ -149,6 +149,15 @@ struct VoltageMeasurement {
   double warningVoltage;
 };
 
+struct RgbLed {
+  int modeParameter;
+  int colorParameter;
+  int brightnessParameter;
+  int mode;
+  int color;
+  int brightness;
+};
+
 /**
  * The highest level structure for the robot. Contains all the robot's data.
  */
@@ -164,6 +173,7 @@ struct Robot {
   Odometry odometry;
   VoltageMeasurement battery;
   VoltageMeasurement vcc;
+  RgbLed rgbLed;
 };
 
 extern Robot robot;
