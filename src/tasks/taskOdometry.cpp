@@ -16,7 +16,7 @@
 #include "taskRobotMove.h"
 
 // delay between each time the debug information is printed
-#define DEBUG_DELAY 250  // ms
+#define DEBUG_DELAY 100  // ms
 
 void updateOdometry(Robot* robot);
 void printOdometry(Robot* robot);
@@ -166,9 +166,9 @@ void updateOdometry(Robot* robot) {
  * @brief Print the odometry data of the robot (for debug)
  */
 void printOdometry(Robot* robot) {
-  Serial.print(robot->odometry.pose.x);
+  Serial.print(robot->odometry.pose.x, 3);
   Serial.print(", ");
-  Serial.print(robot->odometry.pose.y);
+  Serial.print(robot->odometry.pose.y, 3);
   Serial.print(", ");
   Serial.print(robot->odometry.pose.theta);
   Serial.print(", ");
