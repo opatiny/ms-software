@@ -10,3 +10,4 @@ void printRegressions(Print* output,
                       int nbDigits = 2);
 void printRegressionsForMatlab(Print* output, Robot* robot, int nbDigits);
 void processPrintCommand(char command, char* paramValue, Print* output);
+void processModesCommand(char command, char* paramValue, Print* output);

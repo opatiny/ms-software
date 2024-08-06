@@ -2,6 +2,8 @@
 
 #include <state.h>
 
+#define MOTORS_PWM_FREQUENCY 15000  // PWM frequency [Hz], default is 500 Hz
+
 #define DEFAULT_ACC_DURATION 100  // default duration of the acceleration [ms]
 #define MOTOR_STOP_DURATION 10    // time to stop [ms]
 

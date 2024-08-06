@@ -59,7 +59,7 @@ void setup() {
   taskGY521();
   debugTask("TaskGY521");
 
-  // todo: requestFrom() I2C error in there
+  // todo: requestFrom() I2C error in there?
   taskVL53L1X();
   debugTask("TaskVL53L1X");
 
@@ -72,8 +72,8 @@ void setup() {
   taskOdometry();
   debugTask("TaskOdometry");
 
-  // taskCalibrateSpeed();
-  // debugTask("TaskCalibration");
+  taskCalibrateSpeed();
+  debugTask("TaskCalibration");
 
   taskVoltage();
   debugTask("TaskVoltage");
@@ -81,8 +81,8 @@ void setup() {
   taskButton();
   debugTask("TaskButton");
 
-  // taskBuzzer();
-  // debugTask("TaskBuzzer");
+  taskBuzzer();
+  debugTask("TaskBuzzer");
 
   taskRgbLed();
   debugTask("TaskRgbLed");

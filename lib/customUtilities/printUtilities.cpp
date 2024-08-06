@@ -40,11 +40,11 @@ void printDistances(Print* output, int* distances) {
  * @brief Print the data of one of the motors.
  */
 void printMotor(Print* output, Motor* motor) {
-  output->print("\t - Pins: ");
-  output->print(motor->pin1);
-  output->print(", ");
-  output->println(motor->pin2);
-  output->print("\t - Mode: ");
+  // output->print("\t - Pins: ");
+  // output->print(motor->pin1);
+  // output->print(", ");
+  // output->println(motor->pin2);
+  // output->print("\t - Mode: ");
   output->println(getParameter(motor->modeParameter));
   output->print("\t - Current speed: ");
   output->println(motor->currentCommand);
@@ -60,10 +60,10 @@ void printMotor(Print* output, Motor* motor) {
  * @brief Print the data of the encoders.
  */
 void printEncoder(Print* output, Encoder* encoder) {
-  output->print("\t - Pins: ");
-  output->print(encoder->pin1);
-  output->print(", ");
-  output->println(encoder->pin2);
+  // output->print("\t - Pins: ");
+  // output->print(encoder->pin1);
+  // output->print(", ");
+  // output->println(encoder->pin2);
   output->print("\t - Counts: ");
   output->println(encoder->counts);
 }
@@ -72,8 +72,8 @@ void printEncoder(Print* output, Encoder* encoder) {
  * @brief Print the data of the battery.
  */
 void printVoltage(Print* output, VoltageMeasurement* voltageMeasurement) {
-  output->print("\t - Pin: ");
-  output->println(voltageMeasurement->pin);
+  // output->print("\t - Pin: ");
+  // output->println(voltageMeasurement->pin);
   output->print("\t - Voltage [mV]: ");
   output->println(getParameter(voltageMeasurement->voltageParameter));
   output->print("\t - Warning voltage [mV]: ");
@@ -260,5 +260,72 @@ void processPrintCommand(char command, char* paramValue, Print* output) {
       break;
     default:
       showPrintHelp(output);
+  }
+}
+
+/**
+ * @brief Print the robot's control modes.
+ */
+void printRobotModes(Print* output) {
+  output->println("Use serial parameter T to choose robot mode.");
+  output->println("\t0) Stop robot");
+  output->println("\t1) Same PWM command for both wheels");
+  output->println("\t2) Wheel speed with feedforward control");
+  output->println("\t6) Wheel speed control + obstacle avoidance");
+  output->println("\t7) Control each wheel separately");
+  output->println("\t8) PID on wheel speeds to move straight");
+  output->println("\t9) PID on robot speed (linear and angular)");
+
+  output->print("\nCurrent robot mode: T");
+  output->println(getParameter(PARAM_ROBOT_MODE));
+}
+
+/**
+ * @brief Print the buzzer's modes.
+ */
+void printBuzzerModes(Print* output) {
+  output->println("Use serial parameter D to chose buzzer mode.");
+  output->println("\t0) Buzzer off");
+  output->println("\t1) Single note");
+  output->println("\t2) Alarm");
+  output->println("\t3) Scale");
+  output->println("\t4) Boot");
+
+  output->print("\nCurrent buzzer mode: D");
+  output->println(getParameter(PARAM_BUZZER_MODE));
+}
+
+/**
+ * @brief Print the RGB LED's modes.
+ */
+void printLedModes(Print* output) {
+  output->println("Use serial parameter G to chose LED mode.");
+  output->println("\t0) LED off");
+  output->println("\t1) LED on");
+  output->println("\t2) Blink");
+
+  output->print("\nCurrent LED mode: G");
+  output->println(getParameter(PARAM_RGB_LED_MODE));
+}
+
+void showModesHelp(Print* output) {
+  output->println(F("(mb) Buzzer modes"));
+  output->println(F("(ml) RGB LED modes"));
+  output->println(F("(mr) Robot modes"));
+}
+
+void processModesCommand(char command, char* paramValue, Print* output) {
+  switch (command) {
+    case 'b':
+      printBuzzerModes(output);
+      break;
+    case 'l':
+      printLedModes(output);
+      break;
+    case 'r':
+      printRobotModes(output);
+      break;
+    default:
+      showModesHelp(output);
   }
 }

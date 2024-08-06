@@ -180,6 +180,9 @@ void printResult(char* data, Print* output) {
       processLoggerCommand(data[1], paramValue, output);
       break;
 #endif
+    case 'm':
+      processModesCommand(data[1], paramValue, output);
+      break;
     case 'p':
       processPrintCommand(data[1], paramValue, output);
       break;

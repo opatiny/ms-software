@@ -6,9 +6,9 @@
 #define NB_RGB_COLORS 8
 
 enum RgbLedMode {
-  LED_OFF,    // 1
-  LED_ON,     // 2
-  LED_BLINK,  // 3
+  LED_OFF,    // 0
+  LED_ON,     // 1
+  LED_BLINK,  // 2
 };
 
 /**
