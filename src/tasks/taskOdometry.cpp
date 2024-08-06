@@ -30,6 +30,13 @@ void TaskOdometry(void* pvParameters) {
     updateOdometry(&robot);
 
     if (millis() - previousTime > DEBUG_DELAY) {
+      if (getParameter(PARAM_ODOMETRY_RESET) == 1) {
+        robot.odometry.pose.x = 0;
+        robot.odometry.pose.y = 0;
+        robot.odometry.pose.theta = 0;
+        setParameter(PARAM_ODOMETRY_RESET, 0);
+      }
+
       switch (getParameter(PARAM_DEBUG)) {
         case DEBUG_ODOMETRY:
           printOdometry(&robot);
@@ -137,18 +144,19 @@ void updateOdometry(Robot* robot) {
   robot->odometry.speed.omega =
       (rightRpm - leftRpm) * WHEEL_DIAMETER / WHEEL_BASE / 60.0;  // rad/s
 
+  // todo: this should be removed if new speeds are actually correct
   double oldV = distance / dt;
   double oldOmega = dTheta / dt;
 
-  if (getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
-    Serial.print(oldV);
-    Serial.print(", ");
-    Serial.print(oldOmega);
-    Serial.print(", ");
-    Serial.print(robot->odometry.speed.v);
-    Serial.print(", ");
-    Serial.println(robot->odometry.speed.omega);
-  }
+  // if (getParameter(PARAM_DEBUG) == DEBUG_ODOMETRY) {
+  //   Serial.print(oldV);
+  //   Serial.print(", ");
+  //   Serial.print(oldOmega);
+  //   Serial.print(", ");
+  //   Serial.print(robot->odometry.speed.v);
+  //   Serial.print(", ");
+  //   Serial.println(robot->odometry.speed.omega);
+  // }
 
   // update the odometry data
   robot->odometry.time = now;
@@ -166,7 +174,7 @@ void printOdometry(Robot* robot) {
   Serial.print(", ");
   Serial.print(robot->odometry.speed.v);
   Serial.print(", ");
-  Serial.print(robot->odometry.speed.omega);
+  Serial.println(robot->odometry.speed.omega);
 }
 
 void printSpeeds(Robot* robot) {

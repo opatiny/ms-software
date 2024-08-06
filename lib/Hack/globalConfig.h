@@ -67,6 +67,8 @@ extern int16_t parameters[MAX_PARAM];
 #define PARAM_CALIBRATION_MODE 22  // W
 #define PARAM_CALIBRATION_STEP 23  // X
 
+#define PARAM_ODOMETRY_RESET 24  // Y
+
 // IMU parameteers
 // accelerations are in m/s^2 * 100
 #define PARAM_ACCELERATION_X 26  // AA
