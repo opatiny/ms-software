@@ -140,20 +140,18 @@ void robotTurnInPlace(Robot* robot, int speed) {
 }
 
 /**
- * Stop the robot when an obstacle is detected and make it move again
- * when obsacle is removed.
+ * Stop the robot when an obstacle is detected (only with front sensor) and make
+ * it move again when obsacle is removed.
  * @param robot The robot structure.
  * @param speed The speed at which the robot should move in rpm.
  * @param distance The minimum distance to the obstacle before stopping.
  */
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
-  for (int i = 0; i < NB_DISTANCE_SENSORS; i++) {
-    if (robot->distances[i] < distance) {
-      robot->navigation.wheelsSpeedController.clearControllers = 1;
-      robotStop(robot);
-      rgbLedFlags.obstacleDetected = 1;
-      return;
-    }
+  if (robot->distances[2] < distance) {
+    robot->navigation.wheelsSpeedController.clearControllers = 1;
+    robotStop(robot);
+    rgbLedFlags.obstacleDetected = 1;
+    return;
   }
   wheelSpeedControl(robot, speed);
   rgbLedFlags.obstacleDetected = 0;

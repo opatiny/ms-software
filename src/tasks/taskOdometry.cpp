@@ -180,6 +180,8 @@ void printOdometry(Robot* robot) {
 void printSpeeds(Robot* robot) {
   Serial.print(robot->odometry.time);
   Serial.print(", ");
+  Serial.print(getParameter(PARAM_MOTOR_LEFT_COMMAND));
+  Serial.print(", ");
   Serial.print(robot->leftMotor.wheelSpeeds.highSpeed);
   Serial.print(", ");
   Serial.print(robot->leftMotor.wheelSpeeds.lowSpeed);

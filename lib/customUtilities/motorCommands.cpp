@@ -123,6 +123,12 @@ void updateMotor(Motor* motor, int target, uint32_t duration) {
     Serial.print(duration);
     Serial.print(", dt: ");
     Serial.println(dt);
+
+    // Serial.print(micros());
+    // Serial.print(", ");
+    // Serial.print(target);
+    // Serial.print(", ");
+    // Serial.println(motor->currentCommand);
   }
 }
 

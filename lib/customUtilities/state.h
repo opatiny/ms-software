@@ -166,8 +166,8 @@ struct Robot {
   Motor rightMotor;
   Encoder leftEncoder;
   Encoder rightEncoder;
+  // left, front-left, front, front-right, right
   int distances[NB_DISTANCE_SENSORS];
-  // bool walls[NB_DISTANCE_SENSORS];
   ImuData imuData;
   RobotNavigation navigation;
   Odometry odometry;
