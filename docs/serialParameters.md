@@ -51,7 +51,7 @@ The three table below show all of the parameters that are stored in the serial p
 | V         | R/W  | Minimum distance to obstacle before stopping   |
 | W         | R/W  | Speed calibration mode                         |
 | X         | R/W  | Speed calibration command step                 |
-| Y         |      |                                                |
+| Y         | R/W  | Odometry reset                                 |
 | Z         |      |                                                |
 
 | Parameter | Mode | Description                           |

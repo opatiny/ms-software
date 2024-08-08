@@ -10,13 +10,20 @@
 #include <kinematics.h>
 #include <motorProperties.h>
 #include <printUtilities.h>
+#include <robotModes.h>
 #include <state.h>
 #include <utilities/params.h>
-
 #include "taskRobotMove.h"
 
 // delay between each time the debug information is printed
 #define DEBUG_DELAY 100  // ms
+
+// variables for acceleration measurement
+#define FINAL_SPEED 1.05  // m/s
+int previousRobotMode = ROBOT_STOP;
+int startTime = 0;
+int accelMeasured = false;
+double previousSpeed = 0;
 
 void updateOdometry(Robot* robot);
 void printOdometry(Robot* robot);
@@ -157,6 +164,33 @@ void updateOdometry(Robot* robot) {
   //   Serial.print(", ");
   //   Serial.println(robot->odometry.speed.omega);
   // }
+
+  // code to compute the robot's acceleration
+  if (previousRobotMode == ROBOT_STOP &&
+      getParameter(PARAM_ROBOT_MODE) == ROBOT_STOP_OBSTACLE &&
+      robot->odometry.speed.v > 0) {
+    startTime = micros();
+    previousRobotMode = ROBOT_STOP_OBSTACLE;
+  }
+  double smoothedSpeed = 0.1 * robot->odometry.speed.v + 0.9 * previousSpeed;
+  previousSpeed = smoothedSpeed;
+  if (getParameter(PARAM_ROBOT_MODE) == ROBOT_STOP_OBSTACLE &&
+      smoothedSpeed >= 0.95 * FINAL_SPEED && accelMeasured == false) {
+    double dt = (micros() - startTime) / 1000000.0;  // s
+    double acceleration = FINAL_SPEED / dt;
+    setParameter(PARAM_ROBOT_ACCELERATION, acceleration * 1000);
+    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_ACCELERATION) {
+      Serial.print("Acceleration: ");
+      Serial.print(acceleration);
+      Serial.println(" m/s^2");
+    }
+    accelMeasured = true;
+  }
+  if (getParameter(PARAM_ROBOT_MODE) != ROBOT_STOP_OBSTACLE ||
+      robot->odometry.speed.v == 0) {
+    previousRobotMode = ROBOT_STOP;
+    accelMeasured = false;
+  }
 
   // update the odometry data
   robot->odometry.time = now;

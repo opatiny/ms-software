@@ -141,7 +141,9 @@ void printDebug(Print* output) {
   output->println("\t13) Motors (only time interval since last call)");
   output->println("\t14) Main: print when tasks are up");
   output->println("\t15) Wheel speed measurements with different methods");
-
+  output->println(
+      "\t16) Robot's acceleration measurement (only with obstacle avoidance "
+      "mode)");
   output->print("\nCurrent debug mode: A");
   output->println(getParameter(PARAM_DEBUG));
 }
