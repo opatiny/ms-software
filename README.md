@@ -2,11 +2,11 @@
 
 This repository contains all of the software that was written for my custom micromouse robot. It is a PlatformIO project, based on an `esp32-s3-devkitc-1` board and using the Arduino framework.
 
-To access all of the hardware files, as well as more documentation on this project, checkout the following repository: [opatiny/micromouse](https://github.com/opatiny/micromouse).
+To access all of the hardware files, as well as more documentation on this project, checkout the following repository: [opatiny/micromouse](https://github.com/opatiny/micromouse). The debug web page code is also in a separate repository: [opatiny/ms-webpage](https://github.com/opatiny/ms-webpage)
 
 ## Code structure
 
-This project uses [FreeRTOS](https://www.freertos.org/index.html), a real time operating system for microcontroller. This allows us to have multiple tasks that are running concurrently. In our case, we have 15 different tasks. This project is initially based on the [hackuarium/esp32-s3](https://github.com/Hackuarium/esp32-c3) repository, which gave us a code base to work with. The tasks that were taken from that repository are in the `lib/Hack` folder, whereas our fully custom tasks are in `src/tasks`. Some of the tasks that were copied still had to be modified for our own application. All of the utilities that we developped were also place in the `lib` folder in `lib/utilities`
+This project uses [FreeRTOS](https://www.freertos.org/index.html), a real time operating system for microcontroller. This allows us to have multiple tasks that are running concurrently. In our case, we have 15 different tasks. This project is initially based on the [hackuarium/esp32-s3](https://github.com/Hackuarium/esp32-c3) repository, which gave us a code base to work with. The tasks that were taken from that repository are in the `lib/Hack` folder, whereas our fully custom tasks are in `src/tasks`. Some of the tasks that were copied still had to be modified for our own application. All of the utilities that we developed were also place in the `lib` folder in `lib/utilities`
 
 Here is the list of all the tasks that are running on our robot, as well as what they are responsible for.
 
@@ -41,3 +41,5 @@ The `docs` folder of this repository contains more md files with useful informat
 - [`setupAndTasks.md`](./docs/setupAndTasks.md): Explanation about how to set up platformio, as well as how some of the tasks were implemented.
 - [`unitTesting.md`](./docs/unitTesting.md): Documentation on how to do basic cpp unit testing of functions.
 - [`serialParameters.md`](./docs/serialParameters.md): Documentation about the serial interface of the robot.
+
+## Final debug web page screenshots
