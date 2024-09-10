@@ -124,10 +124,12 @@ void robotControl(Robot* robot) {
     // clear the controllers when changing back to a mode that uses them
     if (currentMode == ROBOT_WHEEL_SPEED_CONTROL ||
         currentMode == ROBOT_STOP_OBSTACLE) {
-      robot->navigation.wheelsSpeedController.clearControllers = 1;
+      robot->navigation.wheelsSpeedController.left.clearController = 1;
+      robot->navigation.wheelsSpeedController.right.clearController = 1;
     }
     if (currentMode == ROBOT_SPEED_CONTROL) {
-      robot->navigation.robotSpeedController.clearControllers = 1;
+      robot->navigation.robotSpeedController.linear.clearController = 1;
+      robot->navigation.robotSpeedController.angular.clearController = 1;
     }
     if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
       Serial.print("New robot mode: ");

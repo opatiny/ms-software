@@ -27,12 +27,10 @@ void initialiseNavigation(RobotNavigation* navigation,
   navigation->previousMode = ROBOT_STOP;
 
   // parameters for wheter controllers should be used or not
-  navigation->robotSpeedController.modeParameters.linearController =
+  navigation->robotSpeedController.linear.modeParameter =
       PARAM_LINEAR_CONTROLLER;
-  navigation->robotSpeedController.modeParameters.angularController =
+  navigation->robotSpeedController.angular.modeParameter =
       PARAM_ANGULAR_CONTROLLER;
-  navigation->robotSpeedController.modeParameters.wallsController =
-      PARAM_WALLS_CONTROLLER;
 
   // initialize PID of wheel speeds
   // controllers unit: rpm
@@ -61,13 +59,11 @@ void initialiseNavigation(RobotNavigation* navigation,
   setParameter(navigation->obstacleDistanceParameter,
                150);  // distance in mm
 
-  setParameter(navigation->robotSpeedController.modeParameters.linearController,
+  setParameter(navigation->robotSpeedController.linear.modeParameter,
                CONTROLLER_ON);
   setParameter(
-      navigation->robotSpeedController.modeParameters.angularController,
+      navigation->robotSpeedController.angular.modeParameter,
       CONTROLLER_ON);
-  setParameter(navigation->robotSpeedController.modeParameters.wallsController,
-               CONTROLLER_ON);
 }
 
 /**
@@ -89,7 +85,7 @@ void robotMoveSameCommand(Robot* robot, int command) {
 }
 
 /**
- * Move the robot in a straight line at a given speed in rpm.
+ * Move the robot in at a given speed in rpm.
  * This function doesn't use a PID navigation, but linearizes the speed based on
  * the calibration between rpm speed and command.
  * @param robot The robot structure.
@@ -148,7 +144,8 @@ void robotTurnInPlace(Robot* robot, int speed) {
  */
 void stopWhenObstacle(Robot* robot, int speed, int distance) {
   if (robot->distances[2] < distance) {
-    robot->navigation.wheelsSpeedController.clearControllers = 1;
+    robot->navigation.wheelsSpeedController.left.clearController = 1;
+    robot->navigation.wheelsSpeedController.right.clearController = 1;
     robotStop(robot);
     rgbLedFlags.obstacleDetected = 1;
     return;
@@ -168,15 +165,6 @@ void stopWhenObstacle(Robot* robot, int speed, int distance) {
  * @param speed The desired speed for the wheels in rpm.
  */
 void wheelSpeedControl(Robot* robot, int speed) {
-  if (robot->navigation.wheelsSpeedController
-          .clearControllers) {  // todo: check this condition
-    clearController(&robot->navigation.wheelsSpeedController.left);
-    clearController(&robot->navigation.wheelsSpeedController.right);
-    robot->navigation.wheelsSpeedController.clearControllers = 0;
-    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
-      Serial.println("Clear controllers");
-    }
-  }
 
   robot->navigation.wheelsSpeedController.left.targetValue = speed;
   robot->navigation.wheelsSpeedController.right.targetValue = speed;
@@ -224,19 +212,10 @@ void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed) {
   RobotSpeedController* robotController =
       &(robot->navigation.robotSpeedController);
 
-  if (robotController->clearControllers) {
-    clearController(&robotController->linear);
-    clearController(&robotController->angular);
-    robotController->clearControllers = 0;
-    if (getParameter(PARAM_DEBUG) == DEBUG_ROBOT_CONTROL) {
-      Serial.println("Clear robot speed controllers");
-    }
-  }
-
   double leftCorrection = 0;
   double rightCorrection = 0;
 
-  if (getParameter(robotController->modeParameters.linearController)) {
+  if (getParameter(robotController->linear.modeParameter)) {
     robotController->linear.targetValue = linearSpeed;
 
     double linError =
@@ -247,7 +226,7 @@ void robotSpeedControl(Robot* robot, double linearSpeed, double angularSpeed) {
     rightCorrection += linCorrection;
   }
 
-  if (getParameter(robotController->modeParameters.angularController)) {
+  if (getParameter(robotController->angular.modeParameter)) {
     robotController->angular.targetValue = angularSpeed;
 
     double angError =

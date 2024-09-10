@@ -78,9 +78,9 @@ struct Motor {
 struct WheelsSpeedController {
   PidController left;
   PidController right;
-  bool clearControllers;
 };
 
+// todo: remove?
 struct ControllerModeParameters {
   int linearController;
   int angularController;
@@ -93,8 +93,6 @@ struct ControllerModeParameters {
 struct RobotSpeedController {
   PidController linear;
   PidController angular;
-  bool clearControllers;
-  ControllerModeParameters modeParameters;
 };
 
 /**

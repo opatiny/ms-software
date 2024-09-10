@@ -17,6 +17,7 @@ struct PidSerialParameters {
 struct PidInitParameters {
   PidSerialParameters serialParams;
   int factor;
+  int modeParameter;
 };
 
 typedef struct {
@@ -29,6 +30,9 @@ typedef struct {
   double previousValue;
   double targetValue;
   double correction;
+  int modeParameter;
+  int previousMode;
+  bool clearController;
 } PidController;
 
 void initialisePidController(PidController* regulator,

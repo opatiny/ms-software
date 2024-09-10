@@ -47,7 +47,7 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
   stateJson["controllers"]["v"]["kd"] =
       robot->navigation.robotSpeedController.linear.params.kd;
   stateJson["controllers"]["v"]["mode"] = getParameter(
-      robot->navigation.robotSpeedController.modeParameters.linearController);
+      robot->navigation.robotSpeedController.linear.modeParameter);
 
   stateJson["controllers"]["omega"]["target"] =
       robot->navigation.robotSpeedController.angular.targetValue;
@@ -59,7 +59,7 @@ void getStateString(Robot* robot, char tempString[TEMP_STRING_SIZE]) {
   stateJson["controllers"]["omega"]["kd"] =
       robot->navigation.robotSpeedController.angular.params.kd;
   stateJson["controllers"]["omega"]["mode"] = getParameter(
-      robot->navigation.robotSpeedController.modeParameters.angularController);
+      robot->navigation.robotSpeedController.angular.modeParameter);
 
   stateJson["leftMotor"]["command"] = robot->leftMotor.currentCommand;
   stateJson["leftMotor"]["speed"] = robot->leftMotor.wheelSpeed;

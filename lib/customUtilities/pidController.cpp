@@ -19,6 +19,7 @@ void initialisePidController(PidController* regulator,
   regulator->serialParams.kd = params->serialParams.kd;
   regulator->factor = params->factor;
   regulator->previousTime = micros();
+  regulator->modeParameter = params->modeParameter;
 
   updatePidParameters(regulator);
 }
@@ -31,6 +32,13 @@ void initialisePidController(PidController* regulator,
  * previous value.
  */
 double getNewPidValue(PidController* regulator, double error) {
+
+if(regulator->previousMode != getParameter(regulator->modeParameter) || regulator->clearController == 1) {
+    clearController(regulator);
+    regulator->previousMode = getParameter(regulator->modeParameter);
+    regulator->clearController = 0;
+}
+
   updatePidParameters(regulator);
   uint32_t time = micros();
   double dt = microsToSeconds(time - regulator->previousTime);

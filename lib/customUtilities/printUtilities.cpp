@@ -220,9 +220,9 @@ void printControllers(Print* output, Robot* robot) {
   PidController* angular = &robot->navigation.robotSpeedController.angular;
 
   bool linMode = getParameter(
-      robot->navigation.robotSpeedController.modeParameters.linearController);
+      robot->navigation.robotSpeedController.linear.modeParameter);
   bool angMode = getParameter(
-      robot->navigation.robotSpeedController.modeParameters.angularController);
+      robot->navigation.robotSpeedController.angular.modeParameter);
 
   const int nbParams = 5;
   // mode, target, Kp, Ki, Kd

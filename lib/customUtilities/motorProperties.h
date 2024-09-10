@@ -12,3 +12,7 @@
  * Distance per count of the encoder in meters.
  */
 #define DISTANCE_PER_COUNT (WHEEL_DIAMETER * PI / COUNTS_PER_REV)
+
+
+#define MOTORS_REVERSE 0 // specify direction of the motors
+                         // set to 1 if robot goes backwards instead of forwards
